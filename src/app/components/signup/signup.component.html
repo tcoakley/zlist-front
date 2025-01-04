@@ -1,0 +1,60 @@
+<div class="form">
+	<h2>Sign Up</h2>
+	<form aria-labelledby="signup-heading">
+		<fieldset>
+			<legend>Email</legend>
+			<label for="email" class="visually-hidden">Email</label>
+			<input
+				id="email"
+				type="email"
+				name="email"
+				autocomplete="email"
+				aria-required="true"
+				required
+				autofocus
+			/>
+		</fieldset>
+
+		<fieldset>
+			<legend>Password</legend>
+			<label for="password" class="visually-hidden">Password</label>
+			<input
+				id="password"
+				type="password"
+				name="password"
+				autocomplete="new-password"
+				aria-required="true"
+				required
+			/>
+		</fieldset>
+
+		<fieldset>
+			<legend>First Name</legend>
+			<label for="first-name" class="visually-hidden">First Name</label>
+			<input
+				id="first-name"
+				type="text"
+				name="first-name"
+				autocomplete="given-name"
+				required
+			/>
+		</fieldset>
+
+		<fieldset>
+			<legend>Last Name</legend>
+			<label for="last-name" class="visually-hidden">Last Name</label>
+			<input
+				id="last-name"
+				type="text"
+				name="last-name"
+				autocomplete="family-name"
+				required
+			/>
+		</fieldset>
+
+		<div class="button-group">
+			<button type="button" class="cancel" routerLink="/login">Cancel</button>
+            <button type="submit" class="submit">Sign Up</button>
+		</div>
+	</form>
+</div>

@@ -1,14 +1,39 @@
 <div class="form">
 	<h2>Login</h2>
-	<form>
+	<form aria-labelledby="login-heading">
 		<fieldset>
 			<legend>Email</legend>
-			<input id="email" type="email" name="email" />
+			<label for="email" class="visually-hidden">Email</label>
+			<input
+				id="email"
+				type="email"
+				name="email"
+				autocomplete="email"
+				aria-required="true"
+				required
+                autofocus
+			/>
 		</fieldset>
+
 		<fieldset>
 			<legend>Password</legend>
-			<input id="password" type="password" name="password" />
+			<label for="password" class="visually-hidden">Password</label>
+			<input
+				id="password"
+				type="password"
+				name="password"
+				autocomplete="current-password"
+				aria-required="true"
+				required
+			/>
 		</fieldset>
-		<button type="submit">Login</button>
+
+		<div class="button-group">
+			<button type="submit" class="submit">Login</button>
+		</div>
 	</form>
+
+	<p class="signup-link">
+		Don't have an account? <a routerLink="/signup">Sign up</a>
+	</p>
 </div>
