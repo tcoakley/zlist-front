@@ -1,9 +1,10 @@
-<div style="text-align:center">
-	<h1>Welcome to zChecklist!</h1>
-	<div *ngIf="!isLoggedIn; else loggedInTemplate">
-		<app-login></app-login>
+<div class="main-container">
+	<div class="subcontent-container">
+		<div *ngIf="!isLoggedIn; else loggedInTemplate">
+			<app-login></app-login>
+		</div>
+		<ng-template #loggedInTemplate>
+			<p>You are logged in!</p>
+		</ng-template>
 	</div>
-	<ng-template #loggedInTemplate>
-		<p>You are logged in!</p>
-	</ng-template>
 </div>

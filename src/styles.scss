@@ -4,18 +4,82 @@ body {
 	font-family: 'Manrope', Arial, Helvetica, sans-serif;
 	margin: 0;
 	padding: 0;
-	color: #f0f0f0; /* Light font color */
-	background-color: #121212; /* Dark grey background */
-	line-height: 1.6; /* Improve readability */
+	color: #f0f0f0; 
+	background-color: #121212; 
+	line-height: 1.6; 
 }
 
 a {
-	color: #bb86fc; /* Soft purple for links */
+	color: #bb86fc; 
 	text-decoration: none;
 }
 
 a:hover {
-	color: #ffffff; /* Highlight on hover */
+	color: #ffffff; 
 	text-decoration: underline;
+}
+
+/* Shared form styles */
+.form {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+
+	h2 {
+		margin-bottom: 1.5rem;
+		color: #f0f0f0; /* Light text for dark theme */
+		font-size: 1.8rem;
+	}
+
+	form {
+		width: 100%;
+		display: flex;
+		flex-direction: column;
+		gap: 1.5rem; /* Space between fields */
+
+		fieldset {
+			width: 100%;
+			border: none; /* Remove fieldset border */
+			padding: 0;
+			margin: 0;
+
+			legend {
+				font-size: 0.9rem;
+				color: #bbb; /* Subtle text color for labels */
+				margin-bottom: 0.4rem;
+			}
+
+			input {
+				width: 100%;
+				padding: 0.8rem;
+				background-color: #1f1f1f;
+				color: #f0f0f0;
+				border: 1px solid #333;
+				border-radius: 5px;
+				font-size: 1rem;
+				outline: none;
+
+				&:focus {
+					border-color: #555;
+				}
+			}
+		}
+
+		button {
+			width: 100%;
+			padding: 0.8rem;
+			background-color: #007bff;
+			color: #fff;
+			border: none;
+			border-radius: 5px;
+			font-size: 1rem;
+			cursor: pointer;
+
+			&:hover {
+				background-color: #0056b3;
+			}
+		}
+	}
 }
 
