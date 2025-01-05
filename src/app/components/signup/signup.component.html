@@ -12,6 +12,8 @@
 				aria-required="true"
 				required
 				autofocus
+				(input)="validateForm()"
+				[(ngModel)]="email"
 			/>
 		</fieldset>
 
@@ -25,6 +27,8 @@
 				autocomplete="new-password"
 				aria-required="true"
 				required
+				(input)="validateForm()"
+				[(ngModel)]="password"
 			/>
 		</fieldset>
 
@@ -37,6 +41,8 @@
 				name="first-name"
 				autocomplete="given-name"
 				required
+				(input)="validateForm()"
+				[(ngModel)]="firstName"
 			/>
 		</fieldset>
 
@@ -49,12 +55,20 @@
 				name="last-name"
 				autocomplete="family-name"
 				required
+				(input)="validateForm()"
+				[(ngModel)]="lastName"
 			/>
 		</fieldset>
 
 		<div class="button-group">
 			<button type="button" class="cancel" routerLink="/login">Cancel</button>
-            <button type="submit" class="submit">Sign Up</button>
+			<button 
+				type="submit" 
+				class="submit" 
+				(click)="test()" 
+				[disabled]="!isReady">
+				Sign Up
+			</button>
 		</div>
 	</form>
 </div>
