@@ -1,6 +1,6 @@
 <div class="form">
 	<h2>Login</h2>
-	<form aria-labelledby="login-heading">
+	<form (submit)="login()" aria-labelledby="login-heading">
 		<fieldset>
 			<legend>Email</legend>
 			<label for="email" class="visually-hidden">Email</label>
@@ -8,10 +8,11 @@
 				id="email"
 				type="email"
 				name="email"
+				[(ngModel)]="email"
 				autocomplete="email"
 				aria-required="true"
 				required
-                autofocus
+				autofocus
 			/>
 		</fieldset>
 
@@ -22,6 +23,7 @@
 				id="password"
 				type="password"
 				name="password"
+				[(ngModel)]="password"
 				autocomplete="current-password"
 				aria-required="true"
 				required
