@@ -1,12 +1,13 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { FormsModule } from '@angular/forms'; // Import FormsModule
+import { FormsModule } from '@angular/forms';
+import { AutofocusDirective } from '../../directives/autofocus.directive';
 
 @Component({
 	selector: 'app-login',
 	standalone: true,
-	imports: [FormsModule], // Include FormsModule here
+	imports: [RouterLink, FormsModule, AutofocusDirective],
 	templateUrl: './login.component.html',
 	styleUrls: ['./login.component.scss'],
 })
