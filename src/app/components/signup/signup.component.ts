@@ -1,8 +1,10 @@
 import { Component, OnInit } from "@angular/core";
-import { RouterLink } from "@angular/router";
+import { RouterLink, Router } from "@angular/router";
 import { FormsModule } from "@angular/forms";
 import { AutofocusDirective } from '../../directives/autofocus.directive';
 import { SnackbarService } from '../../services/snackbar.service';
+import { AuthService } from '../../services/auth.service';
+import { UserModel } from "../../../models/user.model";
 
 @Component({
 	selector: "app-signup",
@@ -20,7 +22,11 @@ export class SignupComponent implements OnInit {
 	firstName: string = "";
 	lastName: string = "";
 
-	constructor(private snackbarService: SnackbarService) {}
+	constructor(
+		private snackbarService: SnackbarService,
+		private authService: AuthService,
+		private router: Router
+	) {}
 
 	ngOnInit() {
 		this.formReady();
@@ -38,6 +44,25 @@ export class SignupComponent implements OnInit {
 			return;
 		}
 
-		console.log("Form submitted successfully with email:", this.email);
+		const user: UserModel = {
+			email: this.email,
+			password: this.password,
+			firstName: this.firstName,
+			lastName: this.lastName
+		}
+
+		this.authService.signUp(user).subscribe({
+			next: (response) => {
+				console.log("response", response);
+				this.snackbarService.showMessage("Singup successful", "success");
+				setTimeout(() => {
+					this.router.navigate(['/login']);
+				}, 50);
+			},
+			error: (error) => {
+				this.snackbarService.showMessage(error, "error");
+			}
+		});
+		
 	}
 }

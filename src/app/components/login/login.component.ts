@@ -3,6 +3,7 @@ import { RouterLink, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { AutofocusDirective } from '../../directives/autofocus.directive';
+import { SnackbarService } from '../../services/snackbar.service';
 
 @Component({
 	selector: 'app-login',
@@ -16,7 +17,11 @@ export class LoginComponent {
 	password = ''; 
 	apiUrl = 'https://localhost:7224/api/login';
 
-	constructor(private http: HttpClient, private router: Router) {}
+	constructor(
+		private snackbarService: SnackbarService, 
+		private http: HttpClient, 
+		private router: Router
+	) {}
 
 	login() {
 		const payload = { email: this.email, password: this.password };
@@ -26,9 +31,9 @@ export class LoginComponent {
 				localStorage.setItem('authToken', response.token);
 				this.router.navigate(['/lists']);
 			},
-			error: (err) => {
-				console.error('Login failed', err);
-				alert('Login failed. Please check your credentials.');
+			error: (error) => {
+				console.log("error", error);
+				this.snackbarService.showMessage(error.error, "error");
 			},
 		});
 	}

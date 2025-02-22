@@ -15,7 +15,7 @@ bootstrapApplication(AppComponent, {
 		{
 			provide: MAT_SNACK_BAR_DEFAULT_OPTIONS,
 			useValue: <MatSnackBarConfig>{
-				duration: 300000,
+				duration: 8000,
 				verticalPosition: 'top',
 				horizontalPosition: 'center'
 			}
