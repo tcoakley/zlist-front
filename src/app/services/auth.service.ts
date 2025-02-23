@@ -7,26 +7,21 @@ import { UserModel } from "../../models/user.model";
 	providedIn: 'root',
 })
 export class AuthService {
-	private apiUrl = 'https://localhost:7224/api'; // Base API URL
-
-	// ✅ Reactive auth state
-	private isLoggedInSubject = new BehaviorSubject<boolean>(!!localStorage.getItem('authToken'));
-	isLoggedIn$ = this.isLoggedInSubject.asObservable(); // ✅ Subscribe to this in components
+	private apiUrl = 'https://localhost:7224/api';
+	private isLoggedInSubject = new BehaviorSubject<boolean>(!!localStorage.getItem('authToken') || !!sessionStorage.getItem('authToken'));
+	isLoggedIn$ = this.isLoggedInSubject.asObservable(); // ✅ Reactive authentication
 
 	constructor(private http: HttpClient) {}
 
-	// Check if the user is authenticated (use BehaviorSubject instead)
 	isAuthenticated(): boolean {
 		return this.isLoggedInSubject.value;
 	}
 
-	// Login method
 	login(email: string, password: string): Observable<{ token: string }> {
 		return new Observable(observer => {
 			this.http.post<{ token: string }>(`${this.apiUrl}/login`, { email, password }).subscribe(
 				response => {
-					localStorage.setItem('authToken', response.token);
-					this.isLoggedInSubject.next(true); // ✅ Update authentication state
+					this.isLoggedInSubject.next(true); // ✅ Update login state
 					observer.next(response);
 					observer.complete();
 				},
@@ -35,19 +30,23 @@ export class AuthService {
 		});
 	}
 
-	// Signup method
+	// ✅ Allow users to log in using a stored token
+	loginWithToken(token: string) {
+		localStorage.setItem('authToken', token); // ✅ Store token
+		this.isLoggedInSubject.next(true);
+	}
+
+	logout() {
+		localStorage.removeItem('authToken');
+		sessionStorage.removeItem('authToken');
+		this.isLoggedInSubject.next(false); // ✅ Logout updates UI
+	}
+
 	signUp(user: UserModel): Observable<any> {
 		return this.http.post(`${this.apiUrl}/users/AddUser`, user);
 	}
 
-	// Update user account
 	updateAccount(email: string, newEmail: string): Observable<any> {
 		return this.http.put(`${this.apiUrl}/users/${email}`, { email: newEmail });
-	}
-
-	// Logout method
-	logout(): void {
-		localStorage.removeItem('authToken');
-		this.isLoggedInSubject.next(false); // ✅ Ensure components update
 	}
 }
