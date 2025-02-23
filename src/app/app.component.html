@@ -1,4 +1,5 @@
 <div class="main-container">
+	<app-title-bar *ngIf="isLoggedIn"></app-title-bar>
 	<div class="subcontent-container">
 		<router-outlet></router-outlet>
 	</div>

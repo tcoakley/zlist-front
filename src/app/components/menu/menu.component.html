@@ -1,0 +1,7 @@
+<div class="menu-container" *ngIf="isOpen" @bounceIn>
+	<ul>
+		<li><a (click)="navigateTo('/lists')">Lists</a></li>
+		<li><a (click)="navigateTo('/profile')">Profile</a></li>
+		<li><a (click)="logout()">Logout</a></li>
+	</ul>
+</div>

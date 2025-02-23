@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { UserModel } from "../../models/user.model";
 
 @Injectable({
@@ -9,16 +9,30 @@ import { UserModel } from "../../models/user.model";
 export class AuthService {
 	private apiUrl = 'https://localhost:7224/api'; // Base API URL
 
+	// ✅ Reactive auth state
+	private isLoggedInSubject = new BehaviorSubject<boolean>(!!localStorage.getItem('authToken'));
+	isLoggedIn$ = this.isLoggedInSubject.asObservable(); // ✅ Subscribe to this in components
+
 	constructor(private http: HttpClient) {}
 
-	// Check if the user is authenticated
+	// Check if the user is authenticated (use BehaviorSubject instead)
 	isAuthenticated(): boolean {
-		return !!localStorage.getItem('authToken');
+		return this.isLoggedInSubject.value;
 	}
 
 	// Login method
 	login(email: string, password: string): Observable<{ token: string }> {
-		return this.http.post<{ token: string }>(`${this.apiUrl}/login`, { email, password });
+		return new Observable(observer => {
+			this.http.post<{ token: string }>(`${this.apiUrl}/login`, { email, password }).subscribe(
+				response => {
+					localStorage.setItem('authToken', response.token);
+					this.isLoggedInSubject.next(true); // ✅ Update authentication state
+					observer.next(response);
+					observer.complete();
+				},
+				error => observer.error(error)
+			);
+		});
 	}
 
 	// Signup method
@@ -34,5 +48,6 @@ export class AuthService {
 	// Logout method
 	logout(): void {
 		localStorage.removeItem('authToken');
+		this.isLoggedInSubject.next(false); // ✅ Ensure components update
 	}
 }

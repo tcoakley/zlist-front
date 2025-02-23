@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { AutofocusDirective } from '../../directives/autofocus.directive';
 import { SnackbarService } from '../../services/snackbar.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
 	selector: 'app-login',
@@ -20,21 +21,13 @@ export class LoginComponent {
 	constructor(
 		private snackbarService: SnackbarService, 
 		private http: HttpClient, 
-		private router: Router
+		private router: Router,
+		private authService: AuthService
 	) {}
 
 	login() {
-		const payload = { email: this.email, password: this.password };
-		console.log("payload", payload);
-		this.http.post<{ token: string }>(this.apiUrl, payload).subscribe({
-			next: (response) => {
-				localStorage.setItem('authToken', response.token);
-				this.router.navigate(['/lists']);
-			},
-			error: (error) => {
-				console.log("error", error);
-				this.snackbarService.showMessage(error.error, "error");
-			},
+		this.authService.login(this.email, this.password).subscribe(() => {
+			this.router.navigate(['/lists']);
 		});
 	}
 }

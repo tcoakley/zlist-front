@@ -1,0 +1,8 @@
+<div class="title-bar">
+	<div class="menu-icon" (click)="toggleMenu()">&#9776;</div>
+	<span class="title-text">{{ title }}</span>
+</div>
+
+<div class="menu-wrapper">
+	<app-menu [isOpen]="isMenuOpen" (menuClosed)="closeMenu()" (loggedOut)="logout()"></app-menu>
+</div>

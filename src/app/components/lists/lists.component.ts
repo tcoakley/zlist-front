@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit  } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import { TitleService } from '../../services/title.service';
 
 @Component({
 	selector: 'app-lists',
@@ -10,8 +11,16 @@ import { FormsModule } from '@angular/forms';
 	templateUrl: './lists.component.html',
 	styleUrls: ['./lists.component.scss'],
 })
-export class ListsComponent {
+export class ListsComponent implements OnInit {
 
-	constructor(private http: HttpClient, private router: Router) {}
+	constructor(
+		private http: HttpClient, 
+		private router: Router,
+		private titleService: TitleService
+	) {}
+
+	ngOnInit() {
+		this.titleService.setTitle('Lists');
+	}
 
 }
