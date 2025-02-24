@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { AutofocusDirective } from '../../directives/autofocus.directive';
@@ -9,7 +9,7 @@ import { AuthService } from '../../services/auth.service';
 @Component({
 	selector: 'app-login',
 	standalone: true,
-	imports: [FormsModule, AutofocusDirective],
+	imports: [FormsModule, AutofocusDirective, RouterLink],
 	templateUrl: './login.component.html',
 	styleUrls: ['./login.component.scss'],
 })

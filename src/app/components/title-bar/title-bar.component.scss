@@ -7,26 +7,36 @@
 	max-width: 600px;
 	background: #333;
 	color: white;
-	height: 30px;
+	height: 50px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	font-size: 14px;
+	font-size: 20px;
 	font-weight: bold;
 	z-index: 1000;
 	border-left: 2px solid #333;
 	border-right: 2px solid #333;
 }
 
+
 .menu-icon {
 	position: absolute;
 	left: 10px;
 	cursor: pointer;
 	font-size: 18px;
-	user-select: none; 
-	-webkit-user-select: none;
-	-moz-user-select: none; 
-	-ms-user-select: none; 
+	width: 35px; /* ✅ Matches button height */
+	height: 35px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: #228B22; /* ✅ Default green background */
+	color: white;
+	border-radius: 4px; /* ✅ Rounded edges */
+	transition: background 0.2s ease-in-out; /* ✅ Smooth effect */
+
+	&:hover {
+		background-color: #1c741c; /* ✅ Darker green on hover */
+	}
 }
 
 .menu-wrapper {

@@ -14,10 +14,10 @@ import { AuthService } from '../../services/auth.service';
 		trigger('bounceIn', [
 			transition(':enter', [
 				style({ opacity: 0, transform: 'translateY(-100%)' }),
-				animate('0.6s ease-out', style({ opacity: 1, transform: 'translateY(0)' }))
+				animate('0.3s ease-out', style({ opacity: 1, transform: 'translateY(0)' }))
 			]),
 			transition(':leave', [
-				animate('0.3s ease-in', style({ opacity: 0, transform: 'translateY(-100%)' }))
+				animate('0.2s ease-in', style({ opacity: 0, transform: 'translateY(-100%)' }))
 			])
 		])
 	]
