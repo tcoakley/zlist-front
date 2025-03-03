@@ -9,7 +9,7 @@ import { UserModel } from "../../models/user.model";
 export class AuthService {
 	private apiUrl = 'https://localhost:7224/api';
 	private isLoggedInSubject = new BehaviorSubject<boolean>(!!localStorage.getItem('authToken') || !!sessionStorage.getItem('authToken'));
-	isLoggedIn$ = this.isLoggedInSubject.asObservable(); // ✅ Reactive authentication
+	isLoggedIn$ = this.isLoggedInSubject.asObservable(); 
 
 	constructor(private http: HttpClient) {}
 
@@ -21,7 +21,7 @@ export class AuthService {
 		return new Observable(observer => {
 			this.http.post<{ token: string }>(`${this.apiUrl}/login`, { email, password }).subscribe(
 				response => {
-					this.isLoggedInSubject.next(true); // ✅ Update login state
+					this.isLoggedInSubject.next(true); 
 					observer.next(response);
 					observer.complete();
 				},
@@ -30,23 +30,22 @@ export class AuthService {
 		});
 	}
 
-	// ✅ Allow users to log in using a stored token
 	loginWithToken(token: string) {
-		localStorage.setItem('authToken', token); // ✅ Store token
+		localStorage.setItem('authToken', token); 
 		this.isLoggedInSubject.next(true);
 	}
 
 	logout() {
 		localStorage.removeItem('authToken');
 		sessionStorage.removeItem('authToken');
-		this.isLoggedInSubject.next(false); // ✅ Logout updates UI
+		this.isLoggedInSubject.next(false); 
 	}
 
 	signUp(user: UserModel): Observable<any> {
 		return this.http.post(`${this.apiUrl}/users/AddUser`, user);
 	}
 
-	updateAccount(email: string, newEmail: string): Observable<any> {
-		return this.http.put(`${this.apiUrl}/users/${email}`, { email: newEmail });
+	updateUser(user: UserModel): Observable<any> {
+		return this.http.put(`${this.apiUrl}/users/UpdateUser`, user);
 	}
 }
