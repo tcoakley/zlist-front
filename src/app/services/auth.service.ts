@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { UserModel } from "../../models/user.model";
+import { map } from 'rxjs/operators';
 
 @Injectable({
 	providedIn: 'root',
@@ -47,5 +48,19 @@ export class AuthService {
 
 	updateUser(user: UserModel): Observable<any> {
 		return this.http.put(`${this.apiUrl}/users/UpdateUser`, user);
+	}
+
+	forgotPassword(email: string): Observable<string> {
+		return this.http.post<{ success: boolean; message: string | null; model: string | null }>(
+			`${this.apiUrl}/login/forgotPassword`,
+			{ email }
+		).pipe(
+			map(response => {
+				if (!response.success) {
+					throw new Error(response.message || 'An unknown error occurred.');
+				}
+				return response.model || 'Request completed successfully.';
+			})
+		);
 	}
 }
