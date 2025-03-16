@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { UserModel } from "../../models/user.model";
+import { Result } from '../../models/result.model';
+
 import { map } from 'rxjs/operators';
 
 @Injectable({
@@ -18,9 +20,9 @@ export class AuthService {
 		return this.isLoggedInSubject.value;
 	}
 
-	login(email: string, password: string): Observable<{ token: string }> {
+	login(email: string, password: string): Observable<{ token: string; user: UserModel }> {
 		return new Observable(observer => {
-			this.http.post<{ token: string }>(`${this.apiUrl}/login`, { email, password }).subscribe(
+			this.http.post<{ token: string; user: UserModel }>(`${this.apiUrl}/login`, { email, password }).subscribe(
 				response => {
 					this.isLoggedInSubject.next(true); 
 					observer.next(response);
@@ -31,9 +33,10 @@ export class AuthService {
 		});
 	}
 
-	loginWithToken(token: string) {
+	loginWithToken(token: string): Observable<UserModel> {
 		localStorage.setItem('authToken', token); 
 		this.isLoggedInSubject.next(true);
+		return this.http.get<UserModel>(`${this.apiUrl}/users/GetUserProfile`);
 	}
 
 	logout() {
@@ -44,10 +47,6 @@ export class AuthService {
 
 	signUp(user: UserModel): Observable<any> {
 		return this.http.post(`${this.apiUrl}/users/AddUser`, user);
-	}
-
-	updateUser(user: UserModel): Observable<any> {
-		return this.http.put(`${this.apiUrl}/users/UpdateUser`, user);
 	}
 
 	forgotPassword(email: string): Observable<string> {

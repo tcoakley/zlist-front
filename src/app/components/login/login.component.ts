@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { AutofocusDirective } from '../../directives/autofocus.directive';
 import { SnackbarService } from '../../services/snackbar.service';
-import { AuthService } from '../../services/auth.service';
+import { UserStore } from '../../stores/user.store';
 
 @Component({
 	selector: 'app-login',
@@ -17,25 +16,24 @@ export class LoginComponent implements OnInit {
 	email = ''; 
 	password = ''; 
 	rememberMe = false;
-	apiUrl = 'https://localhost:7224/api/login';
 
 	constructor(
 		private snackbarService: SnackbarService, 
-		private http: HttpClient, 
 		private router: Router,
-		private authService: AuthService
+		private userStore: UserStore
 	) {}
 
 	ngOnInit() {
 		const storedToken = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
 		if (storedToken) {
-			this.authService.loginWithToken(storedToken);
-			this.router.navigate(['/lists']);
+			this.userStore.loginWithToken(storedToken).subscribe(() => {
+				this.router.navigate(['/lists']);
+			});
 		}
 	}
 
 	login() {
-		this.authService.login(this.email, this.password).subscribe(response => {
+		this.userStore.login(this.email, this.password).subscribe(response => {
 			if (this.rememberMe) {
 				localStorage.setItem('authToken', response.token);
 			} else {
