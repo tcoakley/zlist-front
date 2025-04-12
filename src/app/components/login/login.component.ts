@@ -33,13 +33,20 @@ export class LoginComponent implements OnInit {
 	}
 
 	login() {
-		this.userStore.login(this.email, this.password).subscribe(response => {
-			if (this.rememberMe) {
-				localStorage.setItem('authToken', response.token);
-			} else {
-				sessionStorage.setItem('authToken', response.token);
+		this.userStore.login(this.email, this.password).subscribe(
+			response => {
+				console.log("here");
+				if (this.rememberMe) {
+					localStorage.setItem('authToken', response.token);
+				} else {
+					sessionStorage.setItem('authToken', response.token);
+				}
+				this.router.navigate(['/lists']);
+			},
+			error => {
+				this.snackbarService.showMessage(error.message, "error");
 			}
-			this.router.navigate(['/lists']);
-		});
+		);
 	}
+	
 }

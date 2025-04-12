@@ -15,9 +15,8 @@ export class UserStore {
 			this.loginWithToken(storedToken).subscribe();
 		}
 	}
-	
 
-	setUser(user: UserModel): void {
+	setUser(user: UserModel | null): void {
 		this.activeUser.next(user);
 	}
 
@@ -34,14 +33,13 @@ export class UserStore {
 	login(email: string, password: string): Observable<{ token: string; user: UserModel }> {
 		return new Observable(observer => {
 			this.authService.login(email, password).subscribe(response => {
-				const { token, user } = response;
-				localStorage.setItem('authToken', token);
-				this.setUser(user);
+				this.authService.setToken(response.token);
+				this.setUser(response.user);
 				observer.next(response);
 				observer.complete();
 			}, error => observer.error(error));
 		});
-	}
+	}	
 
 	loginWithToken(token: string): Observable<UserModel> {
 		return new Observable(observer => {
@@ -54,10 +52,10 @@ export class UserStore {
 	}
 
 	logout(): void {
-		localStorage.removeItem('authToken');
-		this.setUser({ id: 0, email: '', password: '', firstName: '', lastName: '' });
+		this.setUser(null);
 		this.authService.logout();
 	}
+	
 
 	updateUser(user: UserModel): Observable<UserModel> {
 		return new Observable(observer => {

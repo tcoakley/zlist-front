@@ -1,36 +1,22 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { UserModel } from "../../models/user.model";
 import { Result } from "../../models/result.model";
+import { HttpService } from "../services/http.service";
 
 @Injectable({
 	providedIn: 'root',
 })
 export class UserService {
-	private apiUrl = 'https://localhost:7224/api/users';
+	private apiUrl = '/api/users';
 
-	constructor(private http: HttpClient) {}
+	constructor(private http: HttpService) {}
 
 	getUserProfile(): Observable<UserModel> {
-		const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
-		const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-
-		return this.http.get<UserModel>(`${this.apiUrl}/GetUserProfile`, { headers });
+		return this.http.get<UserModel>(`${this.apiUrl}/GetUserProfile`);
 	}
 
 	updateUserProfile(user: UserModel): Observable<UserModel> {
-		const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
-		const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-		return new Observable(observer => {
-			this.http.put<Result<UserModel>>(`${this.apiUrl}/UpdateUser`, user, { headers }).subscribe(response => {
-				if (response.success) {
-					observer.next(response.model);
-					observer.complete();
-				} else {
-					observer.error(response.message);
-				}
-			}, error => observer.error(error));
-		});
+		return this.http.put<UserModel>(`${this.apiUrl}/UpdateUser`, user);
 	}
 }

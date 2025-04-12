@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { UserModel } from "../../models/user.model";
 import { Result } from '../../models/result.model';
+import { HttpService } from "../services/http.service";
 
 import { map } from 'rxjs/operators';
 
@@ -10,11 +10,13 @@ import { map } from 'rxjs/operators';
 	providedIn: 'root',
 })
 export class AuthService {
-	private apiUrl = 'https://localhost:7224/api';
+	private apiUrl = '/api';
 	private isLoggedInSubject = new BehaviorSubject<boolean>(!!localStorage.getItem('authToken') || !!sessionStorage.getItem('authToken'));
 	isLoggedIn$ = this.isLoggedInSubject.asObservable(); 
-
-	constructor(private http: HttpClient) {}
+	private currentUserSubject = new BehaviorSubject<UserModel | null>(null);
+	currentUser$ = this.currentUserSubject.asObservable();
+	
+	constructor(private http: HttpService) {}
 
 	isAuthenticated(): boolean {
 		return this.isLoggedInSubject.value;
@@ -22,9 +24,11 @@ export class AuthService {
 
 	login(email: string, password: string): Observable<{ token: string; user: UserModel }> {
 		return new Observable(observer => {
-			this.http.post<{ token: string; user: UserModel }>(`${this.apiUrl}/login`, { email, password }).subscribe(
+			this.http.post<{ token: string; user: UserModel }>('/api/login', { email, password }).subscribe(
 				response => {
+					console.log("response", response);
 					this.isLoggedInSubject.next(true); 
+					this.setUser(response.user);
 					observer.next(response);
 					observer.complete();
 				},
@@ -32,12 +36,13 @@ export class AuthService {
 			);
 		});
 	}
-
+	
 	loginWithToken(token: string): Observable<UserModel> {
-		localStorage.setItem('authToken', token); 
+		this.setToken(token);
 		this.isLoggedInSubject.next(true);
-		return this.http.get<UserModel>(`${this.apiUrl}/users/GetUserProfile`);
+		return this.http.get<UserModel>('/api/users/GetUserProfile');
 	}
+	
 
 	logout() {
 		localStorage.removeItem('authToken');
@@ -46,12 +51,12 @@ export class AuthService {
 	}
 
 	signUp(user: UserModel): Observable<any> {
-		return this.http.post(`${this.apiUrl}/users/AddUser`, user);
+		return this.http.post('/api/users/AddUser', user);
 	}
-
+	
 	forgotPassword(email: string): Observable<string> {
 		return this.http.post<{ success: boolean; message: string | null; model: string | null }>(
-			`${this.apiUrl}/login/forgotPassword`,
+			'/api/login/forgotPassword',
 			{ email }
 		).pipe(
 			map(response => {
@@ -62,4 +67,49 @@ export class AuthService {
 			})
 		);
 	}
+	
+
+	autoLoginWithToken(token: string): Observable<boolean> {
+		return new Observable<boolean>(observer => {
+			this.getUserFromToken(token).subscribe(
+				user => {
+					this.setToken(token);
+					this.setUser(user);
+					observer.next(true);
+					observer.complete();
+				},
+				() => {
+					this.clearToken();
+					observer.next(false);
+					observer.complete();
+				}
+			);
+		});
+	}
+	
+	private getUserFromToken(token: string): Observable<UserModel> {
+		this.setToken(token);
+		return this.http.get<UserModel>('/api/users/GetUserProfile');
+	}
+
+	
+	setToken(token: string) {
+		localStorage.setItem('authToken', token);
+	}
+	
+	private clearToken() {
+		localStorage.removeItem('authToken');
+		sessionStorage.removeItem('authToken');
+	}
+
+	setUser(user: UserModel) {
+		this.currentUserSubject.next(user);
+	}
+	
+	getUser(): UserModel | null {
+		return this.currentUserSubject.value;
+	}
+	
+	
+	
 }

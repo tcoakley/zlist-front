@@ -5,6 +5,8 @@ import { AutofocusDirective } from '../../directives/autofocus.directive';
 import { SnackbarService } from '../../services/snackbar.service';
 import { UserStore } from '../../stores/user.store';
 import { UserModel } from "../../../models/user.model";
+import { TitleService } from '../../services/title.service';
+import { Location } from '@angular/common';
 
 @Component({
 	selector: "app-profile",
@@ -26,19 +28,19 @@ export class ProfileComponent implements OnInit {
 	constructor(
 		private snackbarService: SnackbarService,
 		private userStore: UserStore,
-		private router: Router
+		private router: Router,
+		private titleService: TitleService,
+		private location: Location
 	) {}
 
 	ngOnInit() {
+		this.titleService.setTitle('Profile');
 		this.userStore.user$.subscribe(user => {
-			console.log("user", user);
 			if (user) {
-				console.log("user", user);
 				this.originalUser = { ...user };
 				this.email = user.email;
 				this.firstName = user.firstName;
 				this.lastName = user.lastName;
-				console.log("lastName", this.lastName);
 				this.formReady();
 			}
 		});

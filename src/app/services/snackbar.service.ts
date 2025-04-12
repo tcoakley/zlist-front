@@ -9,7 +9,8 @@ export class SnackbarService {
 
     showMessage(message: string, type: 'success' | 'warning' | 'error' = 'error') {
         this.snackBar.open(message, 'X', {
-            panelClass: `snackbar-${type}`
+            panelClass: `snackbar-${type}`,
+            horizontalPosition: "end"
         });
     }
 }
