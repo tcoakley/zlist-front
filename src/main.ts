@@ -1,24 +1,17 @@
 import { bootstrapApplication } from '@angular/platform-browser';
-import { provideRouter } from '@angular/router';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'; 
 import { AppComponent } from './app/app.component';
-import { routes } from './app/app.routes';
-import { provideAnimations } from '@angular/platform-browser/animations';
-import { MAT_SNACK_BAR_DEFAULT_OPTIONS, MatSnackBarConfig } from '@angular/material/snack-bar';
+import { appConfig } from './app/app.config';
+import { AppState } from './app/stores/user/user.state';
+import { Store } from '@ngrx/store';
+import { loginWithToken } from './app/stores/user/user.actions';
 
+bootstrapApplication(AppComponent, appConfig)
+	.then(appRef => {
+		const store = appRef.injector.get<Store<AppState>>(Store);
 
-bootstrapApplication(AppComponent, {
-	providers: [
-		provideRouter(routes), 
-		provideHttpClient(withInterceptorsFromDi()), 
-		provideAnimations(),
-		{
-			provide: MAT_SNACK_BAR_DEFAULT_OPTIONS,
-			useValue: <MatSnackBarConfig>{
-				duration: 8000,
-				verticalPosition: 'top',
-				horizontalPosition: 'center'
-			}
+		const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
+		if (token) {
+			store.dispatch(loginWithToken({ token }));
 		}
-	],
-}).catch((err) => console.error(err));
+	})
+	.catch(err => console.error(err));

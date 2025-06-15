@@ -30,13 +30,15 @@ export class ForgotPasswordComponent implements OnInit {
 			return;
 		}
 
-		this.loading = true; // ✅ Start loading
+		this.loading = true; 
 		this.authService.forgotPassword(this.email).subscribe({
 			next: (message) => {
+				console.log("message", message);
 				this.snackbarService.showMessage(message, 'success');
 				this.router.navigate(['/login']);
 			},
 			error: (err) => {
+				console.log("err", err);
 				const errorMessage = err.error?.message || err.message || 'Something went wrong. Please try again.';
 				this.snackbarService.showMessage(errorMessage, 'error');
 			},

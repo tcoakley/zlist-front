@@ -3,6 +3,9 @@ import { trigger, transition, style, animate } from '@angular/animations';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
+import { Store } from '@ngrx/store';
+import { AppState } from '../../stores/user/user.state'; // Adjust path if needed
+import { logout } from '../../stores/user/user.actions';
 
 @Component({
 	selector: 'app-menu',
@@ -24,18 +27,27 @@ import { AuthService } from '../../services/auth.service';
 })
 export class MenuComponent {
 	@Input() isOpen = false;
-	@Output() menuClosed = new EventEmitter<void>(); // ✅ Notify parent when closing
+	@Output() menuClosed = new EventEmitter<void>();
 
-	constructor(private authService: AuthService, private router: Router) {}
+	constructor(
+		private authService: AuthService,
+		private router: Router,
+		private store: Store<AppState> // <-- Inject store
+	) {}
 
 	navigateTo(route: string) {
-		this.menuClosed.emit(); // ✅ Tell TitleBar to close the menu
+		this.menuClosed.emit();
 		this.router.navigate([route]);
 	}
 
 	logout() {
+		console.log("here");
 		this.authService.logout();
-		this.menuClosed.emit(); // ✅ Tell TitleBar to close the menu
-		this.router.navigate(['/login']);
+		this.store.dispatch(logout()); // <-- Dispatch logout action
+		this.menuClosed.emit();
+
+		setTimeout(() => {
+			this.router.navigate(['/login'], { queryParams: { message: 'Session expired' } });
+		}, 100);
 	}
 }

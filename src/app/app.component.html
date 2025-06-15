@@ -1,6 +1,6 @@
 <div class="main-container">
 	<app-title-bar *ngIf="isLoggedIn"></app-title-bar>
-	<div class="subcontent-container">
+	<div class="subcontent-container" [ngClass]="{ 'layout-top': layoutTop }">
 		<router-outlet></router-outlet>
 	</div>
 </div>

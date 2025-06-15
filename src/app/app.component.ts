@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AuthService } from './services/auth.service';
-import { RouterOutlet, Router } from '@angular/router';
+import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { TitleBarComponent } from './components/title-bar/title-bar.component';
+import { filter } from 'rxjs/operators';
 
 @Component({
 	selector: 'app-root',
@@ -13,6 +14,7 @@ import { TitleBarComponent } from './components/title-bar/title-bar.component';
 })
 export class AppComponent {
 	isLoggedIn: boolean = false;
+	layoutTop = false;
 
 	constructor(
 		private authService: AuthService,
@@ -21,17 +23,23 @@ export class AppComponent {
 
 	ngOnInit() {
 		this.checkLoginStatus();
+
+		this.router.events.pipe(
+			filter(event => event instanceof NavigationEnd)
+		).subscribe((event: NavigationEnd) => {
+			this.layoutTop = event.urlAfterRedirects.startsWith('/lists');
+		});
 	}
 
 	checkLoginStatus() {
 		this.authService.isLoggedIn$.subscribe(status => {
 			this.isLoggedIn = status;
-		});	}
+		});
+	}
 
 	logout() {
 		localStorage.removeItem('token');
 		this.isLoggedIn = false;
 		this.router.navigate(['/login']);
 	}
-
 }

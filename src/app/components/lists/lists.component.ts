@@ -22,5 +22,8 @@ export class ListsComponent implements OnInit {
 	ngOnInit() {
 		this.titleService.setTitle('Lists');
 	}
-
+	
+	createNewList() {
+		console.log("here");
+	}
 }

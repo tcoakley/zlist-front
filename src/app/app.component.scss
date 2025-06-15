@@ -25,4 +25,11 @@
 	justify-content: center;
 	align-items: center;
 	overflow-y: auto;
+
+	&.layout-top {
+		margin-top: 60px;
+		justify-content: flex-start;
+	}
+
 }
+

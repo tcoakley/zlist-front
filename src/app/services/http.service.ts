@@ -2,11 +2,9 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, throwError, of } from 'rxjs';
-import { catchError, switchMap } from 'rxjs/operators';
+import { catchError, switchMap, map } from 'rxjs/operators';
 import { UserModel } from "../../models/user.model";
 import { Result } from "../../models/result.model";
-import { map } from 'rxjs/operators';
-
 
 @Injectable({
 	providedIn: 'root'
@@ -25,49 +23,47 @@ export class HttpService {
 	}
 
 	get<T>(url: string): Observable<T> {
-		return this.http.get<any>(`${this.baseUrl}${url}`, { headers: this.getAuthHeaders() }).pipe(
+		return this.http.get<Result<T>>(`${this.baseUrl}${url}`, {
+			headers: this.getAuthHeaders()
+		}).pipe(
 			map(response => this.unwrapResult<T>(response)),
 			catchError(error => this.handleAuthError(() => this.get<T>(url), error))
 		);
 	}
-	
+
 	post<T>(url: string, body: any): Observable<T> {
-		return this.http.post<any>(`${this.baseUrl}${url}`, body, { headers: this.getAuthHeaders() }).pipe(
+		return this.http.post<Result<T>>(`${this.baseUrl}${url}`, body, {
+			headers: this.getAuthHeaders()
+		}).pipe(
 			map(response => this.unwrapResult<T>(response)),
 			catchError(error => this.handleAuthError(() => this.post<T>(url, body), error))
 		);
 	}
-	
+
 	put<T>(url: string, body: any): Observable<T> {
-		return this.http.put<any>(`${this.baseUrl}${url}`, body, { headers: this.getAuthHeaders() }).pipe(
+		return this.http.put<Result<T>>(`${this.baseUrl}${url}`, body, {
+			headers: this.getAuthHeaders()
+		}).pipe(
 			map(response => this.unwrapResult<T>(response)),
 			catchError(error => this.handleAuthError(() => this.put<T>(url, body), error))
 		);
 	}
-	
-	private unwrapResult<T>(response: any): T {
-		if (response && typeof response === 'object' && 'success' in response && 'model' in response) {
-			if (!response.success) {
-				throw new Error(response.message || 'An unknown error occurred.');
-			}
-			return response.model as T;
+
+	private unwrapResult<T>(response: Result<T>): T {
+		if (!response.success) {
+			throw new Error(response.message || 'An unknown error occurred.');
 		}
-		return response as T;
-	}		
+		return response.model;
+	}
 
 	private tryAutoLogin(): Observable<boolean> {
 		const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
-		if (!token) {
-			return of(false);
-		}
-	
+		if (!token) return of(false);
+
 		const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
-	
-		return this.http.get<UserModel>(`${this.baseUrl}/api/users/GetUserProfile`, { headers }).pipe(
-			map(user => {
-				// Optional: store user somewhere if needed
-				return true;
-			}),
+
+		return this.http.get<Result<UserModel>>(`${this.baseUrl}/api/users/GetUserProfile`, { headers }).pipe(
+			map(res => res.success),
 			catchError(() => of(false))
 		);
 	}
@@ -76,11 +72,9 @@ export class HttpService {
 		console.log("error.status", error.status);
 		if (error.status === 401) {
 			const token = localStorage.getItem('authToken');
-			console.log("token", token);
 			if (token) {
 				return this.tryAutoLogin().pipe(
 					switchMap(success => {
-						console.log("success", success);
 						if (success) {
 							return retryFn();
 						} else {

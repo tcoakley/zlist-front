@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { UserModel } from "../../models/user.model";
-import { Result } from "../../models/result.model";
 import { HttpService } from "../services/http.service";
 
 @Injectable({

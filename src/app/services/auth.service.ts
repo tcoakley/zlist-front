@@ -1,10 +1,8 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { UserModel } from "../../models/user.model";
-import { Result } from '../../models/result.model';
 import { HttpService } from "../services/http.service";
-
-import { map } from 'rxjs/operators';
+import { map, catchError } from 'rxjs/operators';
 
 @Injectable({
 	providedIn: 'root',
@@ -32,7 +30,10 @@ export class AuthService {
 					observer.next(response);
 					observer.complete();
 				},
-				error => observer.error(error)
+				error => {
+					console.log("error", error);
+					observer.error(error.error);
+				}
 			);
 		});
 	}
@@ -42,32 +43,35 @@ export class AuthService {
 		this.isLoggedInSubject.next(true);
 		return this.http.get<UserModel>('/api/users/GetUserProfile');
 	}
-	
 
 	logout() {
+		console.log("here too");
 		localStorage.removeItem('authToken');
 		sessionStorage.removeItem('authToken');
 		this.isLoggedInSubject.next(false); 
+		this.currentUserSubject.next(null); // <-- Add this
 	}
 
-	signUp(user: UserModel): Observable<any> {
-		return this.http.post('/api/users/AddUser', user);
+
+	signUp(user: UserModel): Observable<void> {
+		return this.http.post<void>('/api/users/AddUser', user);
 	}
 	
 	forgotPassword(email: string): Observable<string> {
-		return this.http.post<{ success: boolean; message: string | null; model: string | null }>(
+		return this.http.post<string>(
 			'/api/login/forgotPassword',
 			{ email }
 		).pipe(
 			map(response => {
-				if (!response.success) {
-					throw new Error(response.message || 'An unknown error occurred.');
-				}
-				return response.model || 'Request completed successfully.';
+				console.log('response', response);
+				return response ?? 'Reset email sent successfully.';
+			}),
+			catchError(err => {
+				console.error('Forgot password error:', err);
+				throw err;
 			})
 		);
 	}
-	
 
 	autoLoginWithToken(token: string): Observable<boolean> {
 		return new Observable<boolean>(observer => {
@@ -92,11 +96,10 @@ export class AuthService {
 		return this.http.get<UserModel>('/api/users/GetUserProfile');
 	}
 
-	
 	setToken(token: string) {
 		localStorage.setItem('authToken', token);
 	}
-	
+
 	private clearToken() {
 		localStorage.removeItem('authToken');
 		sessionStorage.removeItem('authToken');
@@ -109,7 +112,4 @@ export class AuthService {
 	getUser(): UserModel | null {
 		return this.currentUserSubject.value;
 	}
-	
-	
-	
 }
