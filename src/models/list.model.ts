@@ -20,6 +20,7 @@ export interface ListRun {
 	listId: number;
 	createdAt: string;
 	items: ListRunItem[];
+	isComplete: boolean;
 }
 
 export interface List {

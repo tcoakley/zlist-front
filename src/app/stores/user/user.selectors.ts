@@ -22,3 +22,8 @@ export const selectAuthInitialized = createSelector(
 	selectUserState,
 	(state: UserState) => state.authInitialized
 );
+
+export const selectIsLoggedIn = createSelector(
+	selectCurrentUser,
+	user => !!user
+);

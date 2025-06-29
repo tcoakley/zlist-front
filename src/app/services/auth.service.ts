@@ -20,9 +20,9 @@ export class AuthService {
 		return this.isLoggedInSubject.value;
 	}
 
-	login(email: string, password: string): Observable<{ token: string; user: UserModel }> {
+	login(email: string, password: string, rememberMe: boolean): Observable<{ token: string; user: UserModel }> {
 		return new Observable(observer => {
-			this.http.post<{ token: string; user: UserModel }>('/api/login', { email, password }).subscribe(
+			this.http.post<{ token: string; user: UserModel }>('/api/login', { email, password, rememberMe }).subscribe(
 				response => {
 					console.log("response", response);
 					this.isLoggedInSubject.next(true); 

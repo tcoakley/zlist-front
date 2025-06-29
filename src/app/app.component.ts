@@ -1,9 +1,11 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AuthService } from './services/auth.service';
 import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { TitleBarComponent } from './components/title-bar/title-bar.component';
 import { filter } from 'rxjs/operators';
+import { Store, select } from '@ngrx/store';
+import { selectIsLoggedIn } from './stores/user/user.selectors'; 
+import { loginWithToken } from './stores/user/user.actions'; 
 
 @Component({
 	selector: 'app-root',
@@ -17,12 +19,20 @@ export class AppComponent {
 	layoutTop = false;
 
 	constructor(
-		private authService: AuthService,
-		private router: Router
+		private router: Router,
+		private store: Store
 	) {}
 
 	ngOnInit() {
-		this.checkLoginStatus();
+		const token =
+			localStorage.getItem('authToken') ||
+			sessionStorage.getItem('authToken');
+		if (token) {
+			this.store.dispatch(loginWithToken({ token }));
+		}
+		this.store.pipe(select(selectIsLoggedIn)).subscribe(status => {
+			this.isLoggedIn = status;
+		});
 
 		this.router.events.pipe(
 			filter(event => event instanceof NavigationEnd)
@@ -31,15 +41,11 @@ export class AppComponent {
 		});
 	}
 
-	checkLoginStatus() {
-		this.authService.isLoggedIn$.subscribe(status => {
-			this.isLoggedIn = status;
-		});
-	}
-
 	logout() {
-		localStorage.removeItem('token');
+		localStorage.removeItem('authToken');
+		sessionStorage.removeItem('authToken');
 		this.isLoggedIn = false;
 		this.router.navigate(['/login']);
 	}
+
 }

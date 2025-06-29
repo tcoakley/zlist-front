@@ -15,7 +15,7 @@ export class UserEffects {
 		this.actions$.pipe(
 			ofType(UserActions.login),
 			mergeMap(({ email, password, rememberMe }) =>
-				this.authService.login(email, password).pipe(
+				this.authService.login(email, password, rememberMe).pipe(
 					map(({ user, token }) => UserActions.loginSuccess({ user, token, rememberMe })),
 					catchError((error) => of(UserActions.loginFailure({ error })))
 				)

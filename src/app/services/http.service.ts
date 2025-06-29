@@ -56,37 +56,50 @@ export class HttpService {
 		return response.model;
 	}
 
-	private tryAutoLogin(): Observable<boolean> {
-		const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
-		if (!token) return of(false);
+	// private tryAutoLogin(): Observable<boolean> {
+	// 	const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
+	// 	if (!token) return of(false);
 
-		const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+	// 	const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
 
-		return this.http.get<Result<UserModel>>(`${this.baseUrl}/api/users/GetUserProfile`, { headers }).pipe(
-			map(res => res.success),
-			catchError(() => of(false))
-		);
-	}
+	// 	return this.http.get<Result<UserModel>>(`${this.baseUrl}/api/users/GetUserProfile`, { headers }).pipe(
+	// 		map(res => res.success),
+	// 		catchError(() => of(false))
+	// 	);
+	// }
 
 	private handleAuthError<T>(retryFn: () => Observable<T>, error: HttpErrorResponse): Observable<T> {
-		console.log("error.status", error.status);
 		if (error.status === 401) {
-			const token = localStorage.getItem('authToken');
-			if (token) {
-				return this.tryAutoLogin().pipe(
-					switchMap(success => {
-						if (success) {
-							return retryFn();
-						} else {
-							this.router.navigate(['/login'], { queryParams: { message: 'Session expired' } });
-							return throwError(() => error);
-						}
-					})
-				);
-			} else {
-				this.router.navigate(['/login'], { queryParams: { message: 'Please log in' } });
-			}
+			return this.refreshAccessToken().pipe(
+				switchMap(newToken => {
+					if (newToken) {
+						// Token refreshed! Retry the original request
+						return retryFn();
+					} else {
+						// Refresh failed, redirect to login
+						this.router.navigate(['/login'], { queryParams: { message: 'Session expired' } });
+						return throwError(() => error);
+					}
+				})
+			);
 		}
 		return throwError(() => error);
 	}
+
+	private refreshAccessToken(): Observable<string | null> {
+		return this.http.post<{ result: { token: string } }>(
+			`${this.baseUrl}/api/login/refresh`, 
+			{}, 
+			{ withCredentials: true } // This sends cookies!
+		).pipe(
+			map(response => {
+				const newToken = response.result.token;
+				// Save new token in storage
+				localStorage.setItem('authToken', newToken);
+				return newToken;
+			}),
+			catchError(() => of(null))
+		);
+	}
+
 }
