@@ -1,11 +1,8 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { AuthService } from '../../services/auth.service';
-import { Store } from '@ngrx/store';
-import { AppState } from '../../stores/user/user.state'; // Adjust path if needed
-import { logout } from '../../stores/user/user.actions';
+import { UserStore } from '../../stores/user/user.store';
 
 @Component({
 	selector: 'app-menu',
@@ -29,11 +26,8 @@ export class MenuComponent {
 	@Input() isOpen = false;
 	@Output() menuClosed = new EventEmitter<void>();
 
-	constructor(
-		private authService: AuthService,
-		private router: Router,
-		private store: Store<AppState> // <-- Inject store
-	) {}
+	private userStore = inject(UserStore);
+	private router = inject(Router);
 
 	navigateTo(route: string) {
 		this.menuClosed.emit();
@@ -41,13 +35,8 @@ export class MenuComponent {
 	}
 
 	logout() {
-		console.log("here");
-		this.authService.logout();
-		this.store.dispatch(logout()); // <-- Dispatch logout action
+		this.userStore.logout();
 		this.menuClosed.emit();
-
-		setTimeout(() => {
-			this.router.navigate(['/login'], { queryParams: { message: 'Session expired' } });
-		}, 100);
+		this.router.navigate(['/login'], { queryParams: { message: 'Session expired' } });
 	}
 }

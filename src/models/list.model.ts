@@ -3,6 +3,7 @@ export interface ListItem {
 	listId: number;
 	itemName: string;
 	itemDescription?: string;
+	sortOrder: number;
 }
 
 export interface ListRunItem {
@@ -11,6 +12,7 @@ export interface ListRunItem {
 	listItemId?: number;
 	listItemName: string;
 	listItemDescription?: string;
+	sortOrder: number;
 	completedAt?: string;
 	completedBy?: number;
 }

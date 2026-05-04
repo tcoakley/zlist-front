@@ -1,0 +1,126 @@
+import { Injectable, signal, computed, inject } from '@angular/core';
+import { firstValueFrom } from 'rxjs';
+import { List, ListItem, ListRun } from '../../../models/list.model';
+import { ListService } from '../../services/list.service';
+
+@Injectable({ providedIn: 'root' })
+export class ListStore {
+	private listService = inject(ListService);
+
+	readonly lists = signal<List[]>([]);
+	readonly loading = signal(false);
+	readonly error = signal<any>(null);
+
+	readonly allListRuns = computed(() => this.lists().flatMap(l => l.listRuns ?? []));
+
+	listById(listId: number) {
+		return computed(() => this.lists().find(l => l.id === listId));
+	}
+
+	listRunsById(listId: number) {
+		return computed(() => this.lists().find(l => l.id === listId)?.listRuns ?? []);
+	}
+
+	async loadLists(): Promise<void> {
+		this.loading.set(true);
+		this.error.set(null);
+		try {
+			const lists = await firstValueFrom(this.listService.getLists());
+			this.lists.set(lists);
+		} catch (err: any) {
+			this.error.set(err?.error ?? err);
+		} finally {
+			this.loading.set(false);
+		}
+	}
+
+	async addList(list: List): Promise<void> {
+		this.loading.set(true);
+		this.error.set(null);
+		try {
+			const newList = await firstValueFrom(this.listService.addList(list));
+			this.lists.update(lists => [...lists, newList]);
+		} catch (err: any) {
+			this.error.set(err?.error ?? err);
+		} finally {
+			this.loading.set(false);
+		}
+	}
+
+	async editList(list: List): Promise<void> {
+		this.error.set(null);
+		try {
+			const updated = await firstValueFrom(this.listService.editList(list));
+			this.lists.update(lists => lists.map(l => l.id === updated.id ? updated : l));
+		} catch (err: any) {
+			this.error.set(err?.error ?? err);
+		}
+	}
+
+	async deleteList(listId: number): Promise<void> {
+		this.error.set(null);
+		try {
+			await firstValueFrom(this.listService.deleteList(listId));
+			this.lists.update(lists => lists.filter(l => l.id !== listId));
+		} catch (err: any) {
+			this.error.set(err?.error ?? err);
+		}
+	}
+
+	async addListItem(item: ListItem): Promise<void> {
+		this.error.set(null);
+		try {
+			const newItem = await firstValueFrom(this.listService.addListItem(item));
+			this.lists.update(lists =>
+				lists.map(l => l.id === newItem.listId
+					? { ...l, items: [...l.items, newItem] }
+					: l
+				)
+			);
+		} catch (err: any) {
+			this.error.set(err?.error ?? err);
+		}
+	}
+
+	async editListItem(item: ListItem): Promise<void> {
+		this.error.set(null);
+		try {
+			const updated = await firstValueFrom(this.listService.editListItem(item));
+			this.lists.update(lists =>
+				lists.map(l => l.id === updated.listId
+					? { ...l, items: l.items.map(i => i.id === updated.id ? updated : i) }
+					: l
+				)
+			);
+		} catch (err: any) {
+			this.error.set(err?.error ?? err);
+		}
+	}
+
+	async deleteListItem(itemId: number): Promise<void> {
+		this.error.set(null);
+		try {
+			await firstValueFrom(this.listService.deleteListItem(itemId));
+			this.lists.update(lists =>
+				lists.map(l => ({ ...l, items: l.items.filter(i => i.id !== itemId) }))
+			);
+		} catch (err: any) {
+			this.error.set(err?.error ?? err);
+		}
+	}
+
+	async createListRun(listId: number): Promise<void> {
+		this.error.set(null);
+		try {
+			const listRun = await firstValueFrom(this.listService.createListRun(listId));
+			this.lists.update(lists =>
+				lists.map(l => l.id === listId
+					? { ...l, listRuns: [...(l.listRuns ?? []), listRun] }
+					: l
+				)
+			);
+		} catch (err: any) {
+			this.error.set(err?.error ?? err);
+		}
+	}
+}

@@ -1,15 +1,12 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, effect } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AutofocusDirective } from '../../directives/autofocus.directive';
 import { SnackbarService } from '../../services/snackbar.service';
 import { TitleService } from '../../services/title.service';
 import { Location } from '@angular/common';
-import { Store } from '@ngrx/store';
-import { AppState } from '../../stores/user/user.state';
 import { UserModel } from '../../../models/user.model';
-import { updateUser } from '../../stores/user/user.actions';
-import { selectCurrentUser, selectUserError } from '../../stores/user/user.selectors';
+import { UserStore } from '../../stores/user/user.store';
 
 @Component({
 	selector: 'app-profile',
@@ -19,24 +16,22 @@ import { selectCurrentUser, selectUserError } from '../../stores/user/user.selec
 	styleUrls: ['./profile.component.scss']
 })
 export class ProfileComponent implements OnInit {
-	isReady: boolean = false;
+	isReady = false;
 	originalUser: UserModel | null = null;
 
-	// Form fields
-	email: string = '';
-	password: string = '';
-	firstName: string = '';
-	lastName: string = '';
+	email = '';
+	password = '';
+	firstName = '';
+	lastName = '';
 
-	private store = inject(Store<AppState>);
+	private userStore = inject(UserStore);
 	private snackbarService = inject(SnackbarService);
 	private titleService = inject(TitleService);
-	private location = inject(Location);
+	protected location = inject(Location);
 
-	ngOnInit() {
-		this.titleService.setTitle('Profile');
-
-		this.store.select(selectCurrentUser).subscribe(user => {
+	constructor() {
+		effect(() => {
+			const user = this.userStore.user();
 			if (user) {
 				this.originalUser = { ...user };
 				this.email = user.email;
@@ -46,11 +41,16 @@ export class ProfileComponent implements OnInit {
 			}
 		});
 
-		this.store.select(selectUserError).subscribe(error => {
+		effect(() => {
+			const error = this.userStore.error();
 			if (error) {
 				this.snackbarService.showMessage(error, 'error');
 			}
 		});
+	}
+
+	ngOnInit() {
+		this.titleService.setTitle('Profile');
 	}
 
 	formReady() {
@@ -69,7 +69,6 @@ export class ProfileComponent implements OnInit {
 
 	saveForm() {
 		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
 		if (!emailRegex.test(this.email)) {
 			this.snackbarService.showMessage('Please enter a valid email address.', 'error');
 			return;
@@ -83,9 +82,7 @@ export class ProfileComponent implements OnInit {
 			lastName: this.lastName
 		};
 
-		this.store.dispatch(updateUser({ user }));
-
-		// Optimistically update UI (optional: confirm with effect)
+		this.userStore.updateUser(user);
 		this.snackbarService.showMessage('Profile updated successfully', 'success');
 		this.originalUser = { ...user, password: '' };
 		this.password = '';

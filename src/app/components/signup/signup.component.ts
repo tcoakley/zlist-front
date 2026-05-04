@@ -1,13 +1,10 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, effect } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AutofocusDirective } from '../../directives/autofocus.directive';
 import { SnackbarService } from '../../services/snackbar.service';
-import { Store } from '@ngrx/store';
 import { UserModel } from '../../../models/user.model';
-import { AppState } from '../../stores/user/user.state';
-import { signUp } from '../../stores/user/user.actions';
-import { selectUserError } from '../../stores/user/user.selectors';
+import { UserStore } from '../../stores/user/user.store';
 
 @Component({
 	selector: 'app-signup',
@@ -17,42 +14,36 @@ import { selectUserError } from '../../stores/user/user.selectors';
 	styleUrls: ['./signup.component.scss']
 })
 export class SignupComponent implements OnInit {
-	isReady: boolean = false;
+	isReady = false;
 
-	// Form fields
-	email: string = '';
-	password: string = '';
-	firstName: string = '';
-	lastName: string = '';
+	email = '';
+	password = '';
+	firstName = '';
+	lastName = '';
 
-	private store = inject(Store<AppState>);
+	private userStore = inject(UserStore);
 	private snackbarService = inject(SnackbarService);
 	private router = inject(Router);
 
-	ngOnInit() {
-		this.formReady();
-
-		this.store.select(selectUserError).subscribe(error => {
+	constructor() {
+		effect(() => {
+			const error = this.userStore.error();
 			if (error) {
 				this.snackbarService.showMessage(error, 'error');
 			}
 		});
+	}
 
-		this.store.select(state => state.user).subscribe(userState => {
-			if (!userState.loading && !userState.error) {
-				this.snackbarService.showMessage('Signup successful', 'success');
-				setTimeout(() => this.router.navigate(['/login']), 100);
-			}
-		});
+	ngOnInit() {
+		this.formReady();
 	}
 
 	formReady() {
 		this.isReady = !!this.email && !!this.password && !!this.firstName && !!this.lastName;
 	}
 
-	saveForm() {
+	async saveForm() {
 		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
 		if (!emailRegex.test(this.email)) {
 			this.snackbarService.showMessage('Please enter a valid email address.', 'error');
 			return;
@@ -65,6 +56,10 @@ export class SignupComponent implements OnInit {
 			lastName: this.lastName
 		};
 
-		this.store.dispatch(signUp({ user }));
+		const success = await this.userStore.signUp(user);
+		if (success) {
+			this.snackbarService.showMessage('Signup successful', 'success');
+			setTimeout(() => this.router.navigate(['/login']), 100);
+		}
 	}
 }

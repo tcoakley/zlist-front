@@ -1,8 +1,7 @@
-import { Component, OnInit  } from '@angular/core';
-import { Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TitleService } from '../../services/title.service';
+import { ListStore } from '../../stores/list/list.store';
 
 @Component({
 	selector: 'app-lists',
@@ -12,18 +11,15 @@ import { TitleService } from '../../services/title.service';
 	styleUrls: ['./lists.component.scss'],
 })
 export class ListsComponent implements OnInit {
-
-	constructor(
-		private http: HttpClient, 
-		private router: Router,
-		private titleService: TitleService
-	) {}
+	protected listStore = inject(ListStore);
+	private titleService = inject(TitleService);
 
 	ngOnInit() {
 		this.titleService.setTitle('Lists');
+		this.listStore.loadLists();
 	}
-	
+
 	createNewList() {
-		console.log("here");
+		console.log('createNewList');
 	}
 }
