@@ -1,0 +1,94 @@
+<div class="detail-container">
+
+	<div class="top-bar">
+		<button class="back-btn" (click)="goBack()">&#8592; Lists</button>
+		@if (hasDirty) {
+			<button class="save-all-btn" (click)="saveAll()" [disabled]="saveDisabled">
+				@if (isSavingAny) { <span class="spinner"></span> } @else { Save }
+			</button>
+		}
+	</div>
+
+	@if (list(); as l) {
+
+		<div class="list-header-section">
+			<div class="header-name-row">
+				@if (!editingHeader) {
+					<h1 class="list-title">{{ l.listName }}</h1>
+				} @else {
+					<input
+						class="header-input title-input"
+						type="text"
+						[(ngModel)]="editedName"
+						placeholder="List name"
+						appAutofocus
+					/>
+				}
+				<button class="pencil-btn" (click)="toggleHeaderEdit()" [title]="editingHeader ? 'Cancel' : 'Edit'">
+					@if (editingHeader) { &#10005; } @else { &#9998; }
+				</button>
+			</div>
+
+			@if (!editingHeader) {
+				@if (l.listDescription) {
+					<p class="desc-text">{{ l.listDescription }}</p>
+				}
+			} @else {
+				<input
+					class="header-input desc-input"
+					type="text"
+					[(ngModel)]="editedDesc"
+					placeholder="Description (optional)"
+				/>
+			}
+		</div>
+
+		<div class="items-section">
+
+			@for (item of editableItems; track item.id || $index; let idx = $index) {
+				<div class="item-row" [class.unsaved]="item.isDirty">
+
+					<button
+						class="expand-btn"
+						[class.expanded]="item.isExpanded"
+						(click)="toggleExpand(item)"
+						title="Toggle description"
+					>&#9654;</button>
+
+					<div class="item-content">
+						<input
+							#itemNameInput
+							class="item-name-input"
+							type="text"
+							[(ngModel)]="item.itemName"
+							(ngModelChange)="onItemNameChange(item, idx)"
+							(keydown.tab)="onItemNameTab($event, idx)"
+							[name]="'item_' + idx"
+							placeholder="New item..."
+						/>
+						<div class="desc-wrapper" [class.expanded]="item.isExpanded">
+							<textarea
+								class="desc-area"
+								[(ngModel)]="item.itemDescription"
+								(ngModelChange)="onItemDescChange(item)"
+								[name]="'desc_' + idx"
+								placeholder="Description..."
+								rows="3"
+							></textarea>
+						</div>
+					</div>
+
+					@if (item.id > 0) {
+						<button class="delete-item-btn" (click)="deleteItem(item)" title="Delete item">&#10005;</button>
+					}
+
+				</div>
+			}
+
+		</div>
+
+	} @else if (!listStore.loading()) {
+		<p class="not-found">List not found.</p>
+	}
+
+</div>

@@ -1,6 +1,6 @@
 import { Injectable, signal, computed, inject } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
-import { List, ListItem, ListRun } from '../../../models/list.model';
+import { List, ListItem } from '../../../models/list.model';
 import { ListService } from '../../services/list.service';
 
 @Injectable({ providedIn: 'root' })
@@ -34,26 +34,33 @@ export class ListStore {
 		}
 	}
 
-	async addList(list: List): Promise<void> {
+	async addList(list: List): Promise<List | null> {
 		this.loading.set(true);
 		this.error.set(null);
 		try {
 			const newList = await firstValueFrom(this.listService.addList(list));
 			this.lists.update(lists => [...lists, newList]);
+			return newList;
 		} catch (err: any) {
 			this.error.set(err?.error ?? err);
+			return null;
 		} finally {
 			this.loading.set(false);
 		}
 	}
 
-	async editList(list: List): Promise<void> {
+	async editList(list: List): Promise<boolean> {
 		this.error.set(null);
 		try {
-			const updated = await firstValueFrom(this.listService.editList(list));
-			this.lists.update(lists => lists.map(l => l.id === updated.id ? updated : l));
+			await firstValueFrom(this.listService.editList(list));
+			this.lists.update(lists => lists.map(l => l.id === list.id
+				? { ...l, listName: list.listName, listDescription: list.listDescription }
+				: l
+			));
+			return true;
 		} catch (err: any) {
 			this.error.set(err?.error ?? err);
+			return false;
 		}
 	}
 
@@ -67,7 +74,7 @@ export class ListStore {
 		}
 	}
 
-	async addListItem(item: ListItem): Promise<void> {
+	async addListItem(item: ListItem): Promise<ListItem | null> {
 		this.error.set(null);
 		try {
 			const newItem = await firstValueFrom(this.listService.addListItem(item));
@@ -77,23 +84,27 @@ export class ListStore {
 					: l
 				)
 			);
+			return newItem;
 		} catch (err: any) {
 			this.error.set(err?.error ?? err);
+			return null;
 		}
 	}
 
-	async editListItem(item: ListItem): Promise<void> {
+	async editListItem(item: ListItem): Promise<boolean> {
 		this.error.set(null);
 		try {
-			const updated = await firstValueFrom(this.listService.editListItem(item));
+			await firstValueFrom(this.listService.editListItem(item));
 			this.lists.update(lists =>
-				lists.map(l => l.id === updated.listId
-					? { ...l, items: l.items.map(i => i.id === updated.id ? updated : i) }
+				lists.map(l => l.id === item.listId
+					? { ...l, items: l.items.map(i => i.id === item.id ? item : i) }
 					: l
 				)
 			);
+			return true;
 		} catch (err: any) {
 			this.error.set(err?.error ?? err);
+			return false;
 		}
 	}
 

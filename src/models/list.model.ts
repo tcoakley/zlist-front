@@ -20,7 +20,7 @@ export interface ListRunItem {
 export interface ListRun {
 	id: number;
 	listId: number;
-	createdAt: string;
+	createdAt?: string;
 	items: ListRunItem[];
 	isComplete: boolean;
 }
@@ -29,7 +29,7 @@ export interface List {
 	id: number;
 	listName: string;
 	listDescription?: string;
-	createdAt: string;
+	createdAt?: string;
 	updatedAt?: string;
 	items: ListItem[];
 	listRuns: ListRun[];

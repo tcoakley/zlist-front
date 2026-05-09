@@ -1,55 +1,45 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { List, ListItem, ListRun } from '../../models/list.model';
 import { Observable } from 'rxjs';
-import { Result } from '../../models/result.model';
-import { map } from 'rxjs/operators';
-
+import { List, ListItem, ListRun } from '../../models/list.model';
+import { HttpService } from './http.service';
 
 @Injectable({
 	providedIn: 'root'
 })
 export class ListService {
-	private apiUrl = 'https://localhost:7224/api/lists';
+	private base = '/api/lists';
 
-	constructor(private http: HttpClient) {}
+	constructor(private http: HttpService) {}
 
 	getLists(): Observable<List[]> {
-		return this.http.get<List[]>(`${this.apiUrl}/GetLists`);
+		return this.http.get<List[]>(`${this.base}/GetLists`);
 	}
 
 	addList(list: List): Observable<List> {
-		return this.http.post<Result<List>>(`${this.apiUrl}/AddList`, list)
-			.pipe(map(result => result.model!));
+		return this.http.post<List>(`${this.base}/AddList`, list);
 	}
 
-	editList(list: List): Observable<List> {
-		return this.http.put<Result<List>>(`${this.apiUrl}/EditList`, list)
-			.pipe(map(result => result.model!));
+	editList(list: List): Observable<boolean> {
+		return this.http.put<boolean>(`${this.base}/EditList`, list);
 	}
 
 	deleteList(listId: number): Observable<boolean> {
-		return this.http.delete<Result<boolean>>(`${this.apiUrl}/DeleteList/${listId}`)
-			.pipe(map(result => result.model!));
+		return this.http.delete<boolean>(`${this.base}/DeleteList/${listId}`);
 	}
 
 	addListItem(item: ListItem): Observable<ListItem> {
-		return this.http.post<Result<ListItem>>(`${this.apiUrl}/AddListItem`, item)
-			.pipe(map(result => result.model!));
+		return this.http.post<ListItem>(`${this.base}/AddListItem`, item);
 	}
 
-	editListItem(item: ListItem): Observable<ListItem> {
-		return this.http.put<Result<ListItem>>(`${this.apiUrl}/EditListItem`, item)
-			.pipe(map(result => result.model!));
+	editListItem(item: ListItem): Observable<boolean> {
+		return this.http.put<boolean>(`${this.base}/EditListItem`, item);
 	}
 
 	deleteListItem(itemId: number): Observable<boolean> {
-		return this.http.delete<Result<boolean>>(`${this.apiUrl}/DeleteListItem/${itemId}`)
-			.pipe(map(result => result.model!));
+		return this.http.delete<boolean>(`${this.base}/DeleteListItem/${itemId}`);
 	}
 
 	createListRun(listId: number): Observable<ListRun> {
-		return this.http.post<Result<ListRun>>(`${this.apiUrl}/CreateListRun/${listId}`, {})
-			.pipe(map(result => result.model!));
+		return this.http.post<ListRun>(`${this.base}/CreateListRun/${listId}`, {});
 	}
 }

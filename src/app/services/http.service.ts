@@ -19,7 +19,13 @@ export class HttpService {
 
 	private getAuthHeaders(): HttpHeaders {
 		const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
-		return token ? new HttpHeaders({ Authorization: `Bearer ${token}` }) : new HttpHeaders();
+		return token
+			? new HttpHeaders({ Authorization: `Bearer ${token}` })
+			: new HttpHeaders();
+	}
+
+	private getJsonHeaders(): HttpHeaders {
+		return this.getAuthHeaders().set('Content-Type', 'application/json');
 	}
 
 	get<T>(url: string): Observable<T> {
@@ -33,7 +39,7 @@ export class HttpService {
 
 	post<T>(url: string, body: any): Observable<T> {
 		return this.http.post<Result<T>>(`${this.baseUrl}${url}`, body, {
-			headers: this.getAuthHeaders()
+			headers: this.getJsonHeaders()
 		}).pipe(
 			map(response => this.unwrapResult<T>(response)),
 			catchError(error => this.handleAuthError(() => this.post<T>(url, body), error))
@@ -42,10 +48,19 @@ export class HttpService {
 
 	put<T>(url: string, body: any): Observable<T> {
 		return this.http.put<Result<T>>(`${this.baseUrl}${url}`, body, {
-			headers: this.getAuthHeaders()
+			headers: this.getJsonHeaders()
 		}).pipe(
 			map(response => this.unwrapResult<T>(response)),
 			catchError(error => this.handleAuthError(() => this.put<T>(url, body), error))
+		);
+	}
+
+	delete<T>(url: string): Observable<T> {
+		return this.http.delete<Result<T>>(`${this.baseUrl}${url}`, {
+			headers: this.getAuthHeaders()
+		}).pipe(
+			map(response => this.unwrapResult<T>(response)),
+			catchError(error => this.handleAuthError(() => this.delete<T>(url), error))
 		);
 	}
 

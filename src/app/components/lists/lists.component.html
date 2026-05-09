@@ -1,9 +1,70 @@
-<div class="list-container align-top">
-	<button class="create-button" (click)="createNewList()">
-		Create New List
-	</button>
+<div class="list-container">
 
-	<div class="form">
-		<!-- Existing or in-progress lists will go here -->
-	</div>
+	@if (!showForm) {
+		<button class="create-button" (click)="openForm()">Create New List</button>
+	}
+
+	@if (showForm) {
+		<div class="form">
+			<h2>Create New List</h2>
+			<form>
+				<fieldset>
+					<legend>List Name</legend>
+					<label for="list-name" class="visually-hidden">List Name</label>
+					<input
+						id="list-name"
+						type="text"
+						name="listName"
+						[(ngModel)]="listName"
+						placeholder="e.g. Pre-flight Checklist"
+						required
+						appAutofocus
+					/>
+				</fieldset>
+
+				<fieldset>
+					<legend>Description</legend>
+					<label for="list-desc" class="visually-hidden">Description</label>
+					<input
+						id="list-desc"
+						type="text"
+						name="listDescription"
+						[(ngModel)]="listDescription"
+						placeholder="Optional"
+					/>
+				</fieldset>
+
+				<div class="button-group">
+					<button type="button" class="cancel" (click)="cancelForm()">Cancel</button>
+					<button
+						type="button"
+						class="submit"
+						(click)="saveList()"
+						[disabled]="!listName.trim() || listStore.loading()">
+						Create
+						@if (listStore.loading()) {
+							<span class="spinner"></span>
+						}
+					</button>
+				</div>
+			</form>
+		</div>
+	}
+
+	@if (listStore.lists().length > 0) {
+		<div class="lists-grid">
+			@for (list of listStore.lists(); track list.id) {
+				<div class="list-card" (click)="navigateToList(list.id)">
+					<div class="list-card-name">{{ list.listName }}</div>
+					@if (list.listDescription) {
+						<div class="list-description">{{ list.listDescription }}</div>
+					}
+					<div class="item-count">{{ list.items.length }} item{{ list.items.length !== 1 ? 's' : '' }}</div>
+				</div>
+			}
+		</div>
+	} @else if (!showForm && !listStore.loading()) {
+		<p class="empty-message">No lists yet. Create your first list above.</p>
+	}
+
 </div>
