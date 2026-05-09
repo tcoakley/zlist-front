@@ -15,18 +15,18 @@
 			<div class="header-name-row">
 				@if (!editingHeader) {
 					<h1 class="list-title">{{ l.listName }}</h1>
+					<button class="pencil-btn" (click)="toggleHeaderEdit()" title="Edit">&#9998;</button>
 				} @else {
 					<input
 						class="header-input title-input"
+						[class.modified]="nameDirty"
 						type="text"
 						[(ngModel)]="editedName"
+						(keydown.enter)="saveAll()"
 						placeholder="List name"
 						appAutofocus
 					/>
 				}
-				<button class="pencil-btn" (click)="toggleHeaderEdit()" [title]="editingHeader ? 'Cancel' : 'Edit'">
-					@if (editingHeader) { &#10005; } @else { &#9998; }
-				</button>
 			</div>
 
 			@if (!editingHeader) {
@@ -36,21 +36,24 @@
 			} @else {
 				<input
 					class="header-input desc-input"
+					[class.modified]="descDirty"
 					type="text"
 					[(ngModel)]="editedDesc"
+					(keydown.enter)="saveAll()"
 					placeholder="Description (optional)"
 				/>
 			}
 		</div>
 
-		<div class="items-section">
+		<div class="items-section" cdkDropList (cdkDropListDropped)="onDrop($event)">
 
 			@for (item of editableItems; track item.id || $index; let idx = $index) {
-				<div class="item-row" [class.unsaved]="item.isDirty">
+				<div class="item-row" cdkDrag [cdkDragDisabled]="!item.itemName.trim()" [class.unsaved]="item.isDirty">
 
 					<button
 						class="expand-btn"
 						[class.expanded]="item.isExpanded"
+						[class.has-content]="item.itemDescription?.trim()"
 						(click)="toggleExpand(item)"
 						title="Toggle description"
 					>&#9654;</button>
@@ -63,6 +66,7 @@
 							[(ngModel)]="item.itemName"
 							(ngModelChange)="onItemNameChange(item, idx)"
 							(keydown.tab)="onItemNameTab($event, idx)"
+							(keydown.enter)="saveAll()"
 							[name]="'item_' + idx"
 							placeholder="New item..."
 						/>
@@ -78,9 +82,17 @@
 						</div>
 					</div>
 
-					@if (item.id > 0) {
-						<button class="delete-item-btn" (click)="deleteItem(item)" title="Delete item">&#10005;</button>
-					}
+					<div class="item-actions">
+						@if (item.id > 0) {
+							<button class="delete-item-btn" (click)="deleteItem(item)" title="Delete item">&#10005;</button>
+						}
+						<span
+							class="drag-handle"
+							cdkDragHandle
+							[style.visibility]="item.itemName.trim() ? 'visible' : 'hidden'"
+							title="Drag to reorder"
+						><mat-icon>drag_indicator</mat-icon></span>
+					</div>
 
 				</div>
 			}

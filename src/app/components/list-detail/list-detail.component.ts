@@ -1,6 +1,8 @@
 import { Component, OnInit, inject, computed, ViewChildren, QueryList, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { CdkDragDrop, CdkDrag, CdkDropList, CdkDragHandle, moveItemInArray } from '@angular/cdk/drag-drop';
+import { MatIconModule } from '@angular/material/icon';
 import { AutofocusDirective } from '../../directives/autofocus.directive';
 import { SnackbarService } from '../../services/snackbar.service';
 import { TitleService } from '../../services/title.service';
@@ -21,7 +23,7 @@ interface EditableItem {
 @Component({
 	selector: 'app-list-detail',
 	standalone: true,
-	imports: [FormsModule, AutofocusDirective],
+	imports: [FormsModule, AutofocusDirective, CdkDropList, CdkDrag, CdkDragHandle, MatIconModule],
 	templateUrl: './list-detail.component.html',
 	styleUrls: ['./list-detail.component.scss'],
 })
@@ -45,12 +47,16 @@ export class ListDetailComponent implements OnInit {
 
 	protected list = computed(() => this.listStore.lists().find(l => l.id === this.listId));
 
+	get nameDirty(): boolean {
+		return this.editingHeader && this.editedName.trim() !== (this.list()?.listName ?? '');
+	}
+
+	get descDirty(): boolean {
+		return this.editingHeader && (this.editedDesc.trim() || '') !== (this.list()?.listDescription ?? '');
+	}
+
 	get headerDirty(): boolean {
-		if (!this.editingHeader) return false;
-		const l = this.list();
-		if (!l) return false;
-		return this.editedName.trim() !== l.listName ||
-			(this.editedDesc.trim() || undefined) !== (l.listDescription ?? undefined);
+		return this.nameDirty || this.descDirty;
 	}
 
 	get hasDirty(): boolean {
@@ -148,6 +154,21 @@ export class ListDetailComponent implements OnInit {
 		this.titleService.setTitle(this.editedName.trim());
 		this.editingHeader = false;
 		return true;
+	}
+
+	// --- Drag and drop ---
+
+	onDrop(event: CdkDragDrop<EditableItem[]>) {
+		if (event.previousIndex === event.currentIndex) return;
+		const draftIndex = this.editableItems.length - 1;
+		const targetIndex = Math.min(event.currentIndex, draftIndex - 1);
+		if (event.previousIndex === targetIndex) return;
+		moveItemInArray(this.editableItems, event.previousIndex, targetIndex);
+		this.editableItems.filter(i => i.itemName.trim()).forEach((item, i) => {
+			item.sortOrder = i + 1;
+			item.isDirty = true;
+		});
+		this.editableItems = [...this.editableItems];
 	}
 
 	// --- Item editing ---

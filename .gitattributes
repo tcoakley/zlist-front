@@ -1,0 +1,5 @@
+# Enforce CRLF for all text files on Windows checkout
+* text=auto eol=crlf
+
+# Shell scripts stay LF
+*.sh text eol=lf

@@ -1,3 +1,4 @@
+@use 'variables' as *;
 @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;700&display=swap');
 
 html {
@@ -8,26 +9,26 @@ body {
 	font-family: 'Manrope', Arial, Helvetica, sans-serif;
 	margin: 0;
 	padding: 0;
-	color: #f0f0f0; 
-	background-color: #121212; 
-	line-height: 1.6; 
+	color: $text-primary;
+	background-color: $bg-page;
+	line-height: 1.6;
 }
 
 a {
-	color: #1c741c; 
+	color: $primary-dark;
 	text-decoration: none;
 	cursor: pointer;
 }
 
 a:hover {
-	color: #228B22; 
+	color: $primary;
 	text-decoration: underline;
 }
 
 
 /* Shared form styles */
 form {
-	width: 100%; 
+	width: 100%;
 	max-width: 100%;
 	display: flex;
 	flex-direction: column;
@@ -41,23 +42,23 @@ form {
 
 		legend {
 			font-size: 0.9rem;
-			color: #bbb;
+			color: $text-secondary;
 			margin-bottom: 0.4rem;
 		}
 
 		input {
-			width: 100%; 
-			box-sizing: border-box; 
+			width: 100%;
+			box-sizing: border-box;
 			padding: 0.8rem;
-			background-color: #1f1f1f;
-			color: #f0f0f0;
-			border: 1px solid #333;
+			background-color: $bg-surface;
+			color: $text-primary;
+			border: 1px solid $border;
 			border-radius: 5px;
 			font-size: 1rem;
 			outline: none;
 
 			&:focus {
-				border-color: #555;
+				border-color: $icon-color;
 			}
 		}
 	}
@@ -89,10 +90,10 @@ button {
 	}
 
 	&:disabled {
-		background-color: #6c757d; 
-		color: #ccc; 
-		cursor: not-allowed; 
-		opacity: 0.6; 
+		background-color: $disabled;
+		color: $disabled-text;
+		cursor: not-allowed;
+		opacity: 0.6;
 	}
 
 	.spinner {
@@ -106,39 +107,33 @@ button {
 		margin-left: 8px;
 		vertical-align: middle;
 	}
-	
+
 	@keyframes spin {
-		from {
-			transform: rotate(0deg);
-		}
-		to {
-			transform: rotate(360deg);
-		}
+		from { transform: rotate(0deg); }
+		to   { transform: rotate(360deg); }
 	}
-	
+
 	button[disabled] {
 		opacity: 0.7;
 		cursor: not-allowed;
 	}
-	
-
 }
 
-/* Primary button style (e.g., submit) */
+/* Primary button style */
 button.submit {
-	background-color: #228B22;
+	background-color: $primary;
 
 	&:not(:disabled):hover {
-		background-color: #1c741c;
+		background-color: $primary-dark;
 	}
 }
 
 /* Cancel button style */
 button.cancel {
-	background-color: #6c757d; 
+	background-color: $disabled;
 
 	&:not(:disabled):hover {
-		background-color: #5a6268;
+		background-color: $disabled-dark;
 	}
 }
 
@@ -154,24 +149,21 @@ button.cancel {
 	align-items: center;
 	justify-content: space-between;
 	box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.15);
-	background-color: rgba(0, 0, 0, 0.8); 
-	border: 2px solid transparent; 
+	background-color: rgba(0, 0, 0, 0.8);
+	border: 2px solid transparent;
 }
 
-/* Success Snackbar - Green Border */
 .snackbar-success {
-	border-color: rgba(56, 142, 60, 0.8); 
+	border-color: $success-border;
 }
 
-/* Warning Snackbar - Yellow Border */
 .snackbar-warning {
-	border-color: rgba(245, 177, 66, 0.8); 
+	border-color: $warning;
 	color: white !important;
 }
 
-/* Error Snackbar - Red Border */
 .snackbar-error {
-	border-color: rgba(211, 47, 47, 0.8); 
+	border-color: $danger-border;
 }
 
 /* Snackbar Close Button */
@@ -180,22 +172,21 @@ button.cancel {
 	font-weight: bold;
 	font-size: 18px;
 	transition: transform 0.2s ease, color 0.2s ease;
-	background: transparent !important; 
+	background: transparent !important;
 	border: none !important;
 	box-shadow: none !important;
 }
 
-/* Close Button Hover Effect */
 .mat-mdc-snack-bar-action:hover {
 	transform: scale(1.2);
 	color: rgba(255, 255, 255, 0.9) !important;
 }
-/* Disable the default hover change to clsoe button */
+
 .mat-mdc-button-persistent-ripple {
 	display: none !important;
 }
 
-/* Visually hidden for e-readers */
+/* Visually hidden for screen readers */
 .visually-hidden {
 	position: absolute;
 	width: 1px;
@@ -204,6 +195,6 @@ button.cancel {
 	margin: -1px;
 	overflow: hidden;
 	clip: rect(0, 0, 0, 0);
-	white-space: nowrap; /* Prevent text wrapping */
+	white-space: nowrap;
 	border: 0;
 }
