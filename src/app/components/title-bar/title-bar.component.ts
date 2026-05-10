@@ -14,7 +14,7 @@ export class TitleBarComponent implements OnInit {
 	isMenuOpen = false;
 
 	constructor(
-		private titleService: TitleService,
+		protected titleService: TitleService,
 		private cdRef: ChangeDetectorRef
 	) {}
 

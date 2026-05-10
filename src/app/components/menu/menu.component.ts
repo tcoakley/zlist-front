@@ -3,6 +3,7 @@ import { trigger, transition, style, animate } from '@angular/animations';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { UserStore } from '../../stores/user/user.store';
+import { InstallService } from '../../services/install.service';
 
 @Component({
 	selector: 'app-menu',
@@ -28,10 +29,21 @@ export class MenuComponent {
 
 	private userStore = inject(UserStore);
 	private router = inject(Router);
+	protected installService = inject(InstallService);
 
 	navigateTo(route: string) {
 		this.menuClosed.emit();
 		this.router.navigate([route]);
+	}
+
+	async createShortcut() {
+		this.menuClosed.emit();
+		await this.installService.promptInstall();
+	}
+
+	showIosInstall() {
+		this.menuClosed.emit();
+		this.installService.showIosPrompt();
 	}
 
 	logout() {

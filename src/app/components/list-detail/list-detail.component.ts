@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, computed, ViewChildren, QueryList, ElementRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, computed, ViewChildren, QueryList, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CdkDragDrop, CdkDrag, CdkDropList, CdkDragHandle, moveItemInArray } from '@angular/cdk/drag-drop';
@@ -27,7 +27,7 @@ interface EditableItem {
 	templateUrl: './list-detail.component.html',
 	styleUrls: ['./list-detail.component.scss'],
 })
-export class ListDetailComponent implements OnInit {
+export class ListDetailComponent implements OnInit, OnDestroy {
 	protected listStore = inject(ListStore);
 	private route = inject(ActivatedRoute);
 	private router = inject(Router);
@@ -74,24 +74,34 @@ export class ListDetailComponent implements OnInit {
 	ngOnInit() {
 		this.listId = Number(this.route.snapshot.paramMap.get('id'));
 
+		this.titleService.setActionButton({
+			label: 'Save',
+			show: () => this.hasDirty,
+			disabled: () => this.saveDisabled,
+			loading: () => this.isSavingAny,
+			action: () => this.saveAll(),
+		});
+
 		if (!this.listStore.lists().length) {
 			this.listStore.loadLists().then(() => this.initItems());
 		} else {
 			this.initItems();
 		}
-
-		const name = this.list()?.listName ?? 'List';
-		this.titleService.setTitle(name);
 	}
 
-	private initItems() {
-		const l = this.list();
-		if (!l) {
+	ngOnDestroy() {
+		this.titleService.setActionButton(null);
+	}
+
+	private async initItems() {
+		const list = await this.listStore.loadList(this.listId);
+		if (!list) {
+			this.snackbarService.showMessage(this.listStore.error(), 'error');
 			this.router.navigate(['/lists']);
 			return;
 		}
-		this.titleService.setTitle(l.listName);
-		this.editableItems = l.items.map(i => this.toEditable(i)).concat([this.createDraft()]);
+		this.titleService.setTitle(list.listName);
+		this.editableItems = list.items.map(i => this.toEditable(i)).concat([this.createDraft()]);
 		this.focusDraftItem();
 	}
 

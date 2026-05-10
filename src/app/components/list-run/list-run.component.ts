@@ -32,6 +32,7 @@ export class ListRunComponent implements OnInit {
 	listId = 0;
 	runId = 0;
 	listName = '';
+	listDescription = '';
 	runItems: RunItem[] = [];
 	confirmingComplete = false;
 
@@ -61,6 +62,7 @@ export class ListRunComponent implements OnInit {
 		if (!list) { this.router.navigate(['/lists']); return; }
 
 		this.listName = list.listName;
+		this.listDescription = list.listDescription ?? '';
 		this.titleService.setTitle(list.listName);
 
 		let run = list.listRuns?.find(r => r.id === this.runId);

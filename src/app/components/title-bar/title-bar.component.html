@@ -1,6 +1,13 @@
 <div class="title-bar">
 	<div class="menu-icon" (click)="toggleMenu()">&#9776;</div>
 	<span class="title-text">{{ title }}</span>
+	@if (titleService.actionButton(); as btn) {
+		@if (btn.show()) {
+			<button class="title-action-btn" [disabled]="btn.disabled()" (click)="btn.action()">
+				@if (btn.loading()) { <span class="title-action-spinner"></span> } @else { {{ btn.label }} }
+			</button>
+		}
+	}
 </div>
 
 <div class="menu-wrapper">

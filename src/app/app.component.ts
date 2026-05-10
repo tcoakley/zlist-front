@@ -4,6 +4,7 @@ import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { TitleBarComponent } from './components/title-bar/title-bar.component';
 import { filter } from 'rxjs/operators';
 import { UserStore } from './stores/user/user.store';
+import { InstallService } from './services/install.service';
 
 @Component({
 	selector: 'app-root',
@@ -15,6 +16,7 @@ import { UserStore } from './stores/user/user.store';
 export class AppComponent implements OnInit {
 	protected userStore = inject(UserStore);
 	private router = inject(Router);
+	protected installService = inject(InstallService);
 
 	layoutTop = false;
 

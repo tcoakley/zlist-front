@@ -19,6 +19,92 @@
 	}
 }
 
+.ios-install-backdrop {
+	position: fixed;
+	inset: 0;
+	background: rgba(0, 0, 0, 0.5);
+	z-index: 2000;
+}
+
+.ios-install-sheet {
+	position: fixed;
+	bottom: 0;
+	left: 50%;
+	transform: translateX(-50%);
+	width: 100%;
+	max-width: 600px;
+	background: $bg-surface;
+	border-top: 1px solid $border-strong;
+	border-radius: 12px 12px 0 0;
+	padding: 16px 20px 32px;
+	z-index: 2001;
+}
+
+.ios-install-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 20px;
+	font-size: 1rem;
+	font-weight: 600;
+	color: $text-primary;
+}
+
+.ios-install-close {
+	background: transparent;
+	border: none;
+	color: $text-muted;
+	font-size: 1rem;
+	cursor: pointer;
+	padding: 4px 8px;
+
+	&:hover {
+		color: $text-primary;
+	}
+}
+
+.ios-install-steps {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+	margin-bottom: 24px;
+}
+
+.ios-install-step {
+	display: flex;
+	align-items: center;
+	gap: 14px;
+	color: $text-secondary;
+	font-size: 0.95rem;
+	line-height: 1.4;
+}
+
+.ios-step-num {
+	flex-shrink: 0;
+	width: 26px;
+	height: 26px;
+	border-radius: 50%;
+	background: $primary;
+	color: white;
+	font-size: 0.85rem;
+	font-weight: 700;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.ios-share-icon {
+	display: inline-block;
+	font-size: 1rem;
+	color: $primary;
+}
+
+.ios-install-arrow {
+	text-align: center;
+	font-size: 1.5rem;
+	color: $text-muted;
+}
+
 .subcontent-container {
 	width: 100%;
 	padding: 0 8px;

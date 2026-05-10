@@ -10,7 +10,7 @@ import { Result } from "../../models/result.model";
 	providedIn: 'root'
 })
 export class HttpService {
-	private baseUrl: string = "https://localhost:7224";
+	private baseUrl: string = "";
 
 	constructor(
 		private http: HttpClient,

@@ -2,11 +2,6 @@
 
 	<div class="top-bar">
 		<button class="back-btn" (click)="goBack()">&#8592; Lists</button>
-		@if (hasDirty) {
-			<button class="save-all-btn" (click)="saveAll()" [disabled]="saveDisabled">
-				@if (isSavingAny) { <span class="spinner"></span> } @else { Save }
-			</button>
-		}
 	</div>
 
 	@if (list(); as l) {

@@ -120,6 +120,20 @@ export class ListStore {
 		}
 	}
 
+	async loadList(listId: number): Promise<List | null> {
+		this.error.set(null);
+		try {
+			const list = await firstValueFrom(this.listService.getList(listId));
+			this.lists.update(lists =>
+				lists.map(l => l.id === listId ? { ...l, items: list.items } : l)
+			);
+			return this.lists().find(l => l.id === listId) ?? null;
+		} catch (err: any) {
+			this.error.set(err?.error ?? err);
+			return null;
+		}
+	}
+
 	async loadListRun(listId: number, runId: number): Promise<ListRun | null> {
 		this.error.set(null);
 		try {

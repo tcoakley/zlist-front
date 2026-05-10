@@ -15,6 +15,10 @@ export class ListService {
 		return this.http.get<List[]>(`${this.base}/GetLists`);
 	}
 
+	getList(listId: number): Observable<List> {
+		return this.http.get<List>(`${this.base}/GetList/${listId}`);
+	}
+
 	addList(list: List): Observable<List> {
 		return this.http.post<List>(`${this.base}/AddList`, list);
 	}

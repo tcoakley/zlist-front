@@ -4,3 +4,24 @@
 		<router-outlet></router-outlet>
 	</div>
 </div>
+
+@if (installService.iosPromptVisible()) {
+	<div class="ios-install-backdrop" (click)="installService.hideIosPrompt()"></div>
+	<div class="ios-install-sheet">
+		<div class="ios-install-header">
+			<span>Install as App</span>
+			<button class="ios-install-close" (click)="installService.hideIosPrompt()">&#10005;</button>
+		</div>
+		<div class="ios-install-steps">
+			<div class="ios-install-step">
+				<span class="ios-step-num">1</span>
+				<span>Tap the <strong>Share</strong> button <span class="ios-share-icon">&#11014;</span> at the bottom of Safari</span>
+			</div>
+			<div class="ios-install-step">
+				<span class="ios-step-num">2</span>
+				<span>Tap <strong>Add to Home Screen</strong></span>
+			</div>
+		</div>
+		<div class="ios-install-arrow">&#9660;</div>
+	</div>
+}
