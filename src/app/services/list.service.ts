@@ -39,7 +39,19 @@ export class ListService {
 		return this.http.delete<boolean>(`${this.base}/DeleteListItem/${itemId}`);
 	}
 
+	getListRun(runId: number): Observable<ListRun> {
+		return this.http.get<ListRun>(`${this.base}/GetListRun/${runId}`);
+	}
+
 	createListRun(listId: number): Observable<ListRun> {
 		return this.http.post<ListRun>(`${this.base}/CreateListRun/${listId}`, {});
+	}
+
+	setListRunItemCompletion(runItemId: number, isComplete: boolean): Observable<boolean> {
+		return this.http.put<boolean>(`${this.base}/SetListRunItemCompletion/${runItemId}`, isComplete);
+	}
+
+	completeListRun(runId: number): Observable<boolean> {
+		return this.http.put<boolean>(`${this.base}/CompleteListRun/${runId}`, {});
 	}
 }

@@ -134,6 +134,21 @@
 	}
 }
 
+.continue-btn {
+	background: $warning;
+	border: none;
+	color: #1a1a1a;
+	font-size: 0.65rem;
+	padding: 4px 10px;
+	border-radius: 4px;
+	cursor: pointer;
+	transition: opacity 0.15s ease;
+
+	&:hover {
+		opacity: 0.85;
+	}
+}
+
 .launch-btn {
 	background: $primary;
 	border: none;

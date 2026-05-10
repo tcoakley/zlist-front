@@ -49,6 +49,9 @@ export class ListsComponent implements OnInit {
 			id: 0,
 			listName: this.listName.trim(),
 			listDescription: this.listDescription.trim() || undefined,
+			activeRunId: 0,
+			totalRuns: 0,
+			totalItems: 0,
 			items: [],
 			listRuns: []
 		});
@@ -77,8 +80,17 @@ export class ListsComponent implements OnInit {
 		return this.expandedListIds.has(id);
 	}
 
-	launchList(id: number) {
-		console.log('Launch list', id);
+	continueRun(listId: number, runId: number) {
+		this.router.navigate(['/lists', listId, 'run', runId]);
+	}
+
+	async launchList(id: number) {
+		const run = await this.listStore.createListRun(id);
+		if (run) {
+			this.router.navigate(['/lists', id, 'run', run.id]);
+		} else {
+			this.snackbarService.showMessage(this.listStore.error(), 'error');
+		}
 	}
 
 	startDelete(id: number) {
@@ -98,16 +110,12 @@ export class ListsComponent implements OnInit {
 	}
 
 	getRunCount(list: List): number {
-		return list.listRuns?.length ?? 0;
+		return list.totalRuns;
 	}
 
 	getLastRunDate(list: List): string | null {
-		if (!list.listRuns?.length) return null;
-		const timestamps = list.listRuns
-			.map(r => r.createdAt ? new Date(r.createdAt).getTime() : 0)
-			.filter(t => t > 0);
-		if (!timestamps.length) return null;
-		return new Date(Math.max(...timestamps)).toLocaleDateString(undefined, {
+		if (!list.lastRun) return null;
+		return new Date(list.lastRun).toLocaleDateString(undefined, {
 			year: 'numeric', month: 'short', day: 'numeric'
 		});
 	}

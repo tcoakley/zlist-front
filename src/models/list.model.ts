@@ -31,6 +31,10 @@ export interface List {
 	listDescription?: string;
 	createdAt?: string;
 	updatedAt?: string;
+	activeRunId: number;
+	totalRuns: number;
+	lastRun?: string;
+	totalItems: number;
 	items: ListItem[];
 	listRuns: ListRun[];
 }

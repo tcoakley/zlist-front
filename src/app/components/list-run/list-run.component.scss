@@ -1,0 +1,224 @@
+@use 'variables' as *;
+
+:host {
+	display: block;
+	width: 100%;
+	max-width: 560px;
+	margin: 0 auto;
+}
+
+.run-container {
+	display: flex;
+	flex-direction: column;
+}
+
+// --- Top bar ---
+
+.top-bar {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 12px;
+}
+
+.back-btn {
+	background: transparent;
+	border: none;
+	color: $text-muted;
+	font-size: 0.85rem;
+	padding: 0;
+	cursor: pointer;
+
+	&:hover {
+		color: $text-primary;
+		opacity: 1;
+	}
+}
+
+.complete-all-btn {
+	height: 30px;
+	min-width: 64px;
+	background-color: $primary;
+	color: white;
+	border: none;
+	border-radius: 5px;
+	font-size: 0.85rem;
+	padding: 0 16px;
+	cursor: pointer;
+	transition: background-color 0.2s ease;
+
+	&:hover:not(:disabled) {
+		background-color: $primary-dark;
+		opacity: 1;
+	}
+
+	&:disabled {
+		opacity: 0.45;
+		cursor: default;
+	}
+}
+
+.confirm-bar {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.confirm-label {
+	font-size: 0.85rem;
+	color: $text-muted;
+}
+
+.confirm-yes-btn {
+	background: $primary;
+	border: none;
+	color: white;
+	font-size: 0.8rem;
+	padding: 4px 12px;
+	border-radius: 4px;
+	cursor: pointer;
+	height: 28px;
+
+	&:hover {
+		background-color: $primary-dark;
+		opacity: 1;
+	}
+}
+
+.confirm-no-btn {
+	background: transparent;
+	border: 1px solid $border-strong;
+	color: $text-muted;
+	font-size: 0.8rem;
+	padding: 4px 12px;
+	border-radius: 4px;
+	cursor: pointer;
+	height: 28px;
+
+	&:hover {
+		color: $text-primary;
+		opacity: 1;
+	}
+}
+
+// --- Title ---
+
+.run-title {
+	margin: 0 0 20px;
+	font-size: 1.4rem;
+	font-weight: 700;
+	color: $text-primary;
+	line-height: 1.2;
+}
+
+// --- Items ---
+
+.items-section {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+}
+
+.run-item-row {
+	display: flex;
+	align-items: flex-start;
+	gap: 4px;
+	padding: 4px 6px;
+	border-radius: 5px;
+	cursor: pointer;
+	transition: background-color 0.15s ease;
+	user-select: none;
+
+	&:hover {
+		background-color: rgba(255, 255, 255, 0.03);
+	}
+
+	&.complete {
+		opacity: 0.5;
+	}
+}
+
+.expand-btn {
+	flex-shrink: 0;
+	align-self: flex-start;
+	margin-top: -2px;
+	background: transparent;
+	border: none;
+	color: $icon-color;
+	font-size: 0.6rem;
+	padding: 4px 4px;
+	cursor: pointer;
+	transition: transform 0.2s ease, color 0.15s ease;
+
+	&.has-content {
+		color: $primary;
+	}
+
+	&.expanded {
+		transform: rotate(90deg);
+		color: $primary;
+	}
+
+	&:hover {
+		color: $icon-color-hover;
+		opacity: 1;
+	}
+}
+
+.item-content {
+	flex: 1;
+	min-width: 0;
+}
+
+.item-name {
+	display: block;
+	font-size: 0.95rem;
+	color: $text-primary;
+	padding: 6px 4px;
+	line-height: 1.3;
+}
+
+.desc-wrapper {
+	max-height: 0;
+	overflow: hidden;
+	transition: max-height 0.25s ease;
+
+	&.expanded {
+		max-height: 120px;
+	}
+}
+
+.item-desc {
+	font-size: 0.85rem;
+	color: $text-secondary;
+	background: $bg-surface-dark;
+	border: 1px solid $border-subtle;
+	border-radius: 4px;
+	padding: 6px 8px;
+	margin: 0 4px 6px;
+}
+
+// --- Checkbox ---
+
+.item-checkbox {
+	flex-shrink: 0;
+	align-self: center;
+}
+
+::ng-deep {
+	.item-checkbox {
+		.mdc-checkbox__background {
+			border-color: $primary !important;
+			border-radius: 4px !important;
+		}
+
+		.mdc-checkbox__native-control:enabled:checked ~ .mdc-checkbox__background {
+			background-color: $icon-color !important;
+			border-color: $icon-color !important;
+		}
+
+		.mdc-checkbox__ripple {
+			display: none;
+		}
+	}
+}

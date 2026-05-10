@@ -1,6 +1,6 @@
 import { Injectable, signal, computed, inject } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
-import { List, ListItem } from '../../../models/list.model';
+import { List, ListItem, ListRun } from '../../../models/list.model';
 import { ListService } from '../../services/list.service';
 
 @Injectable({ providedIn: 'root' })
@@ -120,7 +120,24 @@ export class ListStore {
 		}
 	}
 
-	async createListRun(listId: number): Promise<void> {
+	async loadListRun(listId: number, runId: number): Promise<ListRun | null> {
+		this.error.set(null);
+		try {
+			const run = await firstValueFrom(this.listService.getListRun(runId));
+			this.lists.update(lists =>
+				lists.map(l => l.id === listId
+					? { ...l, listRuns: [...(l.listRuns ?? []).filter(r => r.id !== run.id), run] }
+					: l
+				)
+			);
+			return run;
+		} catch (err: any) {
+			this.error.set(err?.error ?? err);
+			return null;
+		}
+	}
+
+	async createListRun(listId: number): Promise<ListRun | null> {
 		this.error.set(null);
 		try {
 			const listRun = await firstValueFrom(this.listService.createListRun(listId));
@@ -130,8 +147,35 @@ export class ListStore {
 					: l
 				)
 			);
+			return listRun;
 		} catch (err: any) {
 			this.error.set(err?.error ?? err);
+			return null;
+		}
+	}
+
+	async completeListRun(listId: number, runId: number): Promise<boolean> {
+		this.error.set(null);
+		try {
+			await firstValueFrom(this.listService.completeListRun(runId));
+			this.lists.update(lists =>
+				lists.map(l => l.id === listId ? { ...l, activeRunId: 0 } : l)
+			);
+			return true;
+		} catch (err: any) {
+			this.error.set(err?.error ?? err);
+			return false;
+		}
+	}
+
+	async toggleListRunItem(runItemId: number, complete: boolean): Promise<boolean> {
+		this.error.set(null);
+		try {
+			await firstValueFrom(this.listService.setListRunItemCompletion(runItemId, complete));
+			return true;
+		} catch (err: any) {
+			this.error.set(err?.error ?? err);
+			return false;
 		}
 	}
 }

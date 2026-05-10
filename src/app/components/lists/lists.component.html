@@ -73,7 +73,11 @@
 								<button class="confirm-no-btn" (click)="cancelDelete()">No</button>
 							} @else {
 								<button class="edit-btn" (click)="navigateToList(list.id)" title="Edit">&#9998;</button>
-								<button class="launch-btn" (click)="launchList(list.id)" title="Launch">&#9654;</button>
+								@if (list.activeRunId) {
+									<button class="continue-btn" (click)="continueRun(list.id, list.activeRunId)" title="Continue in-progress run">&#9654;&#9654;</button>
+								} @else {
+									<button class="launch-btn" (click)="launchList(list.id)" title="Launch">&#9654;</button>
+								}
 								<button class="delete-btn" (click)="startDelete(list.id)" title="Delete">&#10005;</button>
 							}
 						</div>
@@ -81,12 +85,12 @@
 
 					<div class="desc-wrapper" [class.expanded]="isExpanded(list.id)">
 						<div class="run-info">
-							<span>{{ list.items.length }} item{{ list.items.length !== 1 ? 's' : '' }}</span>
+							<span>{{ list.totalItems }} item{{ list.totalItems !== 1 ? 's' : '' }}</span>
 							<span class="run-divider">·</span>
 							<span>{{ getRunCount(list) }} run{{ getRunCount(list) !== 1 ? 's' : '' }}</span>
 							@if (getLastRunDate(list)) {
 								<span class="run-divider">·</span>
-								<span class="run-date">Last run {{ getLastRunDate(list) }}</span>
+								<span class="run-date">Last Run: {{ getLastRunDate(list) }}</span>
 							}
 						</div>
 						@if (list.listDescription) {

@@ -1,0 +1,53 @@
+<div class="run-container">
+
+	<div class="top-bar">
+		<button class="back-btn" (click)="goBack()">&#8592; Lists</button>
+
+		@if (!confirmingComplete) {
+			<button class="complete-all-btn" (click)="startCompleteAll()" [disabled]="allComplete">
+				Complete All
+			</button>
+		} @else {
+			<div class="confirm-bar">
+				<span class="confirm-label">Mark all complete?</span>
+				<button class="confirm-yes-btn" (click)="confirmCompleteAll()">Yes</button>
+				<button class="confirm-no-btn" (click)="cancelCompleteAll()">No</button>
+			</div>
+		}
+	</div>
+
+	<h1 class="run-title">{{ listName }}</h1>
+
+	<div class="items-section">
+		@for (item of sortedItems; track item.id) {
+			<div class="run-item-row" [class.complete]="item.isComplete" (click)="toggleItem(item)">
+
+				<button
+					class="expand-btn"
+					[class.expanded]="item.isExpanded"
+					[class.has-content]="item.itemDescription?.trim()"
+					[style.visibility]="item.itemDescription?.trim() ? 'visible' : 'hidden'"
+					(click)="toggleExpand(item, $event)"
+					title="Toggle description"
+				>&#9654;</button>
+
+				<div class="item-content">
+					<span class="item-name">{{ item.itemName }}</span>
+					<div class="desc-wrapper" [class.expanded]="item.isExpanded">
+						<div class="item-desc">{{ item.itemDescription }}</div>
+					</div>
+				</div>
+
+				<mat-checkbox
+					class="item-checkbox"
+					[checked]="item.isComplete"
+					[disabled]="item.isToggling"
+					(change)="toggleItem(item)"
+					(click)="$event.stopPropagation()"
+				></mat-checkbox>
+
+			</div>
+		}
+	</div>
+
+</div>
