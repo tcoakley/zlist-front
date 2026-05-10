@@ -54,12 +54,46 @@
 	@if (listStore.lists().length > 0) {
 		<div class="lists-grid">
 			@for (list of listStore.lists(); track list.id) {
-				<div class="list-card" (click)="navigateToList(list.id)">
-					<div class="list-card-name">{{ list.listName }}</div>
-					@if (list.listDescription) {
-						<div class="list-description">{{ list.listDescription }}</div>
-					}
-					<div class="item-count">{{ list.items.length }} item{{ list.items.length !== 1 ? 's' : '' }}</div>
+				<div class="list-card">
+
+					<div class="card-main-row">
+						<button
+							class="expand-btn"
+							[class.expanded]="isExpanded(list.id)"
+							(click)="toggleDescription(list.id)"
+							title="Toggle details"
+						>&#9654;</button>
+
+						<span class="list-card-name" [title]="list.listName">{{ list.listName }}</span>
+
+						<div class="card-actions">
+							@if (confirmingDeleteId === list.id) {
+								<span class="confirm-delete-label">Delete?</span>
+								<button class="confirm-yes-btn" (click)="confirmDelete(list.id)">Yes</button>
+								<button class="confirm-no-btn" (click)="cancelDelete()">No</button>
+							} @else {
+								<button class="edit-btn" (click)="navigateToList(list.id)" title="Edit">&#9998;</button>
+								<button class="launch-btn" (click)="launchList(list.id)" title="Launch">&#9654;</button>
+								<button class="delete-btn" (click)="startDelete(list.id)" title="Delete">&#10005;</button>
+							}
+						</div>
+					</div>
+
+					<div class="desc-wrapper" [class.expanded]="isExpanded(list.id)">
+						<div class="run-info">
+							<span>{{ list.items.length }} item{{ list.items.length !== 1 ? 's' : '' }}</span>
+							<span class="run-divider">·</span>
+							<span>{{ getRunCount(list) }} run{{ getRunCount(list) !== 1 ? 's' : '' }}</span>
+							@if (getLastRunDate(list)) {
+								<span class="run-divider">·</span>
+								<span class="run-date">Last run {{ getLastRunDate(list) }}</span>
+							}
+						</div>
+						@if (list.listDescription) {
+							<div class="list-description">{{ list.listDescription }}</div>
+						}
+					</div>
+
 				</div>
 			}
 		</div>

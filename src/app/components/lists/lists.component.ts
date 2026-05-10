@@ -5,6 +5,7 @@ import { AutofocusDirective } from '../../directives/autofocus.directive';
 import { SnackbarService } from '../../services/snackbar.service';
 import { TitleService } from '../../services/title.service';
 import { ListStore } from '../../stores/list/list.store';
+import { List } from '../../../models/list.model';
 
 @Component({
 	selector: 'app-lists',
@@ -22,6 +23,9 @@ export class ListsComponent implements OnInit {
 	showForm = false;
 	listName = '';
 	listDescription = '';
+
+	expandedListIds = new Set<number>();
+	confirmingDeleteId: number | null = null;
 
 	ngOnInit() {
 		this.titleService.setTitle('Lists');
@@ -59,5 +63,52 @@ export class ListsComponent implements OnInit {
 
 	navigateToList(id: number) {
 		this.router.navigate(['/lists', id]);
+	}
+
+	toggleDescription(id: number) {
+		if (this.expandedListIds.has(id)) {
+			this.expandedListIds.delete(id);
+		} else {
+			this.expandedListIds.add(id);
+		}
+	}
+
+	isExpanded(id: number): boolean {
+		return this.expandedListIds.has(id);
+	}
+
+	launchList(id: number) {
+		console.log('Launch list', id);
+	}
+
+	startDelete(id: number) {
+		this.confirmingDeleteId = id;
+	}
+
+	cancelDelete() {
+		this.confirmingDeleteId = null;
+	}
+
+	async confirmDelete(id: number) {
+		await this.listStore.deleteList(id);
+		if (this.listStore.error()) {
+			this.snackbarService.showMessage(this.listStore.error(), 'error');
+		}
+		this.confirmingDeleteId = null;
+	}
+
+	getRunCount(list: List): number {
+		return list.listRuns?.length ?? 0;
+	}
+
+	getLastRunDate(list: List): string | null {
+		if (!list.listRuns?.length) return null;
+		const timestamps = list.listRuns
+			.map(r => r.createdAt ? new Date(r.createdAt).getTime() : 0)
+			.filter(t => t > 0);
+		if (!timestamps.length) return null;
+		return new Date(Math.max(...timestamps)).toLocaleDateString(undefined, {
+			year: 'numeric', month: 'short', day: 'numeric'
+		});
 	}
 }

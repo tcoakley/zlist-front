@@ -47,7 +47,7 @@
 
 		<div class="items-section" cdkDropList (cdkDropListDropped)="onDrop($event)">
 
-			@for (item of editableItems; track item.id || $index; let idx = $index) {
+			@for (item of editableItems; track $index; let idx = $index) {
 				<div class="item-row" cdkDrag [cdkDragDisabled]="!item.itemName.trim()" [class.unsaved]="item.isDirty">
 
 					<button
