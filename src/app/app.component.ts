@@ -37,5 +37,6 @@ export class AppComponent implements OnInit {
 		).subscribe((event: NavigationEnd) => {
 			this.layoutTop = event.urlAfterRedirects.startsWith('/lists');
 		});
+
 	}
 }

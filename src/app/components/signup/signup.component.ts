@@ -1,10 +1,12 @@
-import { Component, OnInit, inject, effect } from '@angular/core';
+import { Component, OnInit, AfterViewInit, inject, effect } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AutofocusDirective } from '../../directives/autofocus.directive';
 import { SnackbarService } from '../../services/snackbar.service';
 import { UserModel } from '../../../models/user.model';
 import { UserStore } from '../../stores/user/user.store';
+
+const RECAPTCHA_SITE_KEY = '6Lf2ouMsAAAAACZ6IX2lDqbyxYQ83reVBJNRnxqC';
 
 @Component({
 	selector: 'app-signup',
@@ -13,13 +15,14 @@ import { UserStore } from '../../stores/user/user.store';
 	templateUrl: './signup.component.html',
 	styleUrls: ['./signup.component.scss']
 })
-export class SignupComponent implements OnInit {
+export class SignupComponent implements OnInit, AfterViewInit {
 	isReady = false;
 
 	email = '';
 	password = '';
 	firstName = '';
 	lastName = '';
+	captchaToken = '';
 
 	private userStore = inject(UserStore);
 	private snackbarService = inject(SnackbarService);
@@ -38,8 +41,30 @@ export class SignupComponent implements OnInit {
 		this.formReady();
 	}
 
+	ngAfterViewInit() {
+		const tryRender = () => {
+			const g = (window as any).grecaptcha;
+			if (g && g.render) {
+				g.render('recaptcha-container', {
+					sitekey: RECAPTCHA_SITE_KEY,
+					callback: (token: string) => {
+						this.captchaToken = token;
+						this.formReady();
+					},
+					'expired-callback': () => {
+						this.captchaToken = '';
+						this.formReady();
+					}
+				});
+			} else {
+				setTimeout(tryRender, 100);
+			}
+		};
+		tryRender();
+	}
+
 	formReady() {
-		this.isReady = !!this.email && !!this.password && !!this.firstName && !!this.lastName;
+		this.isReady = !!this.email && !!this.password && !!this.firstName && !!this.lastName && !!this.captchaToken;
 	}
 
 	async saveForm() {
@@ -53,7 +78,8 @@ export class SignupComponent implements OnInit {
 			email: this.email,
 			password: this.password,
 			firstName: this.firstName,
-			lastName: this.lastName
+			lastName: this.lastName,
+			captchaToken: this.captchaToken
 		};
 
 		const success = await this.userStore.signUp(user);

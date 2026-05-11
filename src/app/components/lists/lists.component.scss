@@ -40,6 +40,81 @@
 	}
 }
 
+.help-section {
+	margin-top: 16px;
+	border: 1px solid $border;
+	border-radius: 6px;
+	overflow: hidden;
+}
+
+.help-header {
+	width: 100%;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	background: $bg-surface;
+	border: none;
+	color: $success-border;
+	font-size: 0.85rem;
+	font-weight: 700;
+	padding: 10px 14px;
+	cursor: pointer;
+	text-align: left;
+	margin: 0;
+	height: auto;
+
+	&:hover {
+		opacity: 0.85;
+	}
+}
+
+.help-arrow {
+	font-size: 0.6rem;
+	transition: transform 0.2s ease;
+	flex-shrink: 0;
+
+	&.expanded {
+		transform: rotate(90deg);
+	}
+}
+
+.help-body {
+	max-height: 0;
+	overflow: hidden;
+	transition: max-height 0.3s ease;
+	background: $bg-surface;
+
+	&.expanded {
+		max-height: 600px;
+	}
+
+	p, ul {
+		font-size: 0.85rem;
+		color: $text-secondary;
+		margin: 0 0 10px;
+		line-height: 1.6;
+		padding: 0 14px;
+
+		&:first-child {
+			padding-top: 10px;
+		}
+	}
+
+	ul {
+		padding-left: 32px;
+
+		li {
+			margin-bottom: 3px;
+		}
+	}
+
+	.help-footer {
+		color: $text-muted;
+		font-size: 0.8rem;
+		padding-bottom: 12px;
+	}
+}
+
 .empty-message {
 	color: $text-faint;
 	margin-top: 24px;

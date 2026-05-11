@@ -7,13 +7,10 @@
 	background-color: $bg-page;
 	border-left: 2px solid $border;
 	border-right: 2px solid $border;
-	height: 100vh;
-	display: flex;
-	justify-content: center;
+	min-height: 100vh;
 
 	@media (max-width: 600px) {
 		max-width: 100%;
-		padding: 0 8px;
 		border-left: 2px solid $border;
 		border-right: 2px solid $border;
 	}
@@ -108,14 +105,17 @@
 .subcontent-container {
 	width: 100%;
 	padding: 0 8px;
+	box-sizing: border-box;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
-	overflow-y: auto;
+
+	&.has-header {
+		padding-top: 58px;
+	}
 
 	&.layout-top {
-		margin-top: 60px;
 		justify-content: flex-start;
 	}
 }

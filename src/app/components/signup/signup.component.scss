@@ -1,6 +1,11 @@
 :host {
-	display: block; 
+	display: block;
 	width: 100%;
-	max-width: 300px; 
+	max-width: 300px;
 	margin: 0 auto;
+}
+
+.recaptcha-wrapper {
+	display: flex;
+	justify-content: center;
 }

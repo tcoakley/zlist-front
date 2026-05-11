@@ -1,0 +1,97 @@
+@use 'variables' as *;
+
+:host {
+	display: block;
+	width: 100%;
+	max-width: 600px;
+	margin: 0 auto;
+}
+
+.top-bar {
+	display: flex;
+	align-items: center;
+	margin-bottom: 12px;
+}
+
+.back-btn {
+	background: transparent;
+	border: none;
+	color: $text-muted;
+	font-size: 0.85rem;
+	padding: 0;
+	cursor: pointer;
+
+	&:hover {
+		color: $text-primary;
+		opacity: 1;
+	}
+}
+
+.about-content {
+	padding: 0 4px 40px;
+
+	h1 {
+		font-size: 1.4rem;
+		margin: 0 0 20px;
+		color: $text-primary;
+	}
+
+	h2 {
+		font-size: 1rem;
+		margin: 0 0 10px;
+		color: $text-primary;
+	}
+
+	p {
+		font-size: 0.9rem;
+		color: $text-secondary;
+		margin: 0 0 14px;
+		line-height: 1.7;
+	}
+
+	ul {
+		margin: 0 0 14px;
+		padding-left: 20px;
+
+		li {
+			font-size: 0.9rem;
+			color: $text-secondary;
+			margin-bottom: 5px;
+			line-height: 1.5;
+		}
+	}
+
+	ul.questions {
+		list-style: none;
+		padding-left: 0;
+
+		li {
+			color: $text-muted;
+			font-style: italic;
+
+			&::before {
+				content: '— ';
+			}
+		}
+	}
+
+	.emphasis {
+		color: $text-primary;
+		font-style: italic;
+		font-weight: 600;
+		padding-left: 12px;
+		border-left: 3px solid $primary;
+		margin-left: 4px;
+	}
+
+	.list-type {
+		margin: 24px 0;
+		padding: 16px;
+		background-color: $bg-surface;
+		border-radius: 8px;
+	}
+
+	.closing {
+		margin-top: 28px;
+	}
+}

@@ -92,7 +92,7 @@ export class HttpService {
 						return retryFn();
 					} else {
 						// Refresh failed, redirect to login
-						this.router.navigate(['/login'], { queryParams: { message: 'Session expired' } });
+						this.router.navigate(['/login']);
 						return throwError(() => error);
 					}
 				})

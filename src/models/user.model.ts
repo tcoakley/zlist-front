@@ -4,4 +4,8 @@ export interface UserModel {
 	password: string;
 	firstName: string;
 	lastName: string;
+	subscription?: string;
+	subscriptionExpiresAt?: string;
+	isHelpEnabled?: boolean;
+	captchaToken?: string;
 }

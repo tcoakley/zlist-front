@@ -23,6 +23,7 @@ export class ProfileComponent implements OnInit {
 	password = '';
 	firstName = '';
 	lastName = '';
+	isHelpEnabled = true;
 
 	private userStore = inject(UserStore);
 	private snackbarService = inject(SnackbarService);
@@ -37,6 +38,7 @@ export class ProfileComponent implements OnInit {
 				this.email = user.email;
 				this.firstName = user.firstName;
 				this.lastName = user.lastName;
+				this.isHelpEnabled = user.isHelpEnabled ?? true;
 				this.formReady();
 			}
 		});
@@ -63,6 +65,7 @@ export class ProfileComponent implements OnInit {
 			this.email !== this.originalUser.email ||
 			this.firstName !== this.originalUser.firstName ||
 			this.lastName !== this.originalUser.lastName ||
+			this.isHelpEnabled !== (this.originalUser.isHelpEnabled ?? true) ||
 			(!!this.password && this.password.trim().length > 0)
 		);
 	}
@@ -79,7 +82,8 @@ export class ProfileComponent implements OnInit {
 			email: this.email,
 			password: this.password || '',
 			firstName: this.firstName,
-			lastName: this.lastName
+			lastName: this.lastName,
+			isHelpEnabled: this.isHelpEnabled
 		};
 
 		this.userStore.updateUser(user);

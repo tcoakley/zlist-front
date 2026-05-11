@@ -49,6 +49,6 @@ export class MenuComponent {
 	logout() {
 		this.userStore.logout();
 		this.menuClosed.emit();
-		this.router.navigate(['/login'], { queryParams: { message: 'Session expired' } });
+		this.router.navigate(['/login']);
 	}
 }

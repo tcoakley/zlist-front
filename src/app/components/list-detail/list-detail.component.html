@@ -2,7 +2,39 @@
 
 	<div class="top-bar">
 		<button class="back-btn" (click)="goBack()">&#8592; Lists</button>
+		<button class="launch-btn" (click)="launchList()" [disabled]="hasDirty">&#9654; Launch</button>
 	</div>
+
+	@if (userStore.user()?.isHelpEnabled) {
+		<div class="help-section">
+			<button class="help-header" (click)="toggleHelp()" [attr.aria-expanded]="helpExpanded" aria-controls="edit-list-help">
+				<span class="help-arrow" [class.expanded]="helpExpanded">&#9654;</span>
+				Edit List Help
+			</button>
+			<div id="edit-list-help" class="help-body" [class.expanded]="helpExpanded" aria-live="polite">
+				<p>This page is where you build and maintain the items for your repeatable checklist.</p>
+				<p>You may add as many checklist items as needed. Each item represents a task or step that should be completed when running the checklist.</p>
+				<p><strong>Examples:</strong></p>
+				<ul>
+					<li>Disconnect power cable</li>
+					<li>Lock storage compartments</li>
+					<li>Verify backup completed</li>
+					<li>Check tire pressure</li>
+				</ul>
+				<p>Items can be reordered using the drag handles on the right side of each row.</p>
+				<p>To edit the checklist name or description, click the pencil icon next to the list title.</p>
+				<p>The checklist itself is permanent and designed to be reused as many times as needed. Unlike a one-time grocery list, completing a checklist run does not remove or delete the checklist.</p>
+				<p>When your checklist is ready, click the <strong>Launch</strong> button to begin your first checklist run.</p>
+				<p>You may also:</p>
+				<ul>
+					<li>Return to the main lists page using the <strong>Back to Lists</strong> link</li>
+					<li>Edit the checklist again later at any time</li>
+					<li>Re-run the checklist as often as needed from this page or the main lists page</li>
+				</ul>
+				<p class="help-footer">This help text can be turned off at any time from your <a routerLink="/profile">Profile</a> page.</p>
+			</div>
+		</div>
+	}
 
 	@if (list(); as l) {
 
@@ -18,6 +50,7 @@
 						type="text"
 						[(ngModel)]="editedName"
 						(keydown.enter)="saveAll()"
+						(blur)="onHeaderBlur()"
 						placeholder="List name"
 						appAutofocus
 					/>
@@ -35,6 +68,7 @@
 					type="text"
 					[(ngModel)]="editedDesc"
 					(keydown.enter)="saveAll()"
+					(blur)="onHeaderBlur()"
 					placeholder="Description (optional)"
 				/>
 			}
@@ -43,7 +77,7 @@
 		<div class="items-section" cdkDropList (cdkDropListDropped)="onDrop($event)">
 
 			@for (item of editableItems; track $index; let idx = $index) {
-				<div class="item-row" cdkDrag [cdkDragDisabled]="!item.itemName.trim()" [class.unsaved]="item.isDirty">
+				<div class="item-row" cdkDrag [cdkDragDisabled]="!item.itemName.trim()" [class.unsaved]="item.isDirty" (cdkDragStarted)="onDragStart()">
 
 					<button
 						class="expand-btn"
@@ -62,6 +96,7 @@
 							(ngModelChange)="onItemNameChange(item, idx)"
 							(keydown.tab)="onItemNameTab($event, idx)"
 							(keydown.enter)="saveAll()"
+							(blur)="onItemBlur(item)"
 							[name]="'item_' + idx"
 							placeholder="New item..."
 						/>
@@ -70,6 +105,7 @@
 								class="desc-area"
 								[(ngModel)]="item.itemDescription"
 								(ngModelChange)="onItemDescChange(item)"
+								(blur)="onItemBlur(item)"
 								[name]="'desc_' + idx"
 								placeholder="Description..."
 								rows="3"

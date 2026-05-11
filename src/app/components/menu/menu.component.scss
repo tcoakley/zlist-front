@@ -2,10 +2,12 @@
 
 .menu-container {
 	position: absolute;
-	top: 50px;
+	top: 0;
 	left: 0;
+	right: 0;
 	width: 100%;
 	max-width: 600px;
+	margin: 0 auto;
 	height: calc(100vh - 52px);
 	background: $bg-menu;
 	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);

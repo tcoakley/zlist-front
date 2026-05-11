@@ -6,6 +6,9 @@ import { ListDetailComponent } from './components/list-detail/list-detail.compon
 import { ListRunComponent } from './components/list-run/list-run.component';
 import { ForgotPasswordComponent } from './components/forgotPassword/forgotPassword.component';
 import { ProfileComponent } from './components/profile/profile.component';
+import { TermsComponent } from './components/terms/terms.component';
+import { PrivacyComponent } from './components/privacy/privacy.component';
+import { AboutComponent } from './components/about/about.component';
 import { AuthGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
@@ -16,6 +19,9 @@ export const routes: Routes = [
 	{ path: 'lists/:id', component: ListDetailComponent, canActivate: [AuthGuard] },
 	{ path: 'lists/:listId/run/:runId', component: ListRunComponent, canActivate: [AuthGuard] },
 	{ path: 'profile', component: ProfileComponent, canActivate: [AuthGuard] },
+	{ path: 'about', component: AboutComponent },
+	{ path: 'terms', component: TermsComponent },
+	{ path: 'privacy', component: PrivacyComponent },
 	{ path: '', redirectTo: '/login', pathMatch: 'full' },
 	{ path: '**', redirectTo: '/login' },
 ];

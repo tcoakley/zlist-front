@@ -1,5 +1,5 @@
-import { Component, OnInit, inject, effect } from '@angular/core';
-import { Router, RouterLink, ActivatedRoute } from '@angular/router';
+import { Component, inject, effect } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AutofocusDirective } from '../../directives/autofocus.directive';
 import { SnackbarService } from '../../services/snackbar.service';
@@ -12,7 +12,7 @@ import { UserStore } from '../../stores/user/user.store';
 	templateUrl: './login.component.html',
 	styleUrls: ['./login.component.scss'],
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent {
 	email = '';
 	password = '';
 	rememberMe = false;
@@ -20,7 +20,6 @@ export class LoginComponent implements OnInit {
 	private userStore = inject(UserStore);
 	private router = inject(Router);
 	private snackbarService = inject(SnackbarService);
-	private route = inject(ActivatedRoute);
 
 	constructor() {
 		effect(() => {
@@ -33,15 +32,6 @@ export class LoginComponent implements OnInit {
 			const error = this.userStore.error();
 			if (error) {
 				this.snackbarService.showMessage(error, 'error');
-			}
-		});
-	}
-
-	ngOnInit() {
-		this.route.queryParams.subscribe(params => {
-			const message = params['message'];
-			if (message) {
-				this.snackbarService.showMessage(message, 'warning');
 			}
 		});
 	}

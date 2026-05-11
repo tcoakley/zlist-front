@@ -1,21 +1,23 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AutofocusDirective } from '../../directives/autofocus.directive';
 import { SnackbarService } from '../../services/snackbar.service';
 import { TitleService } from '../../services/title.service';
 import { ListStore } from '../../stores/list/list.store';
+import { UserStore } from '../../stores/user/user.store';
 import { List } from '../../../models/list.model';
 
 @Component({
 	selector: 'app-lists',
 	standalone: true,
-	imports: [FormsModule, AutofocusDirective],
+	imports: [FormsModule, AutofocusDirective, RouterLink],
 	templateUrl: './lists.component.html',
 	styleUrls: ['./lists.component.scss'],
 })
 export class ListsComponent implements OnInit {
 	protected listStore = inject(ListStore);
+	protected userStore = inject(UserStore);
 	private router = inject(Router);
 	private titleService = inject(TitleService);
 	private snackbarService = inject(SnackbarService);
@@ -23,6 +25,16 @@ export class ListsComponent implements OnInit {
 	showForm = false;
 	listName = '';
 	listDescription = '';
+	helpExpanded = false;
+	listsHelpExpanded = false;
+
+	toggleHelp() {
+		this.helpExpanded = !this.helpExpanded;
+	}
+
+	toggleListsHelp() {
+		this.listsHelpExpanded = !this.listsHelpExpanded;
+	}
 
 	expandedListIds = new Set<number>();
 	confirmingDeleteId: number | null = null;

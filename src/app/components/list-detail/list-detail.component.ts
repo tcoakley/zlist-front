@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, inject, computed, ViewChildren, QueryList, ElementRef } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CdkDragDrop, CdkDrag, CdkDropList, CdkDragHandle, moveItemInArray } from '@angular/cdk/drag-drop';
 import { MatIconModule } from '@angular/material/icon';
@@ -7,6 +7,7 @@ import { AutofocusDirective } from '../../directives/autofocus.directive';
 import { SnackbarService } from '../../services/snackbar.service';
 import { TitleService } from '../../services/title.service';
 import { ListStore } from '../../stores/list/list.store';
+import { UserStore } from '../../stores/user/user.store';
 import { ListItem } from '../../../models/list.model';
 
 interface EditableItem {
@@ -23,18 +24,27 @@ interface EditableItem {
 @Component({
 	selector: 'app-list-detail',
 	standalone: true,
-	imports: [FormsModule, AutofocusDirective, CdkDropList, CdkDrag, CdkDragHandle, MatIconModule],
+	imports: [FormsModule, AutofocusDirective, RouterLink, CdkDropList, CdkDrag, CdkDragHandle, MatIconModule],
 	templateUrl: './list-detail.component.html',
 	styleUrls: ['./list-detail.component.scss'],
 })
 export class ListDetailComponent implements OnInit, OnDestroy {
 	protected listStore = inject(ListStore);
+	protected userStore = inject(UserStore);
 	private route = inject(ActivatedRoute);
 	private router = inject(Router);
 	private titleService = inject(TitleService);
 	private snackbarService = inject(SnackbarService);
 
+	helpExpanded = false;
+
+	toggleHelp() {
+		this.helpExpanded = !this.helpExpanded;
+	}
+
 	@ViewChildren('itemNameInput') itemNameInputs!: QueryList<ElementRef<HTMLInputElement>>;
+
+	readonly isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
 	listId = 0;
 
@@ -135,6 +145,15 @@ export class ListDetailComponent implements OnInit, OnDestroy {
 		this.router.navigate(['/lists']);
 	}
 
+	async launchList() {
+		const run = await this.listStore.createListRun(this.listId);
+		if (run) {
+			this.router.navigate(['/lists', this.listId, 'run', run.id]);
+		} else {
+			this.snackbarService.showMessage(this.listStore.error(), 'error');
+		}
+	}
+
 	// --- Header editing ---
 
 	toggleHeaderEdit() {
@@ -167,6 +186,10 @@ export class ListDetailComponent implements OnInit, OnDestroy {
 	}
 
 	// --- Drag and drop ---
+
+	onDragStart() {
+		(document.activeElement as HTMLElement)?.blur();
+	}
 
 	onDrop(event: CdkDragDrop<EditableItem[]>) {
 		if (event.previousIndex === event.currentIndex) return;
@@ -201,6 +224,18 @@ export class ListDetailComponent implements OnInit, OnDestroy {
 
 	onItemDescChange(item: EditableItem) {
 		item.isDirty = true;
+	}
+
+	async onItemBlur(item: EditableItem) {
+		if (this.isMobile && item.isDirty && item.itemName.trim()) {
+			await this.saveItem(item);
+		}
+	}
+
+	async onHeaderBlur() {
+		if (this.isMobile && this.headerDirty && this.editedName.trim()) {
+			await this.saveHeader();
+		}
 	}
 
 	toggleExpand(item: EditableItem) {
