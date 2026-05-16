@@ -1,57 +1,61 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { Component, OnInit, OnDestroy, inject, Injector, effect } from '@angular/core';
+import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AutofocusDirective } from '../../directives/autofocus.directive';
 import { SnackbarService } from '../../services/snackbar.service';
 import { TitleService } from '../../services/title.service';
 import { ListStore } from '../../stores/list/list.store';
-import { UserStore } from '../../stores/user/user.store';
 import { List } from '../../../models/list.model';
 
 @Component({
 	selector: 'app-lists',
 	standalone: true,
-	imports: [FormsModule, AutofocusDirective, RouterLink],
+	imports: [FormsModule, AutofocusDirective],
 	templateUrl: './lists.component.html',
 	styleUrls: ['./lists.component.scss'],
 })
-export class ListsComponent implements OnInit {
+export class ListsComponent implements OnInit, OnDestroy {
 	protected listStore = inject(ListStore);
-	protected userStore = inject(UserStore);
 	private router = inject(Router);
 	private titleService = inject(TitleService);
 	private snackbarService = inject(SnackbarService);
+	private injector = inject(Injector);
 
 	showForm = false;
 	listName = '';
 	listDescription = '';
-	helpExpanded = false;
-	listsHelpExpanded = false;
-
-	toggleHelp() {
-		this.helpExpanded = !this.helpExpanded;
-	}
-
-	toggleListsHelp() {
-		this.listsHelpExpanded = !this.listsHelpExpanded;
-	}
-
 	expandedListIds = new Set<number>();
 	confirmingDeleteId: number | null = null;
 
 	ngOnInit() {
 		this.titleService.setTitle('Lists');
+		this.titleService.setHelpContext('lists');
 		this.listStore.loadLists();
+
+		let triggered = false;
+		effect(() => {
+			if (!this.listStore.loading() && this.listStore.lists().length === 0 && !triggered) {
+				triggered = true;
+				setTimeout(() => this.titleService.setAnimateHelp(true), 750);
+			}
+		}, { injector: this.injector });
+	}
+
+	ngOnDestroy() {
+		this.titleService.setHelpContext(null);
+		this.titleService.setAnimateHelp(false);
 	}
 
 	openForm() {
 		this.showForm = true;
+		this.titleService.setHelpContext('create-list');
 	}
 
 	cancelForm() {
 		this.showForm = false;
 		this.listName = '';
 		this.listDescription = '';
+		this.titleService.setHelpContext('lists');
 	}
 
 	async saveList() {

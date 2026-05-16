@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, inject, computed, ViewChildren, QueryList, ElementRef } from '@angular/core';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CdkDragDrop, CdkDrag, CdkDropList, CdkDragHandle, moveItemInArray } from '@angular/cdk/drag-drop';
 import { MatIconModule } from '@angular/material/icon';
@@ -7,7 +7,6 @@ import { AutofocusDirective } from '../../directives/autofocus.directive';
 import { SnackbarService } from '../../services/snackbar.service';
 import { TitleService } from '../../services/title.service';
 import { ListStore } from '../../stores/list/list.store';
-import { UserStore } from '../../stores/user/user.store';
 import { ListItem } from '../../../models/list.model';
 
 interface EditableItem {
@@ -24,23 +23,16 @@ interface EditableItem {
 @Component({
 	selector: 'app-list-detail',
 	standalone: true,
-	imports: [FormsModule, AutofocusDirective, RouterLink, CdkDropList, CdkDrag, CdkDragHandle, MatIconModule],
+	imports: [FormsModule, AutofocusDirective, CdkDropList, CdkDrag, CdkDragHandle, MatIconModule],
 	templateUrl: './list-detail.component.html',
 	styleUrls: ['./list-detail.component.scss'],
 })
 export class ListDetailComponent implements OnInit, OnDestroy {
 	protected listStore = inject(ListStore);
-	protected userStore = inject(UserStore);
 	private route = inject(ActivatedRoute);
 	private router = inject(Router);
 	private titleService = inject(TitleService);
 	private snackbarService = inject(SnackbarService);
-
-	helpExpanded = false;
-
-	toggleHelp() {
-		this.helpExpanded = !this.helpExpanded;
-	}
 
 	@ViewChildren('itemNameInput') itemNameInputs!: QueryList<ElementRef<HTMLInputElement>>;
 
@@ -83,6 +75,7 @@ export class ListDetailComponent implements OnInit, OnDestroy {
 
 	ngOnInit() {
 		this.listId = Number(this.route.snapshot.paramMap.get('id'));
+		this.titleService.setHelpContext('edit-list');
 
 		this.titleService.setActionButton({
 			label: 'Save',
@@ -101,6 +94,7 @@ export class ListDetailComponent implements OnInit, OnDestroy {
 
 	ngOnDestroy() {
 		this.titleService.setActionButton(null);
+		this.titleService.setHelpContext(null);
 	}
 
 	private async initItems() {

@@ -49,27 +49,6 @@
 				</div>
 			</form>
 		</div>
-		@if (userStore.user()?.isHelpEnabled) {
-			<div class="help-section">
-				<button class="help-header" (click)="toggleHelp()" [attr.aria-expanded]="helpExpanded" aria-controls="create-list-help">
-					<span class="help-arrow" [class.expanded]="helpExpanded">&#9654;</span>
-					Create List Help
-				</button>
-				<div id="create-list-help" class="help-body" [class.expanded]="helpExpanded" aria-live="polite">
-					<p>Create a repeatable checklist by giving your list a name and optionally adding a description.</p>
-					<p>The <strong>List Name</strong> is required and should clearly describe the process or task you want to repeat, such as:</p>
-					<ul>
-						<li>RV Departure Checklist</li>
-						<li>Monthly Server Maintenance</li>
-						<li>Pre-flight Checklist</li>
-						<li>Camping Setup</li>
-					</ul>
-					<p>The <strong>Description</strong> field is optional and can be used to add additional context or notes about when the checklist should be used.</p>
-					<p>After clicking <strong>Create</strong>, you will be taken to the next page where you can begin adding checklist items to the list.</p>
-					<p class="help-footer">This help text can be turned off at any time from your <a routerLink="/profile">Profile</a> page.</p>
-				</div>
-			</div>
-		}
 	}
 
 	@if (listStore.lists().length > 0) {
@@ -124,36 +103,6 @@
 		</div>
 	} @else if (!showForm && !listStore.loading()) {
 		<p class="empty-message">No lists yet. Create your first list above.</p>
-	}
-
-	@if (listStore.lists().length > 0 && userStore.user()?.isHelpEnabled) {
-		<div class="help-section">
-			<button class="help-header" (click)="toggleListsHelp()" [attr.aria-expanded]="listsHelpExpanded" aria-controls="lists-page-help">
-				<span class="help-arrow" [class.expanded]="listsHelpExpanded">&#9654;</span>
-				Lists Page Help
-			</button>
-			<div id="lists-page-help" class="help-body" [class.expanded]="listsHelpExpanded" aria-live="polite">
-				<p>This page shows all of your repeatable checklists.</p>
-				<p>Use the <strong>Create New List</strong> button to create a new checklist.</p>
-				<p>For each existing list you may:</p>
-				<ul>
-					<li>Click the <strong>pencil icon</strong> to edit the checklist items, name, or description</li>
-					<li>Click the <strong>green launch button</strong> to begin a new checklist run</li>
-					<li>Click the <strong>X button</strong> to permanently delete the checklist</li>
-				</ul>
-				<p>If a checklist already has a run currently in progress, the launch button will appear yellow with two arrows instead of the normal green launch icon.</p>
-				<p>Deleting a checklist is permanent. You will be asked to confirm deletion before it is removed. Deleting a checklist will also permanently remove:</p>
-				<ul>
-					<li>Checklist items</li>
-					<li>Current runs</li>
-					<li>Run history</li>
-					<li>Completed item history</li>
-				</ul>
-				<p><strong>Deleted checklists cannot be recovered.</strong></p>
-				<p>Repeatable checklists are designed to be reused over and over again. Launching a checklist creates a new checklist run while keeping the original checklist intact for future use.</p>
-				<p class="help-footer">This help text can be turned off at any time from your <a routerLink="/profile">Profile</a> page.</p>
-			</div>
-		</div>
 	}
 
 </div>

@@ -1,15 +1,28 @@
 <div class="title-bar">
 	<div class="menu-icon" (click)="toggleMenu()">&#9776;</div>
 	<span class="title-text">{{ title }}</span>
-	@if (titleService.actionButton(); as btn) {
-		@if (btn.show()) {
-			<button class="title-action-btn" [disabled]="btn.disabled()" (click)="btn.action()">
-				@if (btn.loading()) { <span class="title-action-spinner"></span> } @else { {{ btn.label }} }
-			</button>
+	<div class="right-actions">
+		@if (userStore.user()?.isHelpEnabled) {
+			<button
+				class="help-btn"
+				[class.help-pulse]="titleService.animateHelp()"
+				(click)="openHelp()"
+				matTooltip="Site Help"
+				matTooltipPosition="below"
+				matTooltipClass="app-tooltip"
+				aria-label="Site Help"
+			>?</button>
 		}
-	}
+		@if (titleService.actionButton(); as btn) {
+			@if (btn.show()) {
+				<button class="title-action-btn" [disabled]="btn.disabled()" (click)="btn.action()">
+					@if (btn.loading()) { <span class="title-action-spinner"></span> } @else { {{ btn.label }} }
+				</button>
+			}
+		}
+	</div>
 </div>
 
 <div class="menu-wrapper">
-	<app-menu [isOpen]="isMenuOpen" (menuClosed)="closeMenu()" (loggedOut)="logout()"></app-menu>
+	<app-menu [isOpen]="isMenuOpen" (menuClosed)="closeMenu()"></app-menu>
 </div>

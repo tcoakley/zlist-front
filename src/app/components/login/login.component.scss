@@ -1,8 +1,27 @@
+@use 'variables' as *;
+
 :host {
 	display: block; 
 	width: 100%;
 	max-width: 300px; 
 	margin: 0 auto;
+}
+
+.tagline {
+	margin: 0 0 20px;
+
+	p {
+		font-size: 0.85rem;
+		color: $text-secondary;
+		margin: 0 0 6px;
+		line-height: 1.5;
+	}
+}
+
+.tagline-headline {
+	font-size: 1.05rem;
+	font-weight: 700;
+	color: $text-primary;
 }
 
 .signup-link {

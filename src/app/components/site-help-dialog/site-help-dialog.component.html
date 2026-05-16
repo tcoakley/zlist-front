@@ -1,0 +1,89 @@
+<div mat-dialog-title class="dialog-title-row">
+	<span>Site Help</span>
+	<button mat-dialog-close class="dialog-close-x" aria-label="Close">&#10005;</button>
+</div>
+
+<mat-dialog-content>
+
+	<div class="help-section">
+		<button class="help-header" (click)="toggle('createList')" [attr.aria-expanded]="createListOpen">
+			<span class="help-arrow" [class.expanded]="createListOpen">&#9654;</span>
+			Create List Help
+		</button>
+		<div class="help-body" [class.expanded]="createListOpen">
+			<p>Create a repeatable checklist by giving your list a name and optionally adding a description.</p>
+			<p>The <strong>List Name</strong> is required and should clearly describe the process or task you want to repeat, such as:</p>
+			<ul>
+				<li>RV Departure Checklist</li>
+				<li>Monthly Server Maintenance</li>
+				<li>Pre-flight Checklist</li>
+				<li>Camping Setup</li>
+			</ul>
+			<p>The <strong>Description</strong> field is optional and can be used to add additional context or notes about when the checklist should be used.</p>
+			<p>After clicking <strong>Create</strong>, you will be taken to the next page where you can begin adding checklist items to the list.</p>
+			<p class="help-footer">This help text can be turned off at any time from your <strong>Profile</strong> page.</p>
+		</div>
+	</div>
+
+	<div class="help-section">
+		<button class="help-header" (click)="toggle('lists')" [attr.aria-expanded]="listsOpen">
+			<span class="help-arrow" [class.expanded]="listsOpen">&#9654;</span>
+			Lists Page Help
+		</button>
+		<div class="help-body" [class.expanded]="listsOpen">
+			<p>This page shows all of your repeatable checklists.</p>
+			<p>Use the <strong>Create New List</strong> button to create a new checklist.</p>
+			<p>For each existing list you may:</p>
+			<ul>
+				<li>Click the <strong>pencil icon</strong> to edit the checklist items, name, or description</li>
+				<li>Click the <strong>green launch button</strong> to begin a new checklist run</li>
+				<li>Click the <strong>X button</strong> to permanently delete the checklist</li>
+			</ul>
+			<p>If a checklist already has a run currently in progress, the launch button will appear yellow with two arrows instead of the normal green launch icon.</p>
+			<p>Deleting a checklist is permanent. You will be asked to confirm deletion before it is removed. Deleting a checklist will also permanently remove:</p>
+			<ul>
+				<li>Checklist items</li>
+				<li>Current runs</li>
+				<li>Run history</li>
+				<li>Completed item history</li>
+			</ul>
+			<p><strong>Deleted checklists cannot be recovered.</strong></p>
+			<p>Repeatable checklists are designed to be reused over and over again. Launching a checklist creates a new checklist run while keeping the original checklist intact for future use.</p>
+			<p class="help-footer">This help text can be turned off at any time from your <strong>Profile</strong> page.</p>
+		</div>
+	</div>
+
+	<div class="help-section">
+		<button class="help-header" (click)="toggle('editList')" [attr.aria-expanded]="editListOpen">
+			<span class="help-arrow" [class.expanded]="editListOpen">&#9654;</span>
+			Edit List Help
+		</button>
+		<div class="help-body" [class.expanded]="editListOpen">
+			<p>This page is where you build and maintain the items for your repeatable checklist.</p>
+			<p>You may add as many checklist items as needed. Each item represents a task or step that should be completed when running the checklist.</p>
+			<p><strong>Examples:</strong></p>
+			<ul>
+				<li>Disconnect power cable</li>
+				<li>Lock storage compartments</li>
+				<li>Verify backup completed</li>
+				<li>Check tire pressure</li>
+			</ul>
+			<p>Items can be reordered using the drag handles on the right side of each row.</p>
+			<p>To edit the checklist name or description, click the pencil icon next to the list title.</p>
+			<p>The checklist itself is permanent and designed to be reused as many times as needed. Unlike a one-time grocery list, completing a checklist run does not remove or delete the checklist.</p>
+			<p>When your checklist is ready, click the <strong>Launch</strong> button to begin your first checklist run.</p>
+			<p>You may also:</p>
+			<ul>
+				<li>Return to the main lists page using the <strong>Back to Lists</strong> link</li>
+				<li>Edit the checklist again later at any time</li>
+				<li>Re-run the checklist as often as needed from this page or the main lists page</li>
+			</ul>
+			<p class="help-footer">This help text can be turned off at any time from your <strong>Profile</strong> page.</p>
+		</div>
+	</div>
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+	<button mat-dialog-close class="close-btn">Close</button>
+</mat-dialog-actions>

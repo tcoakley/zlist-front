@@ -5,8 +5,7 @@ import { AutofocusDirective } from '../../directives/autofocus.directive';
 import { SnackbarService } from '../../services/snackbar.service';
 import { UserModel } from '../../../models/user.model';
 import { UserStore } from '../../stores/user/user.store';
-
-const RECAPTCHA_SITE_KEY = '6Lf2ouMsAAAAACZ6IX2lDqbyxYQ83reVBJNRnxqC';
+import { environment } from '../../../environments/environment';
 
 @Component({
 	selector: 'app-signup',
@@ -46,7 +45,7 @@ export class SignupComponent implements OnInit, AfterViewInit {
 			const g = (window as any).grecaptcha;
 			if (g && g.render) {
 				g.render('recaptcha-container', {
-					sitekey: RECAPTCHA_SITE_KEY,
+					sitekey: environment.recaptchaSiteKey,
 					callback: (token: string) => {
 						this.captchaToken = token;
 						this.formReady();
