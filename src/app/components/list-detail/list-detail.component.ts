@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, inject, computed, ViewChildren, QueryList, ElementRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit, inject, computed, ViewChildren, QueryList, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CdkDragDrop, CdkDrag, CdkDropList, CdkDragHandle, moveItemInArray } from '@angular/cdk/drag-drop';
@@ -27,8 +27,9 @@ interface EditableItem {
 	templateUrl: './list-detail.component.html',
 	styleUrls: ['./list-detail.component.scss'],
 })
-export class ListDetailComponent implements OnInit, OnDestroy {
+export class ListDetailComponent implements OnInit, OnDestroy, AfterViewInit {
 	protected listStore = inject(ListStore);
+	protected loading = true;
 	private route = inject(ActivatedRoute);
 	private router = inject(Router);
 	private titleService = inject(TitleService);
@@ -85,11 +86,22 @@ export class ListDetailComponent implements OnInit, OnDestroy {
 			action: () => this.saveAll(),
 		});
 
+		// Pre-populate from cache so first render isn't empty
+		const cached = this.list();
+		if (cached) {
+			this.titleService.setTitle(cached.listName);
+			this.editableItems = cached.items.map(i => this.toEditable(i)).concat([this.createDraft()]);
+		}
+
 		if (!this.listStore.lists().length) {
 			this.listStore.loadLists().then(() => this.initItems());
 		} else {
 			this.initItems();
 		}
+	}
+
+	ngAfterViewInit(): void {
+		setTimeout(() => this.loading = false, 100);
 	}
 
 	ngOnDestroy() {

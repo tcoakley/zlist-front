@@ -1,112 +1,113 @@
-<div class="list-container">
+<div class="list-container" style="opacity: 0">
 
-	@if (!showForm) {
-		<button class="create-button" (click)="openForm()">Create New List</button>
-	}
+	@if(!loading) {
+		@if (!showForm) {
+			<button class="create-button" (click)="openForm()">Create New List</button>
+		}
 
-	@if (showForm) {
-		<div class="form">
-			<h2>Create New List</h2>
-			<form>
-				<fieldset>
-					<legend>List Name</legend>
-					<label for="list-name" class="visually-hidden">List Name</label>
-					<input
-						id="list-name"
-						type="text"
-						name="listName"
-						[(ngModel)]="listName"
-						placeholder="e.g. Pre-flight Checklist"
-						required
-						appAutofocus
-					/>
-				</fieldset>
+		@if (showForm) {
+			<div class="form">
+				<h2>Create New List</h2>
+				<form (ngSubmit)="listName.trim() && !listStore.loading() && saveList()">
+					<fieldset>
+						<legend>List Name</legend>
+						<label for="list-name" class="visually-hidden">List Name</label>
+						<input
+							id="list-name"
+							type="text"
+							name="listName"
+							[(ngModel)]="listName"
+							placeholder="e.g. Pre-flight Checklist"
+							required
+							appAutofocus
+						/>
+					</fieldset>
 
-				<fieldset>
-					<legend>Description</legend>
-					<label for="list-desc" class="visually-hidden">Description</label>
-					<input
-						id="list-desc"
-						type="text"
-						name="listDescription"
-						[(ngModel)]="listDescription"
-						placeholder="Optional"
-					/>
-				</fieldset>
+					<fieldset>
+						<legend>Description</legend>
+						<label for="list-desc" class="visually-hidden">Description</label>
+						<input
+							id="list-desc"
+							type="text"
+							name="listDescription"
+							[(ngModel)]="listDescription"
+							placeholder="Optional"
+						/>
+					</fieldset>
 
-				<div class="button-group">
-					<button type="button" class="cancel" (click)="cancelForm()">Cancel</button>
-					<button
-						type="button"
-						class="submit"
-						(click)="saveList()"
-						[disabled]="!listName.trim() || listStore.loading()">
-						Create
-						@if (listStore.loading()) {
-							<span class="spinner"></span>
-						}
-					</button>
-				</div>
-			</form>
-		</div>
-	}
-
-	@if (listStore.lists().length > 0) {
-		<div class="lists-grid">
-			@for (list of listStore.lists(); track list.id) {
-				<div class="list-card">
-
-					<div class="card-main-row">
+					<div class="button-group">
+						<button type="button" class="cancel" (click)="cancelForm()">Cancel</button>
 						<button
-							class="expand-btn"
-							[class.expanded]="isExpanded(list.id)"
-							(click)="toggleDescription(list.id)"
-							title="Toggle details"
-						>&#9654;</button>
-
-						<span class="list-card-name" [title]="list.listName" (click)="toggleDescription(list.id)">{{ list.listName }}</span>
-
-						<div class="card-actions">
-							@if (confirmingDeleteId === list.id) {
-								<span class="confirm-delete-label" aria-live="polite">Delete?</span>
-								<button class="confirm-yes-btn" (click)="confirmDelete(list.id)" aria-label="Confirm delete">Yes</button>
-								<button class="confirm-no-btn" (click)="cancelDelete()" aria-label="Cancel delete">No</button>
-							} @else {
-								<button class="edit-btn" (click)="navigateToList(list.id)" title="Edit list" aria-label="Edit list">&#9998;</button>
-								@if (list.activeRunId) {
-									<button class="continue-btn" (click)="continueRun(list.id, list.activeRunId)" title="Continue in-progress run" aria-label="Continue in-progress run">&#9654;&#9654;</button>
-								} @else {
-									<button class="launch-btn" (click)="launchList(list.id)" title="Launch list" aria-label="Launch list">&#9654;</button>
-								}
-								<button class="delete-btn" (click)="startDelete(list.id)" title="Delete list" aria-label="Delete list">&#10005;</button>
+							type="submit"
+							class="submit"
+							[disabled]="!listName.trim() || listStore.loading()">
+							Create
+							@if (listStore.loading()) {
+								<span class="spinner"></span>
 							}
-						</div>
+						</button>
 					</div>
+				</form>
+			</div>
+		}
 
-					<div class="desc-wrapper" [class.expanded]="isExpanded(list.id)">
-						<div class="run-info">
-							<div class="run-info-left">
-								<span>{{ list.totalItems }} item{{ list.totalItems !== 1 ? 's' : '' }}</span>
-								<span class="run-divider">·</span>
-								<span>{{ getRunCount(list) }} run{{ getRunCount(list) !== 1 ? 's' : '' }}</span>
-								@if (list.totalRuns > 0) {
-									<button class="history-link" (click)="navigateToHistory(list.id)">History</button>
+		@if (listStore.lists().length > 0) {
+			<div class="lists-grid">
+				@for (list of sortedLists; track list.id) {
+					<div class="list-card">
+
+						<div class="card-main-row">
+							<button
+								class="expand-btn"
+								[class.expanded]="isExpanded(list.id)"
+								(click)="toggleDescription(list.id)"
+								title="Toggle details"
+							>&#9654;</button>
+
+							<span class="list-card-name" [title]="list.listName" (click)="toggleDescription(list.id)">{{ list.listName }}</span>
+
+							<div class="card-actions">
+								@if (confirmingDeleteId === list.id) {
+									<span class="confirm-delete-label" aria-live="polite">Delete?</span>
+									<button class="confirm-yes-btn" (click)="confirmDelete(list.id)" aria-label="Confirm delete">Yes</button>
+									<button class="confirm-no-btn" (click)="cancelDelete()" aria-label="Cancel delete">No</button>
+								} @else {
+									<button class="edit-btn" (click)="navigateToList(list.id)" title="Edit list" aria-label="Edit list">&#9998;</button>
+									@if (list.activeRunId) {
+										<button class="continue-btn" (click)="continueRun(list.id, list.activeRunId)" title="Continue in-progress run" aria-label="Continue in-progress run">&#9654;&#9654;</button>
+									} @else {
+										<button class="launch-btn" (click)="launchList(list.id)" title="Launch list" aria-label="Launch list">&#9654;</button>
+									}
+									<button class="delete-btn" (click)="startDelete(list.id)" title="Delete list" aria-label="Delete list"><mat-icon>delete</mat-icon></button>
 								}
 							</div>
-							@if (getLastRunDate(list)) {
-								<span class="run-date">{{ getLastRunDate(list) }}</span>
+						</div>
+
+						<div class="desc-wrapper" [class.expanded]="isExpanded(list.id)">
+							<div class="run-info">
+								<div class="run-info-left">
+									<span>{{ list.totalItems }} item{{ list.totalItems !== 1 ? 's' : '' }}</span>
+									<span class="run-divider">·</span>
+									<span>{{ getRunCount(list) }} run{{ getRunCount(list) !== 1 ? 's' : '' }}</span>
+									@if (list.totalRuns > 0) {
+										<button class="history-link" (click)="navigateToHistory(list.id)">History</button>
+									}
+								</div>
+								@if (getLastRunDate(list)) {
+									<span class="run-date">{{ getLastRunDate(list) }}</span>
+								}
+							</div>
+							@if (list.listDescription) {
+								<div class="list-description">{{ list.listDescription }}</div>
 							}
 						</div>
-						@if (list.listDescription) {
-							<div class="list-description">{{ list.listDescription }}</div>
-						}
-					</div>
 
-				</div>
-			}
-		</div>
-	} @else if (!showForm && !listStore.loading()) {
-		<p class="empty-message">No lists yet. Create your first list above.</p>
+					</div>
+				}
+			</div>
+		} @else if (!showForm && !listStore.loading()) {
+			<p class="empty-message">No lists yet. Create your first list above.</p>
+		}	
 	}
 
 </div>

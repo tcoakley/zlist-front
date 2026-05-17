@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, effect } from '@angular/core';
+import { Component, OnInit, AfterViewInit, inject, effect } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AutofocusDirective } from '../../directives/autofocus.directive';
@@ -15,7 +15,8 @@ import { UserStore } from '../../stores/user/user.store';
 	templateUrl: './profile.component.html',
 	styleUrls: ['./profile.component.scss']
 })
-export class ProfileComponent implements OnInit {
+export class ProfileComponent implements OnInit, AfterViewInit {
+	protected loading = true;
 	isReady = false;
 	originalUser: UserModel | null = null;
 
@@ -55,6 +56,10 @@ export class ProfileComponent implements OnInit {
 
 	ngOnInit() {
 		this.titleService.setTitle('Profile');
+	}
+
+	ngAfterViewInit(): void {
+		setTimeout(() => this.loading = false, 100);
 	}
 
 	formReady() {

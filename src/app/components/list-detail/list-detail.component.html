@@ -1,8 +1,9 @@
-<div class="detail-container">
+<div class="detail-container" style="opacity: 0">
 
+	@if (!loading) {
 	<div class="top-bar">
 		<button class="back-btn" (click)="goBack()">&#8592; Lists</button>
-		<button class="launch-btn" (click)="launchList()" [disabled]="hasDirty">&#9654; Launch</button>
+		<button class="launch-btn" (click)="launchList()" [disabled]="hasDirty || !list()?.items?.length" [title]="!list()?.items?.length ? 'Add items before launching' : ''">&#9654; Launch</button>
 	</div>
 
 	@if (list(); as l) {
@@ -101,6 +102,7 @@
 
 	} @else if (!listStore.loading()) {
 		<p class="not-found">List not found.</p>
+	}
 	}
 
 </div>

@@ -1,4 +1,4 @@
-import { Component, inject, effect } from '@angular/core';
+import { Component, AfterViewInit, inject, effect } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AutofocusDirective } from '../../directives/autofocus.directive';
@@ -12,7 +12,8 @@ import { UserStore } from '../../stores/user/user.store';
 	templateUrl: './login.component.html',
 	styleUrls: ['./login.component.scss'],
 })
-export class LoginComponent {
+export class LoginComponent implements AfterViewInit {
+	protected loading = true;
 	email = '';
 	password = '';
 	rememberMe = false;
@@ -34,6 +35,10 @@ export class LoginComponent {
 				this.snackbarService.showMessage(error, 'error');
 			}
 		});
+	}
+
+	ngAfterViewInit(): void {
+		setTimeout(() => this.loading = false, 100);
 	}
 
 	login() {

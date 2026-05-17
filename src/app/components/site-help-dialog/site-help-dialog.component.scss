@@ -39,6 +39,79 @@ mat-dialog-actions {
 	padding: 8px 20px 16px !important;
 }
 
+.legend {
+	padding: 12px 0 14px;
+	margin-bottom: 12px;
+	border-bottom: 1px solid #ddd;
+}
+
+.legend-title {
+	font-size: 0.75rem;
+	font-weight: 700;
+	color: #999;
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+	margin: 0 0 10px;
+	padding: 0;
+}
+
+.legend-row {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	margin-bottom: 7px;
+
+	&:last-child {
+		margin-bottom: 0;
+	}
+}
+
+.legend-icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 36px;
+	flex-shrink: 0;
+	font-size: 0.65rem;
+	border-radius: 4px;
+	padding: 3px 6px;
+	font-weight: 700;
+}
+
+.launch-icon {
+	background: #228B22;
+	color: white;
+}
+
+.continue-icon {
+	background: rgba(245, 177, 66, 0.85);
+	color: #1a1a1a;
+}
+
+.edit-icon {
+	background: transparent;
+	color: #555;
+	font-size: 0.9rem;
+}
+
+.delete-icon {
+	background: transparent;
+	color: #888;
+	font-size: 0.75rem;
+}
+
+.expand-icon {
+	background: transparent;
+	color: #228B22;
+	font-size: 0.6rem;
+}
+
+.legend-desc {
+	font-size: 0.82rem;
+	color: $dialog-subtext;
+	line-height: 1.4;
+}
+
 .help-section {
 	border: 1px solid $border;
 	border-radius: 6px;

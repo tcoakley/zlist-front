@@ -1,4 +1,5 @@
-<div class="terms-container">
+<div class="terms-container" style="opacity: 0">
+	@if (!loading) {
 	<div class="top-bar">
 		<button class="back-btn" (click)="goBack()">&#8592; Back</button>
 	</div>
@@ -96,4 +97,5 @@
 		<p>Questions regarding these Terms may be directed to:</p>
 		<p><a href="mailto:zchecklistteam@gmail.com">zchecklistteam&#64;gmail.com</a></p>
 	</div>
+	}
 </div>

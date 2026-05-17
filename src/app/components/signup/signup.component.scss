@@ -1,8 +1,12 @@
 :host {
 	display: block;
 	width: 100%;
-	max-width: 300px;
+	max-width: 360px;
 	margin: 0 auto;
+}
+
+.form {
+	animation: page-fade-in 0.25s ease-out 0.1s both;
 }
 
 .recaptcha-wrapper {

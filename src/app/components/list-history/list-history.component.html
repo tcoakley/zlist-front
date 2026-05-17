@@ -1,5 +1,6 @@
-<div class="history-container">
+<div class="history-container" style="opacity: 0">
 
+	@if (viewReady) {
 	<div class="top-bar">
 		<button class="back-btn" (click)="goBack()">&#8592; Lists</button>
 	</div>
@@ -24,6 +25,7 @@
 				</div>
 			}
 		</div>
+	}
 	}
 
 </div>
@@ -50,6 +52,7 @@
 							<img
 								class="check-img"
 								[src]="item.isComplete ? 'assets/checked.svg' : 'assets/unchecked.svg'"
+								width="22" height="22"
 								alt=""
 							/>
 						</div>

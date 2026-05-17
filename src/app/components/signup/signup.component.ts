@@ -15,6 +15,7 @@ import { environment } from '../../../environments/environment';
 	styleUrls: ['./signup.component.scss']
 })
 export class SignupComponent implements OnInit, AfterViewInit {
+	protected loading = true;
 	isReady = false;
 
 	email = '';
@@ -41,6 +42,7 @@ export class SignupComponent implements OnInit, AfterViewInit {
 	}
 
 	ngAfterViewInit() {
+		setTimeout(() => this.loading = false, 100);
 		const tryRender = () => {
 			const g = (window as any).grecaptcha;
 			if (g && g.render) {

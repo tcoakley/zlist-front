@@ -1,53 +1,145 @@
 @use 'variables' as *;
 
 :host {
-	display: block; 
+	display: block;
 	width: 100%;
-	max-width: 300px; 
+	max-width: 360px;
 	margin: 0 auto;
 }
 
-.tagline {
-	margin: 0 0 20px;
+.form {
+	animation: page-fade-in 0.25s ease-out 0.1s both;
+}
 
-	p {
+// ── Hero ──────────────────────────────────────────────
+
+.hero {
+	text-align: center;
+	padding: 28px 0 24px;
+}
+
+.hero-brand {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 12px;
+	margin-bottom: 12px;
+}
+
+.hero-logo {
+	width: 44px;
+	height: 44px;
+	object-fit: contain;
+}
+
+.hero-title {
+	font-size: 2rem;
+	font-weight: 700;
+	color: $text-primary;
+	margin: 0;
+	letter-spacing: -0.5px;
+}
+
+.hero-tagline {
+	font-size: 1rem;
+	font-weight: 600;
+	color: $primary;
+	margin: 0 0 10px;
+}
+
+.hero-desc {
+	font-size: 0.85rem;
+	color: $text-secondary;
+	line-height: 1.6;
+	margin: 0;
+}
+
+// ── Form overrides ────────────────────────────────────
+
+form {
+	border-top: 1px solid $border;
+	padding-top: 24px;
+	gap: 14px;
+}
+
+// ── Remember / Forgot row ─────────────────────────────
+
+.remember-forgot {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-top: -4px;
+
+	a {
 		font-size: 0.85rem;
-		color: $text-secondary;
-		margin: 0 0 6px;
-		line-height: 1.5;
+		color: $text-muted;
+		white-space: nowrap;
+
+		&:hover {
+			color: $text-secondary;
+			text-decoration: none;
+		}
 	}
 }
 
-.tagline-headline {
-	font-size: 1.05rem;
-	font-weight: 700;
-	color: $text-primary;
-}
-
-.signup-link {
-    margin-top: 30px;
-}
-
 .remember-me {
-	margin-top: 10px;
 	display: flex;
 	align-items: center;
-	justify-content: flex-start;
-	width: auto; 
+	gap: 8px;
+	cursor: pointer;
+	user-select: none;
+
+	span {
+		font-size: 0.9rem;
+		color: $text-secondary;
+	}
 }
 
-.remember-me label {
+// ── Login button ──────────────────────────────────────
+
+.login-btn {
+	width: 100%;
+	height: 48px;
+	font-size: 1rem;
+	font-weight: 700;
+	border-radius: 8px;
+	margin: 6px 0 0;
+}
+
+// ── "or" divider ──────────────────────────────────────
+
+.or-divider {
 	display: flex;
 	align-items: center;
-	gap: 8px; 
-	cursor: pointer;
-	width: auto; 
-	white-space: nowrap; 
+	gap: 12px;
+	margin: 18px 0;
+	color: $text-muted;
+	font-size: 0.85rem;
+
+	&::before,
+	&::after {
+		content: '';
+		flex: 1;
+		height: 1px;
+		background: $border;
+	}
 }
 
-.remember-me input[type="checkbox"] {
-	cursor: pointer;
-	width: 16px;
-	height: 16px;
+// ── Create account button ─────────────────────────────
+
+.create-account-btn {
+	width: 100%;
+	height: 48px;
+	font-size: 0.95rem;
+	font-weight: 600;
+	border-radius: 8px;
+	border: 1.5px solid $primary;
+	color: $primary;
+	background: transparent;
 	margin: 0;
+
+	&:not(:disabled):hover {
+		background: rgba($primary, 0.08);
+		opacity: 1;
+	}
 }

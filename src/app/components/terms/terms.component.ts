@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, AfterViewInit } from '@angular/core';
 import { Location } from '@angular/common';
 import { TitleService } from '../../services/title.service';
 
@@ -8,12 +8,17 @@ import { TitleService } from '../../services/title.service';
 	templateUrl: './terms.component.html',
 	styleUrls: ['./terms.component.scss'],
 })
-export class TermsComponent implements OnInit {
+export class TermsComponent implements OnInit, AfterViewInit {
+	protected loading = true;
 	private location = inject(Location);
 	private titleService = inject(TitleService);
 
 	ngOnInit() {
 		this.titleService.setTitle('Terms of Service');
+	}
+
+	ngAfterViewInit(): void {
+		setTimeout(() => this.loading = false, 100);
 	}
 
 	goBack() {

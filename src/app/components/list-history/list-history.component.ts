@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, AfterViewInit, HostListener, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ListStore } from '../../stores/list/list.store';
 import { UserStore } from '../../stores/user/user.store';
@@ -22,7 +22,7 @@ interface ModalItem {
 	templateUrl: './list-history.component.html',
 	styleUrls: ['./list-history.component.scss'],
 })
-export class ListHistoryComponent implements OnInit {
+export class ListHistoryComponent implements OnInit, AfterViewInit {
 	private listStore = inject(ListStore);
 	private userStore = inject(UserStore);
 	private route = inject(ActivatedRoute);
@@ -33,11 +33,16 @@ export class ListHistoryComponent implements OnInit {
 	listId = 0;
 	listName = '';
 	history: RunHistorySummary[] = [];
-	loading = false;
+	loading = true;
+	viewReady = false;
 
 	modalRun: RunHistorySummary | null = null;
 	modalItems: ModalItem[] = [];
 	modalLoading = false;
+
+	ngAfterViewInit(): void {
+		setTimeout(() => this.viewReady = true, 100);
+	}
 
 	async ngOnInit() {
 		this.listId = Number(this.route.snapshot.paramMap.get('listId'));
@@ -106,6 +111,7 @@ export class ListHistoryComponent implements OnInit {
 		this.modalLoading = false;
 	}
 
+	@HostListener('document:keydown.escape')
 	closeModal() {
 		this.modalRun = null;
 		this.modalItems = [];

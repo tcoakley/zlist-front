@@ -5,13 +5,36 @@
 
 <mat-dialog-content>
 
+	<div class="legend">
+		<p class="legend-title">Icon Reference</p>
+		<div class="legend-row">
+			<span class="legend-icon launch-icon">&#9654;</span>
+			<span class="legend-desc">Launch — start a new run of this checklist</span>
+		</div>
+		<div class="legend-row">
+			<span class="legend-icon continue-icon">&#9654;&#9654;</span>
+			<span class="legend-desc">Continue — resume an in-progress run</span>
+		</div>
+		<div class="legend-row">
+			<span class="legend-icon edit-icon">&#9998;</span>
+			<span class="legend-desc">Edit — edit the checklist items, name, or description</span>
+		</div>
+		<div class="legend-row">
+			<span class="legend-icon delete-icon">&#10005;</span>
+			<span class="legend-desc">Delete — permanently remove this checklist</span>
+		</div>
+		<div class="legend-row">
+			<span class="legend-icon expand-icon">&#9654;</span>
+			<span class="legend-desc">Expand — show or hide checklist details</span>
+		</div>
+	</div>
+
 	<div class="help-section">
 		<button class="help-header" (click)="toggle('createList')" [attr.aria-expanded]="createListOpen">
 			<span class="help-arrow" [class.expanded]="createListOpen">&#9654;</span>
 			Create List Help
 		</button>
 		<div class="help-body" [class.expanded]="createListOpen">
-			<p>Create a repeatable checklist by giving your list a name and optionally adding a description.</p>
 			<p>The <strong>List Name</strong> is required and should clearly describe the process or task you want to repeat, such as:</p>
 			<ul>
 				<li>RV Departure Checklist</li>
@@ -21,7 +44,6 @@
 			</ul>
 			<p>The <strong>Description</strong> field is optional and can be used to add additional context or notes about when the checklist should be used.</p>
 			<p>After clicking <strong>Create</strong>, you will be taken to the next page where you can begin adding checklist items to the list.</p>
-			<p class="help-footer">This help text can be turned off at any time from your <strong>Profile</strong> page.</p>
 		</div>
 	</div>
 
@@ -31,7 +53,6 @@
 			Lists Page Help
 		</button>
 		<div class="help-body" [class.expanded]="listsOpen">
-			<p>This page shows all of your repeatable checklists.</p>
 			<p>Use the <strong>Create New List</strong> button to create a new checklist.</p>
 			<p>For each existing list you may:</p>
 			<ul>
@@ -49,7 +70,6 @@
 			</ul>
 			<p><strong>Deleted checklists cannot be recovered.</strong></p>
 			<p>Repeatable checklists are designed to be reused over and over again. Launching a checklist creates a new checklist run while keeping the original checklist intact for future use.</p>
-			<p class="help-footer">This help text can be turned off at any time from your <strong>Profile</strong> page.</p>
 		</div>
 	</div>
 
@@ -78,8 +98,11 @@
 				<li>Edit the checklist again later at any time</li>
 				<li>Re-run the checklist as often as needed from this page or the main lists page</li>
 			</ul>
-			<p class="help-footer">This help text can be turned off at any time from your <strong>Profile</strong> page.</p>
 		</div>
+	</div>
+
+	<div class="help-section">
+		<p class="help-footer">This help text can be turned off at any time from your <strong>Profile</strong> page.</p>
 	</div>
 
 </mat-dialog-content>

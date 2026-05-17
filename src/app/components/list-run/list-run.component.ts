@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, inject } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, ElementRef, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ListStore } from '../../stores/list/list.store';
@@ -24,7 +24,7 @@ interface RunItem {
 	templateUrl: './list-run.component.html',
 	styleUrls: ['./list-run.component.scss'],
 })
-export class ListRunComponent implements OnInit {
+export class ListRunComponent implements OnInit, AfterViewInit {
 	protected listStore = inject(ListStore);
 	private userStore = inject(UserStore);
 	private route = inject(ActivatedRoute);
@@ -38,6 +38,8 @@ export class ListRunComponent implements OnInit {
 	runId = 0;
 	listName = '';
 	listDescription = '';
+	loading = true;
+	viewReady = false;
 	runItems: RunItem[] = [];
 	displayItems: RunItem[] = [];
 	confirmingComplete = false;
@@ -69,6 +71,10 @@ export class ListRunComponent implements OnInit {
 
 	get someComplete(): boolean {
 		return this.runItems.some(i => i.isComplete);
+	}
+
+	ngAfterViewInit(): void {
+		setTimeout(() => this.viewReady = true, 100);
 	}
 
 	ngOnInit() {
@@ -111,6 +117,7 @@ export class ListRunComponent implements OnInit {
 			isOneTime: !i.listItemId,
 		}));
 		this.refreshDisplay();
+		this.loading = false;
 	}
 
 	goBack() {

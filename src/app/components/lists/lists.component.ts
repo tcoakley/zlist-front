@@ -1,6 +1,7 @@
-import { Component, OnInit, OnDestroy, inject, Injector, effect } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, Injector, effect, AfterViewInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { MatIconModule } from '@angular/material/icon';
 import { AutofocusDirective } from '../../directives/autofocus.directive';
 import { SnackbarService } from '../../services/snackbar.service';
 import { TitleService } from '../../services/title.service';
@@ -10,16 +11,18 @@ import { List } from '../../../models/list.model';
 @Component({
 	selector: 'app-lists',
 	standalone: true,
-	imports: [FormsModule, AutofocusDirective],
+	imports: [FormsModule, MatIconModule, AutofocusDirective],
 	templateUrl: './lists.component.html',
 	styleUrls: ['./lists.component.scss'],
 })
-export class ListsComponent implements OnInit, OnDestroy {
+export class ListsComponent implements OnInit, OnDestroy, AfterViewInit  {
 	protected listStore = inject(ListStore);
+	protected loading = true;
 	private router = inject(Router);
 	private titleService = inject(TitleService);
 	private snackbarService = inject(SnackbarService);
 	private injector = inject(Injector);
+
 
 	showForm = false;
 	listName = '';
@@ -27,18 +30,47 @@ export class ListsComponent implements OnInit, OnDestroy {
 	expandedListIds = new Set<number>();
 	confirmingDeleteId: number | null = null;
 
+	get sortedLists(): List[] {
+		return [...this.listStore.lists()].sort((a, b) => {
+			if (!a.lastRun && !b.lastRun) return 0;
+			if (!a.lastRun) return 1;
+			if (!b.lastRun) return -1;
+			return new Date(b.lastRun).getTime() - new Date(a.lastRun).getTime();
+		});
+	}
+
 	ngOnInit() {
 		this.titleService.setTitle('Lists');
 		this.titleService.setHelpContext('lists');
 		this.listStore.loadLists();
 
 		let triggered = false;
+		let defaultExpanded = false;
+
+		// If lists are already cached, expand immediately so first render is correct
+		if (this.listStore.lists().length > 0) {
+			defaultExpanded = true;
+			this.sortedLists.slice(0, 5).forEach(l => this.expandedListIds.add(l.id));
+		}
+
 		effect(() => {
-			if (!this.listStore.loading() && this.listStore.lists().length === 0 && !triggered) {
+			const lists = this.listStore.lists();
+			const loading = this.listStore.loading();
+
+			if (!loading && lists.length === 0 && !triggered) {
 				triggered = true;
 				setTimeout(() => this.titleService.setAnimateHelp(true), 750);
 			}
+
+			if (!loading && lists.length > 0 && !defaultExpanded) {
+				defaultExpanded = true;
+				this.sortedLists.slice(0, 5).forEach(l => this.expandedListIds.add(l.id));
+			}
 		}, { injector: this.injector });
+	}
+
+	ngAfterViewInit(): void {
+		setTimeout(() => this.loading = false, 100);
 	}
 
 	ngOnDestroy() {

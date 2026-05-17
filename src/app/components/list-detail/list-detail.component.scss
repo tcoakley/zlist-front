@@ -8,6 +8,7 @@
 }
 
 .detail-container {
+	animation: page-fade-in 0.25s ease-out 0.1s both;
 	display: flex;
 	flex-direction: column;
 	gap: 0;

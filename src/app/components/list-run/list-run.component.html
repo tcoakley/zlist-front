@@ -1,21 +1,28 @@
-<div class="run-container">
+<div class="run-container" style="opacity: 0">
 
+	@if (viewReady) {
 	<div class="top-bar">
 		<button class="back-btn" (click)="goBack()">&#8592; Lists</button>
 
-		@if (!confirmingComplete) {
-			<div class="top-bar-right">
-				<button class="add-item-btn" (click)="openAddItem()" [disabled]="showAddItem">&#43; Add Item</button>
-				<button class="complete-all-btn" (click)="startCompleteAll()" [disabled]="allComplete">Complete List</button>
-			</div>
-		} @else {
-			<div class="confirm-bar">
-				<span class="confirm-label">Complete list?</span>
-				<button class="confirm-yes-btn" (click)="confirmCompleteList()">Yes</button>
-				<button class="confirm-no-btn" (click)="cancelCompleteAll()">No</button>
-			</div>
+		@if (!loading) {
+			@if (!confirmingComplete) {
+				<div class="top-bar-right">
+					<button class="add-item-btn" (click)="openAddItem()" [disabled]="showAddItem">&#43; Add Item</button>
+					<button class="complete-all-btn" (click)="startCompleteAll()" [disabled]="allComplete">Complete List</button>
+				</div>
+			} @else {
+				<div class="confirm-bar">
+					<span class="confirm-label">Complete list?</span>
+					<button class="confirm-yes-btn" (click)="confirmCompleteList()">Yes</button>
+					<button class="confirm-no-btn" (click)="cancelCompleteAll()">No</button>
+				</div>
+			}
 		}
 	</div>
+
+	@if (loading) {
+		<div class="status-msg">Loading...</div>
+	} @else {
 
 	@if (listDescription) {
 		<p class="run-description">{{ listDescription }}</p>
@@ -23,7 +30,7 @@
 
 	<div class="check-all-row" (click)="checkAll()" [class.all-done]="allComplete">
 		<span class="check-all-label">Check All</span>
-		<img class="check-img" [src]="allComplete ? 'assets/checked.svg' : 'assets/unchecked.svg'" alt="" />
+		<img class="check-img" [src]="allComplete ? 'assets/checked.svg' : 'assets/unchecked.svg'" width="22" height="22" alt="" />
 	</div>
 
 	<div class="items-section">
@@ -54,6 +61,7 @@
 					[src]="item.isComplete ? 'assets/checked.svg' : 'assets/unchecked.svg'"
 					[class.toggling]="item.isToggling"
 					(click)="$event.stopPropagation(); toggleItem(item)"
+					width="22" height="22"
 					alt=""
 				/>
 
@@ -81,5 +89,8 @@
 			</div>
 		</div>
 	}
+
+	} <!-- end @else !loading -->
+	} <!-- end @if viewReady -->
 
 </div>

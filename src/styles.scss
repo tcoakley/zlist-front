@@ -1,6 +1,10 @@
 @use 'variables' as *;
 @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;700&display=swap');
 
+html {
+	background-color: #121212;
+}
+
 app-root {
 	display: block;
 }
@@ -84,6 +88,7 @@ button {
 	margin-left: 20px;
 	border: 0;
 	color: white;
+	background-color: transparent;
 
 	&:not(:disabled):hover {
 		opacity: 0.9;
@@ -186,12 +191,46 @@ button.cancel {
 	display: none !important;
 }
 
+/* Suppress Angular Material MDC white flash during navigation */
+.mat-mdc-dialog-surface {
+	background-color: white !important;
+}
+
+.mat-icon {
+	color: inherit;
+	background-color: transparent !important;
+}
+
+.mdc-notched-outline,
+.mdc-text-field,
+.mat-mdc-form-field {
+	background-color: transparent !important;
+}
+
+.cdk-drag-preview {
+	background-color: $bg-surface !important;
+}
+
 /* Custom tooltip */
 .app-tooltip {
 	background-color: #333 !important;
 	color: #fff !important;
 	font-size: 0.8rem !important;
 	border: 1px solid #555 !important;
+}
+
+/* Page-entry fade — applied via :host in each routed component's SCSS */
+@keyframes page-fade-in {
+	from { opacity: 0; }
+	to   { opacity: 1; }
+}
+
+/* Checkbox images — global so size is applied before component styles attach */
+img.check-img {
+	width: 22px;
+	height: 22px;
+	display: block;
+	flex-shrink: 0;
 }
 
 /* Visually hidden for screen readers */

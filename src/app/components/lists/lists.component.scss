@@ -11,6 +11,7 @@
 	width: 100%;
 	display: flex;
 	flex-direction: column;
+	animation: page-fade-in 0.25s ease-out 0.1s both;
 }
 
 .create-button {
@@ -169,11 +170,17 @@
 	background: transparent;
 	border: none;
 	color: #666;
-	font-size: 0.75rem;
 	padding: 4px 6px;
 	cursor: pointer;
 	border-radius: 4px;
 	transition: color 0.15s ease;
+	font-size: 0;
+
+	mat-icon {
+		font-size: 18px;
+		width: 18px;
+		height: 18px;
+	}
 
 	&:hover {
 		color: $danger;

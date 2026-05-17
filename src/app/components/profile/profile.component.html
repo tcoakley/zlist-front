@@ -1,4 +1,5 @@
-<div class="form">
+<div class="form" style="opacity: 0">
+	@if (!loading) {
 	<h2>Profile</h2>
 	<form aria-labelledby="signup-heading">
 		<fieldset>
@@ -60,25 +61,23 @@
 			/>
 		</fieldset>
 
-		<label class="checkbox-row">
-			<input
-				type="checkbox"
-				[(ngModel)]="isHelpEnabled"
-				name="isHelpEnabled"
-				(change)="formReady()"
+		<div class="checkbox-row" (click)="isHelpEnabled = !isHelpEnabled; formReady()">
+			<img class="check-img"
+				[src]="isHelpEnabled ? 'assets/checked.svg' : 'assets/unchecked.svg'"
+				width="22" height="22"
+				alt=""
 			/>
-			Show Help Text
-		</label>
+			<span>Show Help Text</span>
+		</div>
 
-		<label class="checkbox-row">
-			<input
-				type="checkbox"
-				[(ngModel)]="sortCompletedToBottom"
-				name="sortCompletedToBottom"
-				(change)="formReady()"
+		<div class="checkbox-row" (click)="sortCompletedToBottom = !sortCompletedToBottom; formReady()">
+			<img class="check-img"
+				[src]="sortCompletedToBottom ? 'assets/checked.svg' : 'assets/unchecked.svg'"
+				width="22" height="22"
+				alt=""
 			/>
-			Move checked items to the bottom
-		</label>
+			<span>Move checked items to the bottom</span>
+		</div>
 
 		<div class="button-group">
 			<button type="button" class="cancel" routerLink="goBack()">Cancel</button>
@@ -91,4 +90,5 @@
 			</button>
 		</div>
 	</form>
+	}
 </div>

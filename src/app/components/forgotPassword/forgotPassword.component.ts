@@ -1,21 +1,21 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AutofocusDirective } from '../../directives/autofocus.directive';
 import { SnackbarService } from '../../services/snackbar.service';
 import { AuthService } from '../../services/auth.service';
-import { CommonModule } from '@angular/common';
 
 @Component({
 	selector: 'app-forgot-password',
 	standalone: true,
-	imports: [FormsModule, AutofocusDirective, RouterLink, CommonModule],
+	imports: [FormsModule, AutofocusDirective, RouterLink],
 	templateUrl: './forgotPassword.component.html',
 	styleUrls: ['./forgotPassword.component.scss'],
 })
-export class ForgotPasswordComponent implements OnInit {
-	email = ''; 
-	loading = false; 
+export class ForgotPasswordComponent implements OnInit, AfterViewInit {
+	email = '';
+	loading = false;
+	viewReady = false;
 	constructor(
 		private snackbarService: SnackbarService, 
 		private router: Router,
@@ -23,6 +23,10 @@ export class ForgotPasswordComponent implements OnInit {
 	) {}
 
 	ngOnInit() {}
+
+	ngAfterViewInit(): void {
+		setTimeout(() => this.viewReady = true, 100);
+	}
 
 	send() {
 		if (!this.email.trim()) {

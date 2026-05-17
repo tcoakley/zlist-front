@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, AfterViewInit } from '@angular/core';
 import { Location } from '@angular/common';
 import { TitleService } from '../../services/title.service';
 
@@ -8,12 +8,17 @@ import { TitleService } from '../../services/title.service';
 	templateUrl: './privacy.component.html',
 	styleUrls: ['./privacy.component.scss'],
 })
-export class PrivacyComponent implements OnInit {
+export class PrivacyComponent implements OnInit, AfterViewInit {
+	protected loading = true;
 	private location = inject(Location);
 	private titleService = inject(TitleService);
 
 	ngOnInit() {
 		this.titleService.setTitle('Privacy Policy');
+	}
+
+	ngAfterViewInit(): void {
+		setTimeout(() => this.loading = false, 100);
 	}
 
 	goBack() {

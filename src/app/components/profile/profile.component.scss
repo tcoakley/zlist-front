@@ -7,18 +7,19 @@
 	margin: 0 auto;
 }
 
+.form {
+	animation: page-fade-in 0.25s ease-out 0.1s both;
+}
+
 .checkbox-row {
 	display: flex;
 	align-items: center;
 	gap: 10px;
-	color: $text-secondary;
-	font-size: 0.9rem;
 	cursor: pointer;
+	user-select: none;
 
-	input[type="checkbox"] {
-		width: 16px;
-		height: 16px;
-		cursor: pointer;
-		accent-color: $primary;
+	span {
+		font-size: 0.9rem;
+		color: $text-secondary;
 	}
 }
