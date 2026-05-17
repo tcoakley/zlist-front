@@ -7,5 +7,6 @@ export interface UserModel {
 	subscription?: string;
 	subscriptionExpiresAt?: string;
 	isHelpEnabled?: boolean;
+	sortCompletedToBottom?: boolean;
 	captchaToken?: string;
 }

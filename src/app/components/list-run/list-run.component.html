@@ -4,13 +4,14 @@
 		<button class="back-btn" (click)="goBack()">&#8592; Lists</button>
 
 		@if (!confirmingComplete) {
-			<button class="complete-all-btn" (click)="startCompleteAll()" [disabled]="allComplete">
-				Complete All
-			</button>
+			<div class="top-bar-right">
+				<button class="add-item-btn" (click)="openAddItem()" [disabled]="showAddItem">&#43; Add Item</button>
+				<button class="complete-all-btn" (click)="startCompleteAll()" [disabled]="allComplete">Complete List</button>
+			</div>
 		} @else {
 			<div class="confirm-bar">
-				<span class="confirm-label">Mark all complete?</span>
-				<button class="confirm-yes-btn" (click)="confirmCompleteAll()">Yes</button>
+				<span class="confirm-label">Complete list?</span>
+				<button class="confirm-yes-btn" (click)="confirmCompleteList()">Yes</button>
 				<button class="confirm-no-btn" (click)="cancelCompleteAll()">No</button>
 			</div>
 		}
@@ -20,8 +21,13 @@
 		<p class="run-description">{{ listDescription }}</p>
 	}
 
+	<div class="check-all-row" (click)="checkAll()" [class.all-done]="allComplete">
+		<span class="check-all-label">Check All</span>
+		<img class="check-img" [src]="allComplete ? 'assets/checked.svg' : 'assets/unchecked.svg'" alt="" />
+	</div>
+
 	<div class="items-section">
-		@for (item of sortedItems; track item.id) {
+		@for (item of displayItems; track item.id) {
 			<div class="run-item-row" [class.complete]="item.isComplete" (click)="toggleItem(item)">
 
 				<button
@@ -40,16 +46,37 @@
 					</div>
 				</div>
 
-				<mat-checkbox
-					class="item-checkbox"
-					[checked]="item.isComplete"
-					[disabled]="item.isToggling"
-					(change)="toggleItem(item)"
-					(click)="$event.stopPropagation()"
-				></mat-checkbox>
+				<img
+					class="item-checkbox check-img"
+					[src]="item.isComplete ? 'assets/checked.svg' : 'assets/unchecked.svg'"
+					[class.toggling]="item.isToggling"
+					(click)="$event.stopPropagation(); toggleItem(item)"
+					alt=""
+				/>
 
 			</div>
 		}
 	</div>
+
+	@if (showAddItem) {
+		<div class="add-item-section" #addItemSection>
+			<input
+				class="add-item-input"
+				type="text"
+				placeholder="New item name"
+				[(ngModel)]="newItemName"
+				autofocus
+			/>
+			<div class="add-item-actions">
+				<button class="cancel-add-btn" (click)="cancelAddItem()" [disabled]="isSavingItem">Cancel</button>
+				<button class="save-run-btn" (click)="saveRunItem(true)" [disabled]="!newItemName.trim() || isSavingItem">
+					@if (isSavingItem) { <span class="spinner"></span> } @else { Save for this Run }
+				</button>
+				<button class="save-all-btn" (click)="saveRunItem(false)" [disabled]="!newItemName.trim() || isSavingItem">
+					@if (isSavingItem) { <span class="spinner"></span> } @else { Save for Future Runs }
+				</button>
+			</div>
+		</div>
+	}
 
 </div>

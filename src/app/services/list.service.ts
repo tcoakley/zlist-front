@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { List, ListItem, ListRun } from '../../models/list.model';
+import { List, ListItem, ListRun, ListRunItem } from '../../models/list.model';
 import { HttpService } from './http.service';
 
 @Injectable({
@@ -57,5 +57,9 @@ export class ListService {
 
 	completeListRun(runId: number): Observable<boolean> {
 		return this.http.put<boolean>(`${this.base}/CompleteListRun/${runId}`, {});
+	}
+
+	addRunItem(listRunId: number, listId: number, itemName: string, oneTime: boolean): Observable<ListRunItem> {
+		return this.http.post<ListRunItem>(`${this.base}/AddRunItem`, { listRunId, listId, itemName, oneTime });
 	}
 }

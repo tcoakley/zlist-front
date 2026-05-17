@@ -1,6 +1,6 @@
 import { Injectable, signal, computed, inject } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
-import { List, ListItem, ListRun } from '../../../models/list.model';
+import { List, ListItem, ListRun, ListRunItem } from '../../../models/list.model';
 import { ListService } from '../../services/list.service';
 
 @Injectable({ providedIn: 'root' })
@@ -190,6 +190,16 @@ export class ListStore {
 		} catch (err: any) {
 			this.error.set(err?.error ?? err);
 			return false;
+		}
+	}
+
+	async addRunItem(listRunId: number, listId: number, itemName: string, oneTime: boolean): Promise<ListRunItem | null> {
+		this.error.set(null);
+		try {
+			return await firstValueFrom(this.listService.addRunItem(listRunId, listId, itemName, oneTime));
+		} catch (err: any) {
+			this.error.set(err?.error ?? err);
+			return null;
 		}
 	}
 }

@@ -101,19 +101,28 @@ export class HttpService {
 		return throwError(() => error);
 	}
 
+	private isRefreshing = false;
+
 	private refreshAccessToken(): Observable<string | null> {
-		return this.http.post<{ result: { token: string } }>(
-			`${this.baseUrl}/api/login/refresh`, 
-			{}, 
-			{ withCredentials: true } // This sends cookies!
+		if (this.isRefreshing) return of(null);
+		this.isRefreshing = true;
+
+		return this.http.post<Result<{ token: string }>>(
+			`${this.baseUrl}/api/login/refresh`,
+			{},
+			{ withCredentials: true }
 		).pipe(
 			map(response => {
-				const newToken = response.result.token;
-				// Save new token in storage
-				localStorage.setItem('authToken', newToken);
+				const newToken = response.model.token;
+				if (localStorage.getItem('authToken')) {
+					localStorage.setItem('authToken', newToken);
+				} else {
+					sessionStorage.setItem('authToken', newToken);
+				}
 				return newToken;
 			}),
-			catchError(() => of(null))
+			catchError(() => of(null)),
+			map(token => { this.isRefreshing = false; return token; })
 		);
 	}
 

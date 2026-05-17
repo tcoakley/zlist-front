@@ -1,0 +1,37 @@
+<svg width="80" height="80" viewBox="0 0 80 80" role="img" xmlns="http://www.w3.org/2000/svg">
+  <title>Unchecked checkbox</title>
+  <desc>A dark embossed unchecked checkbox with white ring</desc>
+  <defs>
+    <linearGradient id="u-face" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#4a505c"/>
+      <stop offset="40%"  stop-color="#31363f"/>
+      <stop offset="100%" stop-color="#1e2128"/>
+    </linearGradient>
+    <linearGradient id="u-ring" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#ffffff"/>
+      <stop offset="50%"  stop-color="#d0d6e0"/>
+      <stop offset="100%" stop-color="#8a9099"/>
+    </linearGradient>
+    <linearGradient id="u-shine" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="white" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="white" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="drop" x="-40%" y="-40%" width="180%" height="180%">
+      <feDropShadow dx="0" dy="5" stdDeviation="7" flood-color="#00000077"/>
+    </filter>
+    <clipPath id="u-clip"><rect x="11" y="11" width="58" height="58" rx="11"/></clipPath>
+  </defs>
+
+  <!-- Shadow -->
+  <rect x="0" y="0" width="80" height="80" rx="20" fill="#000" filter="url(#drop)" opacity="0.55"/>
+  <!-- Ring -->
+  <rect x="0" y="0" width="80" height="80" rx="20" fill="url(#u-ring)"/>
+  <!-- Inner face -->
+  <rect x="11" y="11" width="58" height="58" rx="11" fill="url(#u-face)" stroke="#12151a" stroke-width="1"/>
+  <!-- Inner bottom depth -->
+  <rect x="11" y="47" width="58" height="22" rx="0" fill="#0a0c10" opacity="0.35" clip-path="url(#u-clip)"/>
+  <!-- Inner shine -->
+  <rect x="11" y="11" width="58" height="26" rx="11" fill="url(#u-shine)" clip-path="url(#u-clip)"/>
+  <!-- Ring top shine -->
+  <rect x="3" y="2" width="74" height="20" rx="16" fill="white" opacity="0.25"/>
+</svg>

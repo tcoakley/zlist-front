@@ -24,6 +24,7 @@ export class ProfileComponent implements OnInit {
 	firstName = '';
 	lastName = '';
 	isHelpEnabled = true;
+	sortCompletedToBottom = true;
 
 	private userStore = inject(UserStore);
 	private snackbarService = inject(SnackbarService);
@@ -39,6 +40,7 @@ export class ProfileComponent implements OnInit {
 				this.firstName = user.firstName;
 				this.lastName = user.lastName;
 				this.isHelpEnabled = user.isHelpEnabled ?? true;
+				this.sortCompletedToBottom = user.sortCompletedToBottom ?? true;
 				this.formReady();
 			}
 		});
@@ -66,6 +68,7 @@ export class ProfileComponent implements OnInit {
 			this.firstName !== this.originalUser.firstName ||
 			this.lastName !== this.originalUser.lastName ||
 			this.isHelpEnabled !== (this.originalUser.isHelpEnabled ?? true) ||
+			this.sortCompletedToBottom !== (this.originalUser.sortCompletedToBottom ?? true) ||
 			(!!this.password && this.password.trim().length > 0)
 		);
 	}
@@ -83,7 +86,8 @@ export class ProfileComponent implements OnInit {
 			password: this.password || '',
 			firstName: this.firstName,
 			lastName: this.lastName,
-			isHelpEnabled: this.isHelpEnabled
+			isHelpEnabled: this.isHelpEnabled,
+			sortCompletedToBottom: this.sortCompletedToBottom
 		};
 
 		this.userStore.updateUser(user);

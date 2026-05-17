@@ -1,7 +1,8 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MatCheckboxModule } from '@angular/material/checkbox';
+import { FormsModule } from '@angular/forms';
 import { ListStore } from '../../stores/list/list.store';
+import { UserStore } from '../../stores/user/user.store';
 import { TitleService } from '../../services/title.service';
 import { SnackbarService } from '../../services/snackbar.service';
 
@@ -18,32 +19,55 @@ interface RunItem {
 @Component({
 	selector: 'app-list-run',
 	standalone: true,
-	imports: [MatCheckboxModule],
+	imports: [FormsModule],
 	templateUrl: './list-run.component.html',
 	styleUrls: ['./list-run.component.scss'],
 })
 export class ListRunComponent implements OnInit {
 	protected listStore = inject(ListStore);
+	private userStore = inject(UserStore);
 	private route = inject(ActivatedRoute);
 	private router = inject(Router);
 	private titleService = inject(TitleService);
 	private snackbarService = inject(SnackbarService);
+
+	@ViewChild('addItemSection') addItemSection?: ElementRef;
 
 	listId = 0;
 	runId = 0;
 	listName = '';
 	listDescription = '';
 	runItems: RunItem[] = [];
+	displayItems: RunItem[] = [];
 	confirmingComplete = false;
+	showAddItem = false;
+	newItemName = '';
+	isSavingItem = false;
 
-	get sortedItems(): RunItem[] {
-		const incomplete = this.runItems.filter(i => !i.isComplete).sort((a, b) => a.sortOrder - b.sortOrder);
-		const complete = this.runItems.filter(i => i.isComplete).sort((a, b) => a.sortOrder - b.sortOrder);
-		return [...incomplete, ...complete];
+	private get sortedItems(): RunItem[] {
+		const byOrder = (a: RunItem, b: RunItem) => a.sortOrder - b.sortOrder;
+		if (this.userStore.user()?.sortCompletedToBottom ?? true) {
+			const incomplete = this.runItems.filter(i => !i.isComplete).sort(byOrder);
+			const complete = this.runItems.filter(i => i.isComplete).sort(byOrder);
+			return [...incomplete, ...complete];
+		}
+		return [...this.runItems].sort(byOrder);
+	}
+
+	private refreshDisplay(delay = 0) {
+		if (delay === 0) {
+			this.displayItems = this.sortedItems;
+		} else {
+			setTimeout(() => this.displayItems = this.sortedItems, delay);
+		}
 	}
 
 	get allComplete(): boolean {
 		return this.runItems.length > 0 && this.runItems.every(i => i.isComplete);
+	}
+
+	get someComplete(): boolean {
+		return this.runItems.some(i => i.isComplete);
 	}
 
 	ngOnInit() {
@@ -84,6 +108,7 @@ export class ListRunComponent implements OnInit {
 			isExpanded: false,
 			isToggling: false,
 		}));
+		this.refreshDisplay();
 	}
 
 	goBack() {
@@ -101,12 +126,36 @@ export class ListRunComponent implements OnInit {
 		const wasComplete = item.isComplete;
 		item.isComplete = !wasComplete;
 
+		const delay = (this.userStore.user()?.sortCompletedToBottom ?? true) ? 250 : 0;
+		this.refreshDisplay(delay);
 		const ok = await this.listStore.toggleListRunItem(item.id, !wasComplete);
 		if (!ok) {
 			item.isComplete = wasComplete;
 			this.snackbarService.showMessage(this.listStore.error(), 'error');
+			this.refreshDisplay();
 		}
 		item.isToggling = false;
+
+		if (ok && this.allComplete) {
+			await this.finishRun();
+		}
+	}
+
+	async checkAll() {
+		if (this.allComplete) return;
+		await this.finishRun(this.runItems.length);
+	}
+
+	private async finishRun(completedCount?: number) {
+		const total = this.runItems.length;
+		const completed = completedCount ?? this.runItems.filter(i => i.isComplete).length;
+		const ok = await this.listStore.completeListRun(this.listId, this.runId);
+		if (ok) {
+			this.snackbarService.showMessage(`List completed — ${completed} of ${total} items checked`, 'success');
+			this.router.navigate(['/lists']);
+		} else {
+			this.snackbarService.showMessage(this.listStore.error(), 'error');
+		}
 	}
 
 	startCompleteAll() {
@@ -117,13 +166,44 @@ export class ListRunComponent implements OnInit {
 		this.confirmingComplete = false;
 	}
 
-	async confirmCompleteAll() {
-		const ok = await this.listStore.completeListRun(this.listId, this.runId);
-		if (!ok) {
+	openAddItem() {
+		this.showAddItem = true;
+		setTimeout(() => {
+			this.addItemSection?.nativeElement?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+		}, 50);
+	}
+
+	cancelAddItem() {
+		this.showAddItem = false;
+		this.newItemName = '';
+	}
+
+	async saveRunItem(oneTime: boolean) {
+		if (!this.newItemName.trim() || this.isSavingItem) return;
+		this.isSavingItem = true;
+		const nextSort = this.runItems.length ? Math.max(...this.runItems.map(i => i.sortOrder)) + 10 : 10;
+		const result = await this.listStore.addRunItem(this.runId, this.listId, this.newItemName.trim(), oneTime);
+		if (result) {
+			this.runItems.push({
+				id: result.id,
+				itemName: result.listItemName,
+				itemDescription: result.listItemDescription,
+				sortOrder: nextSort,
+				isComplete: false,
+				isExpanded: false,
+				isToggling: false,
+			});
+			this.refreshDisplay();
+			this.showAddItem = false;
+			this.newItemName = '';
+		} else {
 			this.snackbarService.showMessage(this.listStore.error(), 'error');
-			this.confirmingComplete = false;
-			return;
 		}
-		this.router.navigate(['/lists']);
+		this.isSavingItem = false;
+	}
+
+	async confirmCompleteList() {
+		this.confirmingComplete = false;
+		await this.finishRun();
 	}
 }

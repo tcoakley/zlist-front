@@ -64,7 +64,7 @@
 							title="Toggle details"
 						>&#9654;</button>
 
-						<span class="list-card-name" [title]="list.listName">{{ list.listName }}</span>
+						<span class="list-card-name" [title]="list.listName" (click)="toggleDescription(list.id)">{{ list.listName }}</span>
 
 						<div class="card-actions">
 							@if (confirmingDeleteId === list.id) {
