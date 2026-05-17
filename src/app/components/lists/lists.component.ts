@@ -125,6 +125,10 @@ export class ListsComponent implements OnInit, OnDestroy {
 		this.confirmingDeleteId = null;
 	}
 
+	navigateToHistory(id: number) {
+		this.router.navigate(['/lists', id, 'history']);
+	}
+
 	getRunCount(list: List): number {
 		return list.totalRuns;
 	}

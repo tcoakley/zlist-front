@@ -25,6 +25,15 @@ export interface ListRun {
 	isComplete: boolean;
 }
 
+export interface RunHistorySummary {
+	id: number;
+	listId: number;
+	createdAt: string;
+	completedAt?: string;
+	totalItems: number;
+	completedItems: number;
+}
+
 export interface List {
 	id: number;
 	listName: string;

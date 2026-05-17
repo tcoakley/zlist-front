@@ -40,7 +40,10 @@
 				>&#9654;</button>
 
 				<div class="item-content">
-					<span class="item-name">{{ item.itemName }}</span>
+					<span class="item-name">
+					{{ item.itemName }}
+					@if (item.isOneTime) {<span class="one-time-badge">one-time</span>}
+				</span>
 					<div class="desc-wrapper" [class.expanded]="item.isExpanded">
 						<div class="item-desc">{{ item.itemDescription }}</div>
 					</div>

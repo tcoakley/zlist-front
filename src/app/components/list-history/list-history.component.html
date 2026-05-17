@@ -1,0 +1,61 @@
+<div class="history-container">
+
+	<div class="top-bar">
+		<button class="back-btn" (click)="goBack()">&#8592; Lists</button>
+	</div>
+
+	@if (loading) {
+		<div class="status-msg">Loading history...</div>
+	} @else if (history.length === 0) {
+		<div class="status-msg">No runs yet.</div>
+	} @else {
+		<div class="history-list">
+			@for (run of history; track run.id) {
+				<div class="history-row">
+					<div class="run-meta">
+						<span class="run-started">{{ formatDateTime(run.createdAt) }}</span>
+						<span class="arrow">&#8594;</span>
+						<span class="run-completed">{{ run.completedAt ? formatDateTime(run.completedAt) : '—' }}</span>
+					</div>
+					<div class="run-summary">
+						<span class="run-count">{{ run.completedItems }} of {{ run.totalItems }} completed</span>
+						<button class="view-btn" (click)="openView(run)">View</button>
+					</div>
+				</div>
+			}
+		</div>
+	}
+
+</div>
+
+@if (modalRun) {
+	<div class="modal-overlay" (click)="closeModal()">
+		<div class="modal-card" (click)="$event.stopPropagation()">
+			<div class="modal-header">
+				<span class="modal-title">{{ formatDateTime(modalRun.createdAt) }}</span>
+				<button class="modal-close-btn" (click)="closeModal()">&#10005;</button>
+			</div>
+			@if (modalLoading) {
+				<div class="modal-loading">Loading...</div>
+			} @else {
+				<div class="modal-items">
+					@for (item of sortedModalItems; track item.id) {
+						<div class="modal-item-row" [class.complete]="item.isComplete">
+							<div class="modal-item-content">
+								<span class="modal-item-name">
+							{{ item.itemName }}
+							@if (item.isOneTime) {<span class="one-time-badge">one-time</span>}
+						</span>
+							</div>
+							<img
+								class="check-img"
+								[src]="item.isComplete ? 'assets/checked.svg' : 'assets/unchecked.svg'"
+								alt=""
+							/>
+						</div>
+					}
+				</div>
+			}
+		</div>
+	</div>
+}

@@ -14,6 +14,7 @@ interface RunItem {
 	isComplete: boolean;
 	isExpanded: boolean;
 	isToggling: boolean;
+	isOneTime: boolean;
 }
 
 @Component({
@@ -107,6 +108,7 @@ export class ListRunComponent implements OnInit {
 			isComplete: !!i.completedAt,
 			isExpanded: false,
 			isToggling: false,
+			isOneTime: !i.listItemId,
 		}));
 		this.refreshDisplay();
 	}
@@ -143,6 +145,10 @@ export class ListRunComponent implements OnInit {
 
 	async checkAll() {
 		if (this.allComplete) return;
+		const unchecked = this.runItems.filter(i => !i.isComplete);
+		unchecked.forEach(i => i.isComplete = true);
+		this.refreshDisplay(0);
+		await Promise.all(unchecked.map(i => this.listStore.toggleListRunItem(i.id, true)));
 		await this.finishRun(this.runItems.length);
 	}
 
@@ -192,6 +198,7 @@ export class ListRunComponent implements OnInit {
 				isComplete: false,
 				isExpanded: false,
 				isToggling: false,
+				isOneTime: !result.listItemId,
 			});
 			this.refreshDisplay();
 			this.showAddItem = false;

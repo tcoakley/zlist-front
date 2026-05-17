@@ -226,6 +226,20 @@
 	line-height: 1.3;
 }
 
+.one-time-badge {
+	display: inline-block;
+	margin-left: 6px;
+	font-size: 0.65rem;
+	font-weight: 600;
+	color: $warning;
+	border: 1px solid $warning;
+	border-radius: 3px;
+	padding: 1px 5px;
+	vertical-align: middle;
+	letter-spacing: 0.02em;
+	opacity: 0.85;
+}
+
 .desc-wrapper {
 	max-height: 0;
 	overflow: hidden;

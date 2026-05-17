@@ -228,11 +228,31 @@
 .run-info {
 	display: flex;
 	align-items: center;
-	gap: 5px;
+	justify-content: space-between;
 	font-size: 0.8rem;
 	color: $text-muted;
 	padding: 6px 0 2px 26px;
+}
+
+.run-info-left {
+	display: flex;
+	align-items: center;
+	gap: 5px;
 	flex-wrap: wrap;
+}
+
+.history-link {
+	background: transparent;
+	border: none;
+	color: $primary;
+	font-size: 0.8rem;
+	padding: 0;
+	cursor: pointer;
+
+	&:hover {
+		text-decoration: underline;
+		opacity: 1;
+	}
 }
 
 .run-divider {

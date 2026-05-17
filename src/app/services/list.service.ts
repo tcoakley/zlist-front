@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { List, ListItem, ListRun, ListRunItem } from '../../models/list.model';
+import { List, ListItem, ListRun, ListRunItem, RunHistorySummary } from '../../models/list.model';
 import { HttpService } from './http.service';
 
 @Injectable({
@@ -61,5 +61,9 @@ export class ListService {
 
 	addRunItem(listRunId: number, listId: number, itemName: string, oneTime: boolean): Observable<ListRunItem> {
 		return this.http.post<ListRunItem>(`${this.base}/AddRunItem`, { listRunId, listId, itemName, oneTime });
+	}
+
+	getListRunHistory(listId: number): Observable<RunHistorySummary[]> {
+		return this.http.get<RunHistorySummary[]>(`${this.base}/GetListRunHistory/${listId}`);
 	}
 }
