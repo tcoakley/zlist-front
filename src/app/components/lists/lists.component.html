@@ -64,7 +64,12 @@
 								title="Toggle details"
 							>&#9654;</button>
 
-							<span class="list-card-name" [title]="list.listName" (click)="toggleDescription(list.id)">{{ list.listName }}</span>
+							<div class="name-group" (click)="toggleDescription(list.id)">
+								<span class="list-card-name" [title]="list.listName">{{ list.listName }}</span>
+								@if (list.activeRunId) {
+									<span class="in-progress-badge">In progress</span>
+								}
+							</div>
 
 							<div class="card-actions">
 								@if (confirmingDeleteId === list.id) {
@@ -72,13 +77,21 @@
 									<button class="confirm-yes-btn" (click)="confirmDelete(list.id)" aria-label="Confirm delete">Yes</button>
 									<button class="confirm-no-btn" (click)="cancelDelete()" aria-label="Cancel delete">No</button>
 								} @else {
-									<button class="edit-btn" (click)="navigateToList(list.id)" title="Edit list" aria-label="Edit list">&#9998;</button>
+									<button class="edit-btn" (click)="navigateToList(list.id)" title="Edit list" aria-label="Edit list">
+										<img src="assets/icon-edit.svg" alt="" />
+									</button>
 									@if (list.activeRunId) {
-										<button class="continue-btn" (click)="continueRun(list.id, list.activeRunId)" title="Continue in-progress run" aria-label="Continue in-progress run">&#9654;&#9654;</button>
+										<button class="continue-btn" (click)="continueRun(list.id, list.activeRunId)" title="Continue in-progress run" aria-label="Continue in-progress run">
+											<img src="assets/icon-continue.svg" alt="" />
+										</button>
 									} @else {
-										<button class="launch-btn" (click)="launchList(list.id)" title="Launch list" aria-label="Launch list">&#9654;</button>
+										<button class="launch-btn" (click)="launchList(list.id)" title="Launch list" aria-label="Launch list">
+											<img src="assets/icon-play.svg" alt="" />
+										</button>
 									}
-									<button class="delete-btn" (click)="startDelete(list.id)" title="Delete list" aria-label="Delete list"><mat-icon>delete</mat-icon></button>
+									<button class="delete-btn" (click)="startDelete(list.id)" title="Delete list" aria-label="Delete list">
+										<img src="assets/icon-trash.svg" alt="" />
+									</button>
 								}
 							</div>
 						</div>
@@ -93,9 +106,9 @@
 										<button class="history-link" (click)="navigateToHistory(list.id)">History</button>
 									}
 								</div>
-								@if (getLastRunDate(list)) {
-									<span class="run-date">{{ getLastRunDate(list) }}</span>
-								}
+								<span class="run-date" [class.never-run]="!getLastRunDate(list)">
+									{{ getLastRunDate(list) ? 'Last run: ' + getLastRunDate(list) : 'Never run' }}
+								</span>
 							</div>
 							@if (list.listDescription) {
 								<div class="list-description">{{ list.listDescription }}</div>

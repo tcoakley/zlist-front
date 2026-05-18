@@ -1,0 +1,14 @@
+<svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="ff-bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f5c040"/>
+      <stop offset="100%" stop-color="#c07800"/>
+    </linearGradient>
+  </defs>
+  <rect width="34" height="34" rx="7" fill="url(#ff-bg)"/>
+  <!-- Two forward triangles -->
+  <polygon points="9,11 9,23 17,17" fill="white"/>
+  <polygon points="17,11 17,23 25,17" fill="white"/>
+  <!-- Right bar -->
+  <rect x="25" y="11" width="2.5" height="12" rx="1" fill="white"/>
+</svg>

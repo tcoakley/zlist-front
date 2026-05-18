@@ -1,6 +1,5 @@
 <div class="form" style="opacity: 0">
 	@if (!loading) {
-	<h2>Profile</h2>
 	<form aria-labelledby="signup-heading">
 		<fieldset>
 			<legend>Email</legend>
@@ -31,6 +30,7 @@
 				(input)="formReady()"
 				[(ngModel)]="password"
 			/>
+			<p class="field-hint">Leave blank to keep your current password</p>
 		</fieldset>
 
 		<fieldset>

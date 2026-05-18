@@ -3,7 +3,7 @@
 	@if (!loading) {
 	<div class="top-bar">
 		<button class="back-btn" (click)="goBack()">&#8592; Lists</button>
-		<button class="launch-btn" (click)="launchList()" [disabled]="hasDirty || !list()?.items?.length" [title]="!list()?.items?.length ? 'Add items before launching' : ''">&#9654; Launch</button>
+		<button class="launch-btn" (click)="launchList()" [disabled]="hasDirty || !list()?.items?.length || !!list()?.activeRunId" [title]="!!list()?.activeRunId ? 'List in progress, complete to create new.' : !list()?.items?.length ? 'Add items before launching' : ''">&#9654; Launch</button>
 	</div>
 
 	@if (list(); as l) {
@@ -12,7 +12,7 @@
 			<div class="header-name-row">
 				@if (!editingHeader) {
 					<h1 class="list-title">{{ l.listName }}</h1>
-					<button class="pencil-btn" (click)="toggleHeaderEdit()" title="Edit">&#9998;</button>
+					<button class="pencil-btn" (click)="toggleHeaderEdit()" title="Edit"><img src="assets/icon-edit.svg" alt="" /></button>
 				} @else {
 					<input
 						class="header-input title-input"
@@ -85,14 +85,20 @@
 
 					<div class="item-actions">
 						@if (item.id > 0) {
-							<button class="delete-item-btn" (click)="deleteItem(item)" title="Delete item">&#10005;</button>
+							@if (confirmingDeleteItemId === item.id) {
+								<button class="confirm-yes-btn" (click)="deleteItem(item)" aria-label="Confirm delete">Yes</button>
+								<button class="confirm-no-btn" (click)="cancelDeleteItem()" aria-label="Cancel delete">No</button>
+							} @else {
+								<button class="delete-item-btn" (click)="startDeleteItem(item)" title="Delete item"><img src="assets/icon-trash.svg" alt="" /></button>
+								<span class="action-divider">|</span>
+							}
 						}
 						<span
 							class="drag-handle"
 							cdkDragHandle
 							[style.visibility]="item.itemName.trim() ? 'visible' : 'hidden'"
 							title="Drag to reorder"
-						><mat-icon>drag_indicator</mat-icon></span>
+						><img src="assets/icon-drag-handle.svg" alt="" /></span>
 					</div>
 
 				</div>

@@ -43,25 +43,36 @@ export class SignupComponent implements OnInit, AfterViewInit {
 
 	ngAfterViewInit() {
 		setTimeout(() => this.loading = false, 100);
-		const tryRender = () => {
-			const g = (window as any).grecaptcha;
-			if (g && g.render) {
-				g.render('recaptcha-container', {
-					sitekey: environment.recaptchaSiteKey,
-					callback: (token: string) => {
-						this.captchaToken = token;
-						this.formReady();
-					},
-					'expired-callback': () => {
-						this.captchaToken = '';
-						this.formReady();
-					}
-				});
-			} else {
-				setTimeout(tryRender, 100);
+		this.initCaptcha();
+	}
+
+	private initCaptcha() {
+		const g = (window as any).grecaptcha;
+		if (g && g.ready) {
+			g.ready(() => this.renderCaptcha());
+		} else {
+			setTimeout(() => this.initCaptcha(), 100);
+		}
+	}
+
+	private renderCaptcha() {
+		const container = document.getElementById('recaptcha-container');
+		if (!container) {
+			setTimeout(() => this.renderCaptcha(), 100);
+			return;
+		}
+		const g = (window as any).grecaptcha;
+		g.render('recaptcha-container', {
+			sitekey: environment.recaptchaSiteKey,
+			callback: (token: string) => {
+				this.captchaToken = token;
+				this.formReady();
+			},
+			'expired-callback': () => {
+				this.captchaToken = '';
+				this.formReady();
 			}
-		};
-		tryRender();
+		});
 	}
 
 	formReady() {

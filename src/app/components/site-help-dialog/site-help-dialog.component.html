@@ -8,24 +8,24 @@
 	<div class="legend">
 		<p class="legend-title">Icon Reference</p>
 		<div class="legend-row">
-			<span class="legend-icon launch-icon">&#9654;</span>
-			<span class="legend-desc">Launch — start a new run of this checklist</span>
+			<span class="legend-icon"><img src="assets/icon-play.svg" alt="Launch" /></span>
+			<span class="legend-desc">Launch — start a new run</span>
 		</div>
 		<div class="legend-row">
-			<span class="legend-icon continue-icon">&#9654;&#9654;</span>
+			<span class="legend-icon"><img src="assets/icon-continue.svg" alt="Continue" /></span>
 			<span class="legend-desc">Continue — resume an in-progress run</span>
 		</div>
 		<div class="legend-row">
-			<span class="legend-icon edit-icon">&#9998;</span>
-			<span class="legend-desc">Edit — edit the checklist items, name, or description</span>
+			<span class="legend-icon"><img src="assets/icon-edit.svg" alt="Edit" /></span>
+			<span class="legend-desc">Edit — view or edit details</span>
 		</div>
 		<div class="legend-row">
-			<span class="legend-icon delete-icon">&#10005;</span>
-			<span class="legend-desc">Delete — permanently remove this checklist</span>
+			<span class="legend-icon"><img src="assets/icon-trash.svg" alt="Delete" /></span>
+			<span class="legend-desc">Delete — permanently remove</span>
 		</div>
 		<div class="legend-row">
 			<span class="legend-icon expand-icon">&#9654;</span>
-			<span class="legend-desc">Expand — show or hide checklist details</span>
+			<span class="legend-desc">Expand — show or hide details</span>
 		</div>
 	</div>
 
@@ -56,11 +56,11 @@
 			<p>Use the <strong>Create New List</strong> button to create a new checklist.</p>
 			<p>For each existing list you may:</p>
 			<ul>
-				<li>Click the <strong>pencil icon</strong> to edit the checklist items, name, or description</li>
-				<li>Click the <strong>green launch button</strong> to begin a new checklist run</li>
-				<li>Click the <strong>X button</strong> to permanently delete the checklist</li>
+				<li>Click the <strong>edit icon</strong> to edit the checklist items, name, or description</li>
+				<li>Click the <strong>launch icon</strong> to begin a new checklist run</li>
+				<li>Click the <strong>trash icon</strong> to permanently delete the checklist</li>
 			</ul>
-			<p>If a checklist already has a run currently in progress, the launch button will appear yellow with two arrows instead of the normal green launch icon.</p>
+			<p>If a checklist already has a run currently in progress, the continue icon will appear instead of the launch icon.</p>
 			<p>Deleting a checklist is permanent. You will be asked to confirm deletion before it is removed. Deleting a checklist will also permanently remove:</p>
 			<ul>
 				<li>Checklist items</li>
@@ -79,7 +79,6 @@
 			Edit List Help
 		</button>
 		<div class="help-body" [class.expanded]="editListOpen">
-			<p>This page is where you build and maintain the items for your repeatable checklist.</p>
 			<p>You may add as many checklist items as needed. Each item represents a task or step that should be completed when running the checklist.</p>
 			<p><strong>Examples:</strong></p>
 			<ul>
@@ -99,10 +98,6 @@
 				<li>Re-run the checklist as often as needed from this page or the main lists page</li>
 			</ul>
 		</div>
-	</div>
-
-	<div class="help-section">
-		<p class="help-footer">This help text can be turned off at any time from your <strong>Profile</strong> page.</p>
 	</div>
 
 </mat-dialog-content>

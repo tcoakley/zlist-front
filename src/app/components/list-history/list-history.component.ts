@@ -63,7 +63,11 @@ export class ListHistoryComponent implements OnInit, AfterViewInit {
 		this.loading = true;
 		const history = await this.listStore.loadListRunHistory(this.listId);
 		if (history !== null) {
-			this.history = history;
+			this.history = history.sort((a, b) => {
+				const dateA = new Date(a.completedAt ?? a.createdAt).getTime();
+				const dateB = new Date(b.completedAt ?? b.createdAt).getTime();
+				return dateB - dateA;
+			});
 		} else {
 			this.snackbarService.showMessage(this.listStore.error(), 'error');
 		}

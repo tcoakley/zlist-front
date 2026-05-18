@@ -17,8 +17,14 @@ export class SiteHelpDialogComponent {
 	editListOpen = this.data.context === 'edit-list';
 
 	toggle(section: 'createList' | 'lists' | 'editList') {
-		if (section === 'createList') this.createListOpen = !this.createListOpen;
-		else if (section === 'lists') this.listsOpen = !this.listsOpen;
-		else this.editListOpen = !this.editListOpen;
+		const isOpen = section === 'createList' ? this.createListOpen : section === 'lists' ? this.listsOpen : this.editListOpen;
+		this.createListOpen = false;
+		this.listsOpen = false;
+		this.editListOpen = false;
+		if (!isOpen) {
+			if (section === 'createList') this.createListOpen = true;
+			else if (section === 'lists') this.listsOpen = true;
+			else this.editListOpen = true;
+		}
 	}
 }

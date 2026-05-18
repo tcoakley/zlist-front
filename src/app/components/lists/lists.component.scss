@@ -33,11 +33,24 @@
 }
 
 .form {
+	animation: form-slide-down 0.2s ease-in both;
+
 	h2 {
 		margin: 0 0 12px;
 		font-size: 1.1rem;
 		font-weight: 700;
 		color: $text-primary;
+	}
+}
+
+@keyframes form-slide-down {
+	from {
+		opacity: 0;
+		transform: translateY(-10px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
 	}
 }
 
@@ -95,12 +108,19 @@
 }
 
 
-.list-card-name {
+.name-group {
 	flex: 1;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	min-width: 0;
+	cursor: pointer;
+}
+
+.list-card-name {
 	font-size: 1rem;
 	font-weight: 700;
 	color: $text-primary;
-	cursor: pointer;
 	min-width: 0;
 	overflow: hidden;
 	text-overflow: ellipsis;
@@ -117,6 +137,23 @@
 	display: flex;
 	align-items: center;
 	gap: 4px;
+}
+
+@media (max-width: 400px) {
+	.card-main-row {
+		flex-wrap: wrap;
+	}
+
+	.card-actions {
+		width: 100%;
+		justify-content: flex-start;
+		padding-left: 22px;
+		padding-top: 4px;
+	}
+
+	.run-date {
+		display: none;
+	}
 }
 
 .edit-btn {
@@ -136,56 +173,66 @@
 }
 
 .continue-btn {
-	background: $warning;
+	background: transparent;
 	border: none;
-	color: #1a1a1a;
-	font-size: 0.65rem;
-	padding: 4px 10px;
-	border-radius: 4px;
+	padding: 4px 6px;
 	cursor: pointer;
+	border-radius: 4px;
 	transition: opacity 0.15s ease;
 
-	&:hover {
-		opacity: 0.85;
-	}
+	img { width: 26px; height: 26px; }
+
+	&:hover { opacity: 0.7; }
 }
 
 .launch-btn {
-	background: $primary;
+	background: transparent;
 	border: none;
-	color: white;
-	font-size: 0.65rem;
-	padding: 4px 10px;
-	border-radius: 4px;
+	padding: 4px 6px;
 	cursor: pointer;
-	transition: background-color 0.15s ease;
+	border-radius: 4px;
+	transition: opacity 0.15s ease;
 
-	&:hover {
-		background-color: $primary-dark;
-		opacity: 1;
-	}
+	img { width: 26px; height: 26px; }
+
+	&:hover { opacity: 0.7; }
+}
+
+.in-progress-badge {
+	font-size: 0.7rem;
+	font-weight: 700;
+	color: #1a1a1a;
+	background: $warning;
+	padding: 2px 8px;
+	border-radius: 20px;
+	white-space: nowrap;
+	flex-shrink: 0;
 }
 
 .delete-btn {
 	background: transparent;
 	border: none;
-	color: #666;
 	padding: 4px 6px;
 	cursor: pointer;
 	border-radius: 4px;
-	transition: color 0.15s ease;
-	font-size: 0;
+	transition: opacity 0.15s ease;
 
-	mat-icon {
-		font-size: 18px;
-		width: 18px;
-		height: 18px;
-	}
+	img { width: 26px; height: 26px; }
 
-	&:hover {
-		color: $danger;
-		opacity: 1;
-	}
+	&:hover { opacity: 0.7; }
+}
+
+.edit-btn {
+	background: transparent;
+	border: none;
+	padding: 4px 6px;
+	cursor: pointer;
+	border-radius: 4px;
+	transition: opacity 0.15s ease;
+
+	img { width: 26px; height: 26px; }
+
+	&:hover { opacity: 0.7; }
 }
 
 .confirm-delete-label {
@@ -268,6 +315,11 @@
 
 .run-date {
 	color: $text-muted;
+
+	&.never-run {
+		color: $text-faint;
+		font-style: italic;
+	}
 }
 
 .list-description {

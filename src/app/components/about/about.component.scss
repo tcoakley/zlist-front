@@ -7,6 +7,10 @@
 	margin: 0 auto;
 }
 
+.about-container {
+	animation: page-fade-in 0.25s ease-out 0.1s both;
+}
+
 .top-bar {
 	display: flex;
 	align-items: center;

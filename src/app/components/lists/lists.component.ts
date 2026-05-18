@@ -1,7 +1,6 @@
 import { Component, OnInit, OnDestroy, inject, Injector, effect, AfterViewInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { MatIconModule } from '@angular/material/icon';
 import { AutofocusDirective } from '../../directives/autofocus.directive';
 import { SnackbarService } from '../../services/snackbar.service';
 import { TitleService } from '../../services/title.service';
@@ -11,7 +10,7 @@ import { List } from '../../../models/list.model';
 @Component({
 	selector: 'app-lists',
 	standalone: true,
-	imports: [FormsModule, MatIconModule, AutofocusDirective],
+	imports: [FormsModule, AutofocusDirective],
 	templateUrl: './lists.component.html',
 	styleUrls: ['./lists.component.scss'],
 })
@@ -59,7 +58,8 @@ export class ListsComponent implements OnInit, OnDestroy, AfterViewInit  {
 
 			if (!loading && lists.length === 0 && !triggered) {
 				triggered = true;
-				setTimeout(() => this.titleService.setAnimateHelp(true), 750);
+				const delay = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ? 1500 : 750;
+				setTimeout(() => this.titleService.setAnimateHelp(true), delay);
 			}
 
 			if (!loading && lists.length > 0 && !defaultExpanded) {

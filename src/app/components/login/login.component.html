@@ -22,7 +22,7 @@
 				autocomplete="email"
 				aria-required="true"
 				required
-				appAutofocus
+				[appAutofocus]="!isMobile"
 			/>
 		</fieldset>
 
@@ -49,7 +49,7 @@
 				/>
 				<span>Remember me</span>
 			</div>
-			<a routerLink="/forgotPassword">Forgot password?</a>
+			<a routerLink="/forgotPassword" tabindex="-1">Forgot password?</a>
 		</div>
 
 		<button type="submit" class="submit login-btn">Login</button>
@@ -58,6 +58,8 @@
 	<div class="or-divider"><span>or</span></div>
 
 	<button class="create-account-btn" type="button" routerLink="/signup">Create a free account</button>
+
+	<p class="copyright">&copy; {{ currentYear }} zChecklist. All rights reserved.</p>
 
 	}
 </div>

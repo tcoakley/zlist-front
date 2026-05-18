@@ -2,7 +2,6 @@ import { Component, OnInit, OnDestroy, AfterViewInit, inject, computed, ViewChil
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CdkDragDrop, CdkDrag, CdkDropList, CdkDragHandle, moveItemInArray } from '@angular/cdk/drag-drop';
-import { MatIconModule } from '@angular/material/icon';
 import { AutofocusDirective } from '../../directives/autofocus.directive';
 import { SnackbarService } from '../../services/snackbar.service';
 import { TitleService } from '../../services/title.service';
@@ -23,7 +22,7 @@ interface EditableItem {
 @Component({
 	selector: 'app-list-detail',
 	standalone: true,
-	imports: [FormsModule, AutofocusDirective, CdkDropList, CdkDrag, CdkDragHandle, MatIconModule],
+	imports: [FormsModule, AutofocusDirective, CdkDropList, CdkDrag, CdkDragHandle],
 	templateUrl: './list-detail.component.html',
 	styleUrls: ['./list-detail.component.scss'],
 })
@@ -47,6 +46,7 @@ export class ListDetailComponent implements OnInit, OnDestroy, AfterViewInit {
 	isSavingHeader = false;
 
 	editableItems: EditableItem[] = [];
+	confirmingDeleteItemId: number | null = null;
 
 	protected list = computed(() => this.listStore.lists().find(l => l.id === this.listId));
 
@@ -300,7 +300,16 @@ export class ListDetailComponent implements OnInit, OnDestroy, AfterViewInit {
 		item.isSaving = false;
 	}
 
+	startDeleteItem(item: EditableItem) {
+		this.confirmingDeleteItemId = item.id;
+	}
+
+	cancelDeleteItem() {
+		this.confirmingDeleteItemId = null;
+	}
+
 	async deleteItem(item: EditableItem) {
+		this.confirmingDeleteItemId = null;
 		await this.listStore.deleteListItem(item.id);
 		if (this.listStore.error()) {
 			this.snackbarService.showMessage(this.listStore.error(), 'error');
