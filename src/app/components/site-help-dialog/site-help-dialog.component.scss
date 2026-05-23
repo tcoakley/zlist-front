@@ -82,6 +82,33 @@ mat-dialog-actions {
 	color: #228B22;
 }
 
+.mobile-only { display: none; }
+
+@media (max-width: 400px) {
+	.desktop-only { display: none; }
+	.mobile-only { display: inline-block; }
+
+	.legend-icon { width: auto; }
+
+	.launch-mobile, .continue-mobile {
+		padding: 4px 12px;
+		border-radius: 4px;
+		font-size: 0.8rem;
+		font-weight: 600;
+		white-space: nowrap;
+	}
+
+	.launch-mobile {
+		background: #228B22;
+		color: white;
+	}
+
+	.continue-mobile {
+		background: rgba(245, 177, 66, 0.9);
+		color: #1a1a1a;
+	}
+}
+
 .legend-desc {
 	font-size: 0.82rem;
 	color: $dialog-subtext;

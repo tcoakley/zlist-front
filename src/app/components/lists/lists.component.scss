@@ -139,21 +139,8 @@
 	gap: 4px;
 }
 
-@media (max-width: 400px) {
-	.card-main-row {
-		flex-wrap: wrap;
-	}
-
-	.card-actions {
-		width: 100%;
-		justify-content: flex-start;
-		padding-left: 22px;
-		padding-top: 4px;
-	}
-
-	.run-date {
-		display: none;
-	}
+.btn-label {
+	display: none;
 }
 
 .edit-btn {
@@ -326,4 +313,46 @@
 	font-size: 0.85rem;
 	color: $text-secondary;
 	padding: 2px 0 4px 26px;
+}
+
+@media (max-width: 400px) {
+	.card-main-row {
+		flex-wrap: wrap;
+	}
+
+	.card-actions {
+		width: 100%;
+		justify-content: space-between;
+		padding-left: 0;
+		padding-top: 6px;
+	}
+
+	.launch-btn, .continue-btn {
+		padding: 4px 12px;
+		border-radius: 4px;
+		font-size: 0.8rem;
+		font-weight: 600;
+
+		img { display: none; }
+
+		.btn-label { display: inline; }
+	}
+
+	.launch-btn {
+		background: $primary;
+		color: white;
+
+		&:hover { opacity: 0.85; }
+	}
+
+	.continue-btn {
+		background: $warning;
+		color: #1a1a1a;
+
+		&:hover { opacity: 0.85; }
+	}
+
+	.run-date {
+		display: none;
+	}
 }
