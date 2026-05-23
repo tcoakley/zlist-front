@@ -9,7 +9,7 @@
 	font-weight: 700;
 	margin: 0;
 	padding: 16px 20px;
-	border-bottom: 1px solid #ddd;
+	border-bottom: 1px solid $dialog-border;
 }
 
 .dialog-close-x {
@@ -42,7 +42,7 @@ mat-dialog-actions {
 .legend {
 	padding: 12px 0 14px;
 	margin-bottom: 12px;
-	border-bottom: 1px solid #ddd;
+	border-bottom: 1px solid $dialog-border;
 }
 
 .legend-title {
