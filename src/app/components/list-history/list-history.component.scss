@@ -213,6 +213,21 @@
 	opacity: 0.85;
 }
 
+.completed-by {
+	flex-shrink: 0;
+	font-size: 0.65rem;
+	font-weight: 700;
+	color: $text-muted;
+	background: $bg-elevated;
+	border: 1px solid $border-strong;
+	border-radius: 50%;
+	width: 22px;
+	height: 22px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+}
+
 .check-img {
 	width: 22px;
 	height: 22px;

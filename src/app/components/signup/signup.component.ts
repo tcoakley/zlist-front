@@ -1,5 +1,5 @@
 import { Component, OnInit, AfterViewInit, inject, effect } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AutofocusDirective } from '../../directives/autofocus.directive';
 import { SnackbarService } from '../../services/snackbar.service';
@@ -23,10 +23,12 @@ export class SignupComponent implements OnInit, AfterViewInit {
 	firstName = '';
 	lastName = '';
 	captchaToken = '';
+	inviteToken = '';
 
 	private userStore = inject(UserStore);
 	private snackbarService = inject(SnackbarService);
 	private router = inject(Router);
+	private route = inject(ActivatedRoute);
 
 	constructor() {
 		effect(() => {
@@ -38,6 +40,7 @@ export class SignupComponent implements OnInit, AfterViewInit {
 	}
 
 	ngOnInit() {
+		this.inviteToken = this.route.snapshot.queryParamMap.get('inviteToken') ?? '';
 		this.formReady();
 	}
 
@@ -96,8 +99,11 @@ export class SignupComponent implements OnInit, AfterViewInit {
 
 		const success = await this.userStore.signUp(user);
 		if (success) {
-			this.snackbarService.showMessage('Signup successful', 'success');
-			setTimeout(() => this.router.navigate(['/login']), 100);
+			this.snackbarService.showMessage('Signup successful — please log in', 'success');
+			const dest = this.inviteToken
+				? `/login?returnUrl=${encodeURIComponent('/invite/' + this.inviteToken)}`
+				: '/login';
+			setTimeout(() => this.router.navigateByUrl(dest), 100);
 		}
 	}
 }

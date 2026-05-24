@@ -1,10 +1,13 @@
-import { Component, OnInit, AfterViewInit, ViewChild, ElementRef, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit, ViewChild, ElementRef, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { AutofocusDirective } from '../../directives/autofocus.directive';
 import { ListStore } from '../../stores/list/list.store';
 import { UserStore } from '../../stores/user/user.store';
 import { TitleService } from '../../services/title.service';
 import { SnackbarService } from '../../services/snackbar.service';
+import { RunHubService } from '../../services/run-hub.service';
+import { ListRunItem } from '../../../models/list.model';
 
 interface RunItem {
 	id: number;
@@ -15,22 +18,24 @@ interface RunItem {
 	isExpanded: boolean;
 	isToggling: boolean;
 	isOneTime: boolean;
+	completedByInitials?: string;
 }
 
 @Component({
 	selector: 'app-list-run',
 	standalone: true,
-	imports: [FormsModule],
+	imports: [FormsModule, AutofocusDirective],
 	templateUrl: './list-run.component.html',
 	styleUrls: ['./list-run.component.scss'],
 })
-export class ListRunComponent implements OnInit, AfterViewInit {
+export class ListRunComponent implements OnInit, OnDestroy, AfterViewInit {
 	protected listStore = inject(ListStore);
 	private userStore = inject(UserStore);
 	private route = inject(ActivatedRoute);
 	private router = inject(Router);
 	private titleService = inject(TitleService);
 	private snackbarService = inject(SnackbarService);
+	private runHubService = inject(RunHubService);
 
 	@ViewChild('addItemSection') addItemSection?: ElementRef;
 
@@ -88,6 +93,10 @@ export class ListRunComponent implements OnInit, AfterViewInit {
 		}
 	}
 
+	ngOnDestroy() {
+		this.runHubService.disconnect();
+	}
+
 	private async initRun() {
 		const list = this.listStore.lists().find(l => l.id === this.listId);
 		if (!list) { this.router.navigate(['/lists']); return; }
@@ -115,9 +124,63 @@ export class ListRunComponent implements OnInit, AfterViewInit {
 			isExpanded: false,
 			isToggling: false,
 			isOneTime: !i.listItemId,
+			completedByInitials: i.completedByInitials,
 		}));
 		this.refreshDisplay();
 		this.loading = false;
+
+		this.connectHub();
+	}
+
+	private async connectHub() {
+		const user = this.userStore.user();
+		const initials = user
+			? `${user.firstName?.charAt(0) ?? ''}${user.lastName?.charAt(0) ?? ''}`.toUpperCase()
+			: '';
+		try {
+			await this.runHubService.connect(this.runId, initials, {
+				onItemToggled: (runItemId, isComplete, completedByInitials) =>
+					this.onHubItemToggled(runItemId, isComplete, completedByInitials),
+				onRunCompleted: () => this.onHubRunCompleted(),
+				onItemAdded: (item) => this.onHubItemAdded(item),
+			});
+		} catch (err) {
+			console.error('[SignalR] Failed to connect:', err);
+		}
+	}
+
+	private onHubItemToggled(runItemId: number, isComplete: boolean, completedByInitials: string) {
+		const item = this.runItems.find(i => i.id === runItemId);
+		if (!item) return;
+		item.isComplete = isComplete;
+		item.completedByInitials = isComplete ? completedByInitials : undefined;
+		item.isToggling = false;
+		const delay = isComplete && (this.userStore.user()?.sortCompletedToBottom ?? true) ? 250 : 0;
+		this.refreshDisplay(delay);
+	}
+
+	private onHubRunCompleted() {
+		this.snackbarService.showMessage('Run completed.', 'success');
+		this.router.navigate(['/lists']);
+	}
+
+	private onHubItemAdded(item: ListRunItem) {
+		if (this.runItems.find(i => i.id === item.id)) return;
+		const nextSort = this.runItems.length
+			? Math.max(...this.runItems.map(i => i.sortOrder)) + 10
+			: 10;
+		this.runItems.push({
+			id: item.id,
+			itemName: item.listItemName,
+			itemDescription: item.listItemDescription,
+			sortOrder: nextSort,
+			isComplete: !!item.completedAt,
+			isExpanded: false,
+			isToggling: false,
+			isOneTime: !item.listItemId,
+			completedByInitials: item.completedByInitials,
+		});
+		this.refreshDisplay();
 	}
 
 	goBack() {
@@ -137,7 +200,7 @@ export class ListRunComponent implements OnInit, AfterViewInit {
 
 		const delay = (this.userStore.user()?.sortCompletedToBottom ?? true) ? 250 : 0;
 		this.refreshDisplay(delay);
-		const ok = await this.listStore.toggleListRunItem(item.id, !wasComplete);
+		const ok = await this.listStore.toggleListRunItem(item.id, this.runId, !wasComplete);
 		if (!ok) {
 			item.isComplete = wasComplete;
 			this.snackbarService.showMessage(this.listStore.error(), 'error');
@@ -155,7 +218,7 @@ export class ListRunComponent implements OnInit, AfterViewInit {
 		const unchecked = this.runItems.filter(i => !i.isComplete);
 		unchecked.forEach(i => i.isComplete = true);
 		this.refreshDisplay(0);
-		await Promise.all(unchecked.map(i => this.listStore.toggleListRunItem(i.id, true)));
+		await Promise.all(unchecked.map(i => this.listStore.toggleListRunItem(i.id, this.runId, true)));
 		await this.finishRun(this.runItems.length);
 	}
 
@@ -197,16 +260,18 @@ export class ListRunComponent implements OnInit, AfterViewInit {
 		const nextSort = this.runItems.length ? Math.max(...this.runItems.map(i => i.sortOrder)) + 10 : 10;
 		const result = await this.listStore.addRunItem(this.runId, this.listId, this.newItemName.trim(), oneTime);
 		if (result) {
-			this.runItems.push({
-				id: result.id,
-				itemName: result.listItemName,
-				itemDescription: result.listItemDescription,
-				sortOrder: nextSort,
-				isComplete: false,
-				isExpanded: false,
-				isToggling: false,
-				isOneTime: !result.listItemId,
-			});
+			if (!this.runItems.find(i => i.id === result.id)) {
+				this.runItems.push({
+					id: result.id,
+					itemName: result.listItemName,
+					itemDescription: result.listItemDescription,
+					sortOrder: nextSort,
+					isComplete: false,
+					isExpanded: false,
+					isToggling: false,
+					isOneTime: !result.listItemId,
+				});
+			}
 			this.refreshDisplay();
 			this.showAddItem = false;
 			this.newItemName = '';

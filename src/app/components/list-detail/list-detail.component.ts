@@ -6,7 +6,8 @@ import { AutofocusDirective } from '../../directives/autofocus.directive';
 import { SnackbarService } from '../../services/snackbar.service';
 import { TitleService } from '../../services/title.service';
 import { ListStore } from '../../stores/list/list.store';
-import { ListItem } from '../../../models/list.model';
+import { ListItem, ListMember } from '../../../models/list.model';
+import { UserStore } from '../../stores/user/user.store';
 
 interface EditableItem {
 	id: number;
@@ -28,6 +29,7 @@ interface EditableItem {
 })
 export class ListDetailComponent implements OnInit, OnDestroy, AfterViewInit {
 	protected listStore = inject(ListStore);
+	protected userStore = inject(UserStore);
 	protected loading = true;
 	private route = inject(ActivatedRoute);
 	private router = inject(Router);
@@ -47,6 +49,16 @@ export class ListDetailComponent implements OnInit, OnDestroy, AfterViewInit {
 
 	editableItems: EditableItem[] = [];
 	confirmingDeleteItemId: number | null = null;
+
+	activeTab: 'items' | 'members' = 'items';
+
+	// Members
+	members: ListMember[] = [];
+	membersLoading = false;
+	showInviteForm = false;
+	inviteEmail = '';
+	isSendingInvite = false;
+	confirmingRemoveMemberId: number | null = null;
 
 	protected list = computed(() => this.listStore.lists().find(l => l.id === this.listId));
 
@@ -119,6 +131,76 @@ export class ListDetailComponent implements OnInit, OnDestroy, AfterViewInit {
 		this.titleService.setTitle(list.listName);
 		this.editableItems = list.items.map(i => this.toEditable(i)).concat([this.createDraft()]);
 		this.focusDraftItem();
+		this.loadMembers();
+	}
+
+	async loadMembers() {
+		this.membersLoading = true;
+		const result = await this.listStore.getListMembers(this.listId);
+		if (result) {
+			this.members = result;
+		}
+		this.membersLoading = false;
+	}
+
+	getMemberInitials(member: ListMember): string {
+		return (member.firstName.charAt(0) + member.lastName.charAt(0)).toUpperCase();
+	}
+
+	isCurrentUser(member: ListMember): boolean {
+		return member.userId === this.userStore.user()?.id;
+	}
+
+	get isOwner(): boolean {
+		return this.list()?.isOwner ?? false;
+	}
+
+	openInviteForm() {
+		this.showInviteForm = true;
+		this.inviteEmail = '';
+	}
+
+	cancelInvite() {
+		this.showInviteForm = false;
+		this.inviteEmail = '';
+	}
+
+	async sendInvite() {
+		if (!this.inviteEmail.trim() || this.isSendingInvite) return;
+		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+		if (!emailRegex.test(this.inviteEmail.trim())) {
+			this.snackbarService.showMessage('Please enter a valid email address.', 'error');
+			return;
+		}
+		this.isSendingInvite = true;
+		const ok = await this.listStore.inviteToList(this.listId, this.inviteEmail.trim());
+		if (ok) {
+			this.snackbarService.showMessage('Invitation sent!', 'success');
+			this.showInviteForm = false;
+			this.inviteEmail = '';
+		} else {
+			this.snackbarService.showMessage(this.listStore.error(), 'error');
+		}
+		this.isSendingInvite = false;
+	}
+
+	startRemoveMember(userId: number) {
+		this.confirmingRemoveMemberId = userId;
+	}
+
+	cancelRemoveMember() {
+		this.confirmingRemoveMemberId = null;
+	}
+
+	async confirmRemoveMember(userId: number) {
+		this.confirmingRemoveMemberId = null;
+		const ok = await this.listStore.removeListMember(this.listId, userId);
+		if (ok) {
+			this.members = this.members.filter(m => m.userId !== userId);
+			this.snackbarService.showMessage('Member removed.', 'success');
+		} else {
+			this.snackbarService.showMessage(this.listStore.error(), 'error');
+		}
 	}
 
 	private focusDraftItem() {

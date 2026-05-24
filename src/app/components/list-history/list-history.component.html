@@ -49,6 +49,9 @@
 							@if (item.isOneTime) {<span class="one-time-badge">one-time</span>}
 						</span>
 							</div>
+							@if (item.isComplete && item.completedByInitials) {
+								<span class="completed-by" title="Checked by {{ item.completedByInitials }}">{{ item.completedByInitials }}</span>
+							}
 							<img
 								class="check-img"
 								[src]="item.isComplete ? 'assets/checked.svg' : 'assets/unchecked.svg'"

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { List, ListItem, ListRun, ListRunItem, RunHistorySummary } from '../../models/list.model';
+import { List, ListItem, ListInvitationInfo, ListMember, ListRun, ListRunItem, RunHistorySummary } from '../../models/list.model';
 import { HttpService } from './http.service';
 
 @Injectable({
@@ -51,8 +51,8 @@ export class ListService {
 		return this.http.post<ListRun>(`${this.base}/CreateListRun/${listId}`, {});
 	}
 
-	setListRunItemCompletion(runItemId: number, isComplete: boolean): Observable<boolean> {
-		return this.http.put<boolean>(`${this.base}/SetListRunItemCompletion/${runItemId}`, isComplete);
+	setListRunItemCompletion(runItemId: number, runId: number, isComplete: boolean): Observable<boolean> {
+		return this.http.put<boolean>(`${this.base}/SetListRunItemCompletion/${runItemId}`, { runId, isComplete });
 	}
 
 	completeListRun(runId: number): Observable<boolean> {
@@ -65,5 +65,31 @@ export class ListService {
 
 	getListRunHistory(listId: number): Observable<RunHistorySummary[]> {
 		return this.http.get<RunHistorySummary[]>(`${this.base}/GetListRunHistory/${listId}`);
+	}
+
+	// ─── Shared list methods ────────────────────────────────────────────────────
+
+	getListMembers(listId: number): Observable<ListMember[]> {
+		return this.http.get<ListMember[]>(`${this.base}/${listId}/members`);
+	}
+
+	inviteToList(listId: number, email: string): Observable<boolean> {
+		return this.http.post<boolean>(`${this.base}/${listId}/invite`, { email });
+	}
+
+	removeListMember(listId: number, memberId: number): Observable<boolean> {
+		return this.http.delete<boolean>(`${this.base}/${listId}/members/${memberId}`);
+	}
+
+	leaveList(listId: number): Observable<boolean> {
+		return this.http.delete<boolean>(`${this.base}/${listId}/leave`);
+	}
+
+	getInvitation(token: string): Observable<ListInvitationInfo> {
+		return this.http.get<ListInvitationInfo>(`/api/invite/${token}`);
+	}
+
+	acceptInvitation(token: string): Observable<boolean> {
+		return this.http.post<boolean>(`/api/invite/${token}/accept`, {});
 	}
 }

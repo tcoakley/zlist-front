@@ -1,0 +1,101 @@
+@use 'variables' as *;
+
+:host {
+	display: flex;
+	justify-content: center;
+	padding: 40px 16px;
+}
+
+.invite-container {
+	width: 100%;
+	max-width: 420px;
+	animation: page-fade-in 0.25s ease-out 0.1s both;
+}
+
+.invite-loading {
+	text-align: center;
+	color: $text-muted;
+	font-size: 0.95rem;
+	padding: 60px 0;
+}
+
+.invite-card {
+	background: $bg-surface;
+	border: 1px solid $border;
+	border-radius: 8px;
+	padding: 28px 24px;
+	display: flex;
+	flex-direction: column;
+	gap: 14px;
+}
+
+.invite-heading {
+	margin: 0;
+	font-size: 1.3rem;
+	font-weight: 700;
+	color: $text-primary;
+}
+
+.invite-desc {
+	margin: 0;
+	font-size: 0.95rem;
+	color: $text-secondary;
+	line-height: 1.5;
+}
+
+.invite-action-text {
+	margin: 0;
+	font-size: 0.88rem;
+	color: $text-muted;
+}
+
+.invite-error {
+	margin: 0;
+	font-size: 0.9rem;
+	color: $danger;
+}
+
+.invite-link {
+	color: $primary;
+	font-size: 0.88rem;
+	text-decoration: none;
+
+	&:hover { text-decoration: underline; }
+}
+
+.invite-buttons {
+	display: flex;
+	gap: 10px;
+	margin-top: 4px;
+}
+
+.btn-login {
+	flex: 1;
+	text-align: center;
+	padding: 9px 12px;
+	border-radius: 6px;
+	font-size: 0.9rem;
+	font-weight: 600;
+	text-decoration: none;
+	border: 1.5px solid $primary;
+	color: $primary;
+	background: transparent;
+	transition: background-color 0.15s ease;
+
+	&:hover { background: rgba(34, 139, 34, 0.08); }
+}
+
+.btn-signup {
+	flex: 1;
+	text-align: center;
+	padding: 9px 12px;
+	border-radius: 6px;
+	font-size: 0.9rem;
+	font-weight: 600;
+	text-decoration: none;
+	background: $primary;
+	color: white;
+	transition: background-color 0.15s ease;
+
+	&:hover { background: $primary-dark; }
+}

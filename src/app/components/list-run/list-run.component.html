@@ -56,6 +56,10 @@
 					</div>
 				</div>
 
+				@if (item.isComplete && item.completedByInitials) {
+					<span class="completed-by" title="Checked by {{ item.completedByInitials }}">{{ item.completedByInitials }}</span>
+				}
+
 				<img
 					class="item-checkbox check-img"
 					[src]="item.isComplete ? 'assets/checked.svg' : 'assets/unchecked.svg'"
@@ -76,7 +80,7 @@
 				type="text"
 				placeholder="New item name"
 				[(ngModel)]="newItemName"
-				autofocus
+				appAutofocus
 			/>
 			<div class="add-item-actions">
 				<button class="cancel-add-btn" (click)="cancelAddItem()" [disabled]="isSavingItem">Cancel</button>

@@ -13,6 +13,7 @@ interface ModalItem {
 	sortOrder: number;
 	isComplete: boolean;
 	isOneTime: boolean;
+	completedByInitials?: string;
 }
 
 @Component({
@@ -107,6 +108,7 @@ export class ListHistoryComponent implements OnInit, AfterViewInit {
 				sortOrder: i.sortOrder,
 				isComplete: !!i.completedAt,
 				isOneTime: !i.listItemId,
+				completedByInitials: i.completedByInitials,
 			}));
 		} else {
 			this.snackbarService.showMessage(this.listStore.error(), 'error');

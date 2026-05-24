@@ -1,5 +1,5 @@
 import { Component, AfterViewInit, inject, effect } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AutofocusDirective } from '../../directives/autofocus.directive';
 import { SnackbarService } from '../../services/snackbar.service';
@@ -22,12 +22,14 @@ export class LoginComponent implements AfterViewInit {
 
 	private userStore = inject(UserStore);
 	private router = inject(Router);
+	private route = inject(ActivatedRoute);
 	private snackbarService = inject(SnackbarService);
 
 	constructor() {
 		effect(() => {
 			if (this.userStore.user()) {
-				this.router.navigate(['/lists']);
+				const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
+				this.router.navigateByUrl(returnUrl ?? '/lists');
 			}
 		});
 

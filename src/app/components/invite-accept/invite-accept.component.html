@@ -1,0 +1,31 @@
+<div class="invite-container" style="opacity: 0">
+
+	@if (loading || accepting) {
+		<div class="invite-loading">
+			@if (accepting) { Joining list… } @else { Loading invitation… }
+		</div>
+	} @else if (error) {
+		<div class="invite-card">
+			<p class="invite-error">{{ error }}</p>
+			@if (isLoggedIn) {
+				<a class="invite-link" routerLink="/lists">Go to My Lists</a>
+			} @else {
+				<a class="invite-link" routerLink="/login">Log In</a>
+			}
+		</div>
+	} @else if (invitation && !isLoggedIn) {
+		<div class="invite-card">
+			<h1 class="invite-heading">You've been invited!</h1>
+			<p class="invite-desc">
+				<strong>{{ invitation.invitedByName }}</strong> has invited you to collaborate on
+				<strong>{{ invitation.listName }}</strong>.
+			</p>
+			<p class="invite-action-text">Log in or create an account to accept the invitation.</p>
+			<div class="invite-buttons">
+				<a class="btn-login" [routerLink]="['/login']" [queryParams]="{ returnUrl: '/invite/' + token }">Log In</a>
+				<a class="btn-signup" [routerLink]="['/signup']" [queryParams]="{ inviteToken: token }">Sign Up</a>
+			</div>
+		</div>
+	}
+
+</div>

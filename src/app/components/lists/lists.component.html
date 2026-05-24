@@ -73,9 +73,9 @@
 
 							<div class="card-actions">
 								@if (confirmingDeleteId === list.id) {
-									<span class="confirm-delete-label" aria-live="polite">Delete?</span>
-									<button class="confirm-yes-btn" (click)="confirmDelete(list.id)" aria-label="Confirm delete">Yes</button>
-									<button class="confirm-no-btn" (click)="cancelDelete()" aria-label="Cancel delete">No</button>
+									<span class="confirm-delete-label" aria-live="polite">{{ isOwner(list.id) ? 'Delete?' : 'Leave?' }}</span>
+									<button class="confirm-yes-btn" (click)="confirmDelete(list.id)" aria-label="Confirm">Yes</button>
+									<button class="confirm-no-btn" (click)="cancelDelete()" aria-label="Cancel">No</button>
 								} @else {
 									<button class="edit-btn" (click)="navigateToList(list.id)" title="Edit list" aria-label="Edit list">
 										<img src="assets/icon-edit.svg" alt="" />

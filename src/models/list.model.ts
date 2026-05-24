@@ -15,6 +15,7 @@ export interface ListRunItem {
 	sortOrder: number;
 	completedAt?: string;
 	completedBy?: number;
+	completedByInitials?: string;
 }
 
 export interface ListRun {
@@ -44,6 +45,24 @@ export interface List {
 	totalRuns: number;
 	lastRun?: string;
 	totalItems: number;
+	isOwner: boolean;
 	items: ListItem[];
 	listRuns: ListRun[];
+}
+
+export interface ListMember {
+	userId: number;
+	firstName: string;
+	lastName: string;
+	email: string;
+	isOwner: boolean;
+}
+
+export interface ListInvitationInfo {
+	listId: number;
+	listName: string;
+	invitedByName: string;
+	invitedEmail: string;
+	status: string;
+	isExpired: boolean;
 }

@@ -17,7 +17,6 @@
 .top-bar {
 	display: flex;
 	align-items: center;
-	justify-content: space-between;
 	margin-bottom: 12px;
 }
 
@@ -35,6 +34,32 @@
 	}
 }
 
+.tab-btn {
+	margin-left: auto;
+	background: transparent;
+	border: none;
+	color: $text-muted;
+	font-size: 0.8rem;
+	padding: 4px 12px;
+	border-radius: 4px;
+	cursor: pointer;
+	transition: background-color 0.15s ease, color 0.15s ease;
+
+	& + & {
+		margin-left: 2px;
+	}
+
+	&:hover:not(.active) {
+		color: $text-primary;
+		opacity: 1;
+	}
+
+	&.active {
+		background: $primary;
+		color: white;
+	}
+}
+
 .launch-btn {
 	background: $primary;
 	border: none;
@@ -43,7 +68,7 @@
 	padding: 4px 12px;
 	border-radius: 4px;
 	cursor: pointer;
-	margin-left: 0;
+	margin-left: 8px;
 	transition: background-color 0.15s ease;
 
 	&:hover:not(:disabled) {
@@ -281,7 +306,7 @@
 	color: $border-strong;
 	font-size: 1.5rem;
 	line-height: 1;
-	padding: 0 6px;
+	padding: 0 10px;
 	user-select: none;
 }
 
@@ -358,4 +383,225 @@
 	color: $text-faint;
 	text-align: center;
 	margin-top: 40px;
+}
+
+// ─── Members Section ─────────────────────────────────────────────────────────
+
+.members-section {
+	margin-top: 28px;
+	border-top: 1px solid $border;
+	padding-top: 16px;
+}
+
+.members-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 12px;
+}
+
+.members-title {
+	font-size: 0.75rem;
+	font-weight: 700;
+	color: $text-muted;
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+}
+
+.invite-btn {
+	background: transparent;
+	border: 1px solid $primary;
+	color: $primary;
+	font-size: 0.78rem;
+	padding: 3px 10px;
+	border-radius: 12px;
+	cursor: pointer;
+	transition: background-color 0.15s ease;
+
+	&:hover:not(:disabled) {
+		background: rgba(34, 139, 34, 0.08);
+		opacity: 1;
+	}
+
+	&:disabled { opacity: 0.4; cursor: default; }
+}
+
+.members-loading {
+	font-size: 0.85rem;
+	color: $text-muted;
+}
+
+.member-row {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 6px 0;
+	border-bottom: 1px solid $border-subtle;
+
+	&:last-of-type { border-bottom: none; }
+}
+
+.member-avatar {
+	flex-shrink: 0;
+	width: 32px;
+	height: 32px;
+	border-radius: 50%;
+	background: $bg-elevated;
+	border: 1px solid $border-strong;
+	color: $text-secondary;
+	font-size: 0.75rem;
+	font-weight: 700;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.member-info {
+	flex: 1;
+	min-width: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 1px;
+}
+
+.member-name {
+	font-size: 0.88rem;
+	color: $text-primary;
+	font-weight: 600;
+}
+
+.member-email {
+	font-size: 0.78rem;
+	color: $text-muted;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.you-label {
+	font-weight: 400;
+	color: $text-muted;
+	font-size: 0.82rem;
+}
+
+.owner-badge {
+	font-size: 0.7rem;
+	font-weight: 700;
+	color: #1a1a1a;
+	background: $primary;
+	padding: 2px 8px;
+	border-radius: 20px;
+	flex-shrink: 0;
+}
+
+.remove-member-btn {
+	background: transparent;
+	border: 1px solid $border-strong;
+	color: $text-muted;
+	font-size: 0.75rem;
+	padding: 2px 8px;
+	border-radius: 4px;
+	cursor: pointer;
+	flex-shrink: 0;
+
+	&:hover {
+		border-color: $danger-border;
+		color: $danger;
+		opacity: 1;
+	}
+}
+
+.member-confirm-yes {
+	background: $danger;
+	border: none;
+	color: white;
+	font-size: 0.75rem;
+	padding: 2px 8px;
+	border-radius: 4px;
+	cursor: pointer;
+	flex-shrink: 0;
+
+	&:hover { opacity: 0.85; }
+}
+
+.member-confirm-no {
+	background: transparent;
+	border: 1px solid $border-strong;
+	color: $text-muted;
+	font-size: 0.75rem;
+	padding: 2px 8px;
+	border-radius: 4px;
+	cursor: pointer;
+	flex-shrink: 0;
+
+	&:hover { color: $text-primary; opacity: 1; }
+}
+
+.invite-form {
+	margin-top: 12px;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.invite-input {
+	width: 100%;
+	background: $bg-surface;
+	border: 1px solid $border-strong;
+	border-radius: 4px;
+	color: $text-primary;
+	font-size: 0.9rem;
+	padding: 6px 10px;
+	outline: none;
+	box-sizing: border-box;
+
+	&:focus { border-color: $primary; }
+}
+
+.invite-actions {
+	display: flex;
+	gap: 8px;
+	justify-content: flex-end;
+}
+
+.invite-cancel-btn {
+	background: transparent;
+	border: 1px solid $border-strong;
+	color: $text-muted;
+	font-size: 0.82rem;
+	padding: 4px 12px;
+	border-radius: 4px;
+	cursor: pointer;
+
+	&:hover:not(:disabled) { color: $text-primary; opacity: 1; }
+	&:disabled { opacity: 0.4; }
+}
+
+.invite-send-btn {
+	background: $primary;
+	border: none;
+	color: white;
+	font-size: 0.82rem;
+	padding: 4px 16px;
+	border-radius: 4px;
+	cursor: pointer;
+	transition: background-color 0.15s ease;
+	min-width: 90px;
+
+	&:hover:not(:disabled) { background: $primary-dark; opacity: 1; }
+	&:disabled { opacity: 0.5; cursor: default; }
+}
+
+.spinner {
+	display: inline-block;
+	width: 12px;
+	height: 12px;
+	border: 2px solid rgba(255, 255, 255, 0.4);
+	border-top-color: white;
+	border-radius: 50%;
+	animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+	to { transform: rotate(360deg); }
 }

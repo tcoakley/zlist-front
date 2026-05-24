@@ -100,6 +100,7 @@ export class ListsComponent implements OnInit, OnDestroy, AfterViewInit  {
 			activeRunId: 0,
 			totalRuns: 0,
 			totalItems: 0,
+			isOwner: true,
 			items: [],
 			listRuns: []
 		});
@@ -141,6 +142,10 @@ export class ListsComponent implements OnInit, OnDestroy, AfterViewInit  {
 		}
 	}
 
+	isOwner(id: number): boolean {
+		return this.listStore.lists().find(l => l.id === id)?.isOwner ?? false;
+	}
+
 	startDelete(id: number) {
 		this.confirmingDeleteId = id;
 	}
@@ -150,7 +155,11 @@ export class ListsComponent implements OnInit, OnDestroy, AfterViewInit  {
 	}
 
 	async confirmDelete(id: number) {
-		await this.listStore.deleteList(id);
+		if (this.isOwner(id)) {
+			await this.listStore.deleteList(id);
+		} else {
+			await this.listStore.leaveList(id);
+		}
 		if (this.listStore.error()) {
 			this.snackbarService.showMessage(this.listStore.error(), 'error');
 		}

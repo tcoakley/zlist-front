@@ -3,6 +3,8 @@
 	@if (!loading) {
 	<div class="top-bar">
 		<button class="back-btn" (click)="goBack()">&#8592; Lists</button>
+		<button class="tab-btn" [class.active]="activeTab === 'items'" (click)="activeTab = 'items'">Items</button>
+		<button class="tab-btn" [class.active]="activeTab === 'members'" (click)="activeTab = 'members'">Members</button>
 		<button class="launch-btn" (click)="launchList()" [disabled]="hasDirty || !list()?.items?.length || !!list()?.activeRunId" [title]="!!list()?.activeRunId ? 'List in progress, complete to create new.' : !list()?.items?.length ? 'Add items before launching' : ''">&#9654; Launch</button>
 	</div>
 
@@ -44,6 +46,7 @@
 			}
 		</div>
 
+		@if (activeTab === 'items') {
 		<div class="items-section" cdkDropList (cdkDropListDropped)="onDrop($event)">
 
 			@for (item of editableItems; track $index; let idx = $index) {
@@ -105,6 +108,62 @@
 			}
 
 		</div>
+		} @else {
+		<div class="members-section">
+			<div class="members-header">
+				<span class="members-title">Members</span>
+				@if (isOwner) {
+					<button class="invite-btn" (click)="openInviteForm()" [disabled]="showInviteForm">+ Invite</button>
+				}
+			</div>
+
+			@if (membersLoading) {
+				<div class="members-loading">Loading...</div>
+			} @else {
+				@for (member of members; track member.userId) {
+					<div class="member-row">
+						<span class="member-avatar">{{ getMemberInitials(member) }}</span>
+						<div class="member-info">
+							<span class="member-name">
+								{{ member.firstName }} {{ member.lastName }}
+								@if (isCurrentUser(member)) { <span class="you-label">(you)</span> }
+							</span>
+							<span class="member-email">{{ member.email }}</span>
+						</div>
+						@if (member.isOwner) {
+							<span class="owner-badge">Owner</span>
+						} @else if (isOwner) {
+							@if (confirmingRemoveMemberId === member.userId) {
+								<button class="member-confirm-yes" (click)="confirmRemoveMember(member.userId)">Yes</button>
+								<button class="member-confirm-no" (click)="cancelRemoveMember()">No</button>
+							} @else {
+								<button class="remove-member-btn" (click)="startRemoveMember(member.userId)" title="Remove member">Remove</button>
+							}
+						}
+					</div>
+				}
+			}
+
+			@if (showInviteForm) {
+				<div class="invite-form">
+					<input
+						class="invite-input"
+						type="email"
+						placeholder="Email address"
+						[(ngModel)]="inviteEmail"
+						(keydown.enter)="sendInvite()"
+						appAutofocus
+					/>
+					<div class="invite-actions">
+						<button class="invite-cancel-btn" (click)="cancelInvite()" [disabled]="isSendingInvite">Cancel</button>
+						<button class="invite-send-btn" (click)="sendInvite()" [disabled]="!inviteEmail.trim() || isSendingInvite">
+							@if (isSendingInvite) { <span class="spinner"></span> } @else { Send Invite }
+						</button>
+					</div>
+				</div>
+			}
+		</div>
+		}
 
 	} @else if (!listStore.loading()) {
 		<p class="not-found">List not found.</p>

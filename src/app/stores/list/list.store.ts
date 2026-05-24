@@ -1,6 +1,6 @@
 import { Injectable, signal, computed, inject } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
-import { List, ListItem, ListRun, ListRunItem, RunHistorySummary } from '../../../models/list.model';
+import { List, ListItem, ListInvitationInfo, ListMember, ListRun, ListRunItem, RunHistorySummary } from '../../../models/list.model';
 import { ListService } from '../../services/list.service';
 
 @Injectable({ providedIn: 'root' })
@@ -74,6 +74,18 @@ export class ListStore {
 		}
 	}
 
+	async leaveList(listId: number): Promise<boolean> {
+		this.error.set(null);
+		try {
+			await firstValueFrom(this.listService.leaveList(listId));
+			this.lists.update(lists => lists.filter(l => l.id !== listId));
+			return true;
+		} catch (err: any) {
+			this.error.set(err?.error ?? err);
+			return false;
+		}
+	}
+
 	async addListItem(item: ListItem): Promise<ListItem | null> {
 		this.error.set(null);
 		try {
@@ -125,7 +137,7 @@ export class ListStore {
 		try {
 			const list = await firstValueFrom(this.listService.getList(listId));
 			this.lists.update(lists =>
-				lists.map(l => l.id === listId ? { ...l, items: list.items } : l)
+				lists.map(l => l.id === listId ? { ...l, items: list.items, isOwner: list.isOwner } : l)
 			);
 			return this.lists().find(l => l.id === listId) ?? null;
 		} catch (err: any) {
@@ -182,10 +194,10 @@ export class ListStore {
 		}
 	}
 
-	async toggleListRunItem(runItemId: number, complete: boolean): Promise<boolean> {
+	async toggleListRunItem(runItemId: number, runId: number, complete: boolean): Promise<boolean> {
 		this.error.set(null);
 		try {
-			await firstValueFrom(this.listService.setListRunItemCompletion(runItemId, complete));
+			await firstValueFrom(this.listService.setListRunItemCompletion(runItemId, runId, complete));
 			return true;
 		} catch (err: any) {
 			this.error.set(err?.error ?? err);
@@ -207,6 +219,61 @@ export class ListStore {
 		this.error.set(null);
 		try {
 			return await firstValueFrom(this.listService.getListRunHistory(listId));
+		} catch (err: any) {
+			this.error.set(err?.error ?? err);
+			return null;
+		}
+	}
+
+	// ─── Shared list methods ────────────────────────────────────────────────────
+
+	async getListMembers(listId: number): Promise<ListMember[] | null> {
+		this.error.set(null);
+		try {
+			return await firstValueFrom(this.listService.getListMembers(listId));
+		} catch (err: any) {
+			this.error.set(err?.error ?? err);
+			return null;
+		}
+	}
+
+	async inviteToList(listId: number, email: string): Promise<boolean> {
+		this.error.set(null);
+		try {
+			await firstValueFrom(this.listService.inviteToList(listId, email));
+			return true;
+		} catch (err: any) {
+			this.error.set(err?.error ?? err);
+			return false;
+		}
+	}
+
+	async removeListMember(listId: number, memberId: number): Promise<boolean> {
+		this.error.set(null);
+		try {
+			await firstValueFrom(this.listService.removeListMember(listId, memberId));
+			return true;
+		} catch (err: any) {
+			this.error.set(err?.error ?? err);
+			return false;
+		}
+	}
+
+	async acceptInvitation(token: string): Promise<boolean> {
+		this.error.set(null);
+		try {
+			await firstValueFrom(this.listService.acceptInvitation(token));
+			return true;
+		} catch (err: any) {
+			this.error.set(err?.error ?? err);
+			return false;
+		}
+	}
+
+	async getInvitation(token: string): Promise<ListInvitationInfo | null> {
+		this.error.set(null);
+		try {
+			return await firstValueFrom(this.listService.getInvitation(token));
 		} catch (err: any) {
 			this.error.set(err?.error ?? err);
 			return null;
