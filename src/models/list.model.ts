@@ -16,6 +16,7 @@ export interface ListRunItem {
 	completedAt?: string;
 	completedBy?: number;
 	completedByInitials?: string;
+	completedByName?: string;
 }
 
 export interface ListRun {
@@ -50,6 +51,11 @@ export interface List {
 	listRuns: ListRun[];
 }
 
+export interface ListPendingInvite {
+	invitedEmail: string;
+	isExpired: boolean;
+}
+
 export interface ListMember {
 	userId: number;
 	firstName: string;
@@ -65,4 +71,5 @@ export interface ListInvitationInfo {
 	invitedEmail: string;
 	status: string;
 	isExpired: boolean;
+	hasAccount: boolean;
 }

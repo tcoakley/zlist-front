@@ -20,10 +20,13 @@
 				<strong>{{ invitation.invitedByName }}</strong> has invited you to collaborate on
 				<strong>{{ invitation.listName }}</strong>.
 			</p>
-			<p class="invite-action-text">Log in or create an account to accept the invitation.</p>
+			<p class="invite-action-text">{{ invitation.hasAccount ? 'Log in to accept the invitation.' : 'Create an account to accept the invitation.' }}</p>
 			<div class="invite-buttons">
-				<a class="btn-login" [routerLink]="['/login']" [queryParams]="{ returnUrl: '/invite/' + token }">Log In</a>
-				<a class="btn-signup" [routerLink]="['/signup']" [queryParams]="{ inviteToken: token }">Sign Up</a>
+				@if (invitation.hasAccount) {
+					<a class="btn-login" [routerLink]="['/login']" [queryParams]="{ returnUrl: '/invite/' + token }">Log In</a>
+				} @else {
+					<a class="btn-signup" [routerLink]="['/signup']" [queryParams]="{ inviteToken: token }">Sign Up</a>
+				}
 			</div>
 		</div>
 	}

@@ -57,7 +57,7 @@
 				</div>
 
 				@if (item.isComplete && item.completedByInitials) {
-					<span class="completed-by" title="Checked by {{ item.completedByInitials }}">{{ item.completedByInitials }}</span>
+					<span class="completed-by" [title]="item.completedByName || item.completedByInitials || ''">{{ item.completedByInitials }}</span>
 				}
 
 				<img

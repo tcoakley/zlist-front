@@ -1,5 +1,8 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, Injector, inject } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { toObservable } from '@angular/core/rxjs-interop';
+import { firstValueFrom } from 'rxjs';
+import { filter, map, take } from 'rxjs/operators';
 import { ListStore } from '../../stores/list/list.store';
 import { UserStore } from '../../stores/user/user.store';
 import { ListInvitationInfo } from '../../../models/list.model';
@@ -18,6 +21,7 @@ export class InviteAcceptComponent implements OnInit {
 	private listStore = inject(ListStore);
 	protected userStore = inject(UserStore);
 	private snackbarService = inject(SnackbarService);
+	private injector = inject(Injector);
 
 	token = '';
 	invitation: ListInvitationInfo | null = null;
@@ -45,7 +49,12 @@ export class InviteAcceptComponent implements OnInit {
 			return;
 		}
 
-		const info = await this.listStore.getInvitation(this.token);
+		// Fetch invitation and wait for auth restore in parallel — whichever is slower wins
+		const [info] = await Promise.all([
+			this.listStore.getInvitation(this.token),
+			this.waitForAuth(),
+		]);
+
 		if (info) {
 			this.invitation = info;
 			if (info.status === 'accepted') {
@@ -53,7 +62,6 @@ export class InviteAcceptComponent implements OnInit {
 			} else if (info.isExpired) {
 				this.error = 'This invitation has expired.';
 			} else if (this.isLoggedIn) {
-				// Auto-accept if already logged in and invite is valid
 				await this.acceptInvite();
 				return;
 			}
@@ -61,6 +69,17 @@ export class InviteAcceptComponent implements OnInit {
 			this.error = 'Invitation not found or invalid.';
 		}
 		this.loading = false;
+	}
+
+	private waitForAuth(): Promise<void> {
+		if (this.userStore.authInitialized()) return Promise.resolve();
+		return firstValueFrom(
+			toObservable(this.userStore.authInitialized, { injector: this.injector }).pipe(
+				filter(Boolean),
+				take(1),
+				map(() => undefined as void)
+			)
+		);
 	}
 
 	async acceptInvite() {

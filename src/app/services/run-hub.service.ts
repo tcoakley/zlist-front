@@ -3,7 +3,7 @@ import * as signalR from '@microsoft/signalr';
 import { ListRunItem } from '../../models/list.model';
 
 export interface RunHubCallbacks {
-	onItemToggled: (runItemId: number, isComplete: boolean, completedByInitials: string) => void;
+	onItemToggled: (runItemId: number, isComplete: boolean, completedByInitials: string, completedByName: string) => void;
 	onRunCompleted: () => void;
 	onItemAdded: (item: ListRunItem) => void;
 }
@@ -14,10 +14,12 @@ export class RunHubService {
 	private connection: signalR.HubConnection | null = null;
 	private currentRunId = 0;
 	private currentInitials = '';
+	private currentDisplayName = '';
 
-	async connect(runId: number, initials: string, callbacks: RunHubCallbacks): Promise<void> {
+	async connect(runId: number, initials: string, displayName: string, callbacks: RunHubCallbacks): Promise<void> {
 		this.currentRunId = runId;
 		this.currentInitials = initials;
+		this.currentDisplayName = displayName;
 
 		const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken') || '';
 
@@ -27,8 +29,8 @@ export class RunHubService {
 			.configureLogging(signalR.LogLevel.Information)
 			.build();
 
-		this.connection.on('ItemToggled', (runItemId: number, isComplete: boolean, completedByInitials: string) => {
-			this.ngZone.run(() => callbacks.onItemToggled(runItemId, isComplete, completedByInitials));
+		this.connection.on('ItemToggled', (runItemId: number, isComplete: boolean, completedByInitials: string, completedByName: string) => {
+			this.ngZone.run(() => callbacks.onItemToggled(runItemId, isComplete, completedByInitials, completedByName));
 		});
 
 		this.connection.on('RunCompleted', () => {
@@ -42,7 +44,7 @@ export class RunHubService {
 		this.connection.onreconnected(async () => {
 			console.log('[SignalR] Reconnected — rejoining run group', runId);
 			try {
-				await this.connection!.invoke('JoinRun', this.currentRunId, this.currentInitials);
+				await this.connection!.invoke('JoinRun', this.currentRunId, this.currentInitials, this.currentDisplayName);
 			} catch (err) {
 				console.error('[SignalR] Failed to rejoin group after reconnect', err);
 			}
@@ -54,7 +56,7 @@ export class RunHubService {
 
 		await this.connection.start();
 		console.log('[SignalR] Connected, joining run', runId);
-		await this.connection.invoke('JoinRun', runId, initials);
+		await this.connection.invoke('JoinRun', runId, initials, displayName);
 		console.log('[SignalR] Joined run group', runId);
 	}
 

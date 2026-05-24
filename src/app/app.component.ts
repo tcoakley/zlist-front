@@ -28,6 +28,8 @@ export class AppComponent implements OnInit {
 		const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
 		if (token) {
 			this.userStore.loginWithToken(token);
+		} else {
+			this.userStore.markAuthInitialized();
 		}
 	}
 

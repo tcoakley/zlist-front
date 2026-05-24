@@ -49,6 +49,10 @@ export class UserStore {
 		}
 	}
 
+	markAuthInitialized(): void {
+		this.authInitialized.set(true);
+	}
+
 	logout(): void {
 		this.authService.logout();
 		this.user.set(null);

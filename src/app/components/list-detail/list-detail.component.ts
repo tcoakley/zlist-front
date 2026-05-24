@@ -6,7 +6,7 @@ import { AutofocusDirective } from '../../directives/autofocus.directive';
 import { SnackbarService } from '../../services/snackbar.service';
 import { TitleService } from '../../services/title.service';
 import { ListStore } from '../../stores/list/list.store';
-import { ListItem, ListMember } from '../../../models/list.model';
+import { ListItem, ListMember, ListPendingInvite } from '../../../models/list.model';
 import { UserStore } from '../../stores/user/user.store';
 
 interface EditableItem {
@@ -54,6 +54,7 @@ export class ListDetailComponent implements OnInit, OnDestroy, AfterViewInit {
 
 	// Members
 	members: ListMember[] = [];
+	pendingInvites: ListPendingInvite[] = [];
 	membersLoading = false;
 	showInviteForm = false;
 	inviteEmail = '';
@@ -136,10 +137,12 @@ export class ListDetailComponent implements OnInit, OnDestroy, AfterViewInit {
 
 	async loadMembers() {
 		this.membersLoading = true;
-		const result = await this.listStore.getListMembers(this.listId);
-		if (result) {
-			this.members = result;
-		}
+		const [members, invites] = await Promise.all([
+			this.listStore.getListMembers(this.listId),
+			this.listStore.getPendingInvitations(this.listId),
+		]);
+		if (members) this.members = members;
+		if (invites) this.pendingInvites = invites;
 		this.membersLoading = false;
 	}
 
@@ -178,6 +181,8 @@ export class ListDetailComponent implements OnInit, OnDestroy, AfterViewInit {
 			this.snackbarService.showMessage('Invitation sent!', 'success');
 			this.showInviteForm = false;
 			this.inviteEmail = '';
+			const invites = await this.listStore.getPendingInvitations(this.listId);
+			if (invites) this.pendingInvites = invites;
 		} else {
 			this.snackbarService.showMessage(this.listStore.error(), 'error');
 		}

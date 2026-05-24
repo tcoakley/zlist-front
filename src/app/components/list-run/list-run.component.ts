@@ -19,6 +19,7 @@ interface RunItem {
 	isToggling: boolean;
 	isOneTime: boolean;
 	completedByInitials?: string;
+	completedByName?: string;
 }
 
 @Component({
@@ -125,6 +126,7 @@ export class ListRunComponent implements OnInit, OnDestroy, AfterViewInit {
 			isToggling: false,
 			isOneTime: !i.listItemId,
 			completedByInitials: i.completedByInitials,
+			completedByName: i.completedByName,
 		}));
 		this.refreshDisplay();
 		this.loading = false;
@@ -137,10 +139,13 @@ export class ListRunComponent implements OnInit, OnDestroy, AfterViewInit {
 		const initials = user
 			? `${user.firstName?.charAt(0) ?? ''}${user.lastName?.charAt(0) ?? ''}`.toUpperCase()
 			: '';
+		const displayName = user
+			? `${user.firstName ?? ''} ${user.lastName ?? ''} - ${user.email ?? ''}`.trim()
+			: '';
 		try {
-			await this.runHubService.connect(this.runId, initials, {
-				onItemToggled: (runItemId, isComplete, completedByInitials) =>
-					this.onHubItemToggled(runItemId, isComplete, completedByInitials),
+			await this.runHubService.connect(this.runId, initials, displayName, {
+				onItemToggled: (runItemId, isComplete, completedByInitials, completedByName) =>
+					this.onHubItemToggled(runItemId, isComplete, completedByInitials, completedByName),
 				onRunCompleted: () => this.onHubRunCompleted(),
 				onItemAdded: (item) => this.onHubItemAdded(item),
 			});
@@ -149,11 +154,12 @@ export class ListRunComponent implements OnInit, OnDestroy, AfterViewInit {
 		}
 	}
 
-	private onHubItemToggled(runItemId: number, isComplete: boolean, completedByInitials: string) {
+	private onHubItemToggled(runItemId: number, isComplete: boolean, completedByInitials: string, completedByName: string) {
 		const item = this.runItems.find(i => i.id === runItemId);
 		if (!item) return;
 		item.isComplete = isComplete;
 		item.completedByInitials = isComplete ? completedByInitials : undefined;
+		item.completedByName = isComplete ? completedByName : undefined;
 		item.isToggling = false;
 		const delay = isComplete && (this.userStore.user()?.sortCompletedToBottom ?? true) ? 250 : 0;
 		this.refreshDisplay(delay);
@@ -179,6 +185,7 @@ export class ListRunComponent implements OnInit, OnDestroy, AfterViewInit {
 			isToggling: false,
 			isOneTime: !item.listItemId,
 			completedByInitials: item.completedByInitials,
+			completedByName: item.completedByName,
 		});
 		this.refreshDisplay();
 	}

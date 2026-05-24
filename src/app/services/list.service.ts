@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { List, ListItem, ListInvitationInfo, ListMember, ListRun, ListRunItem, RunHistorySummary } from '../../models/list.model';
+import { List, ListItem, ListInvitationInfo, ListMember, ListPendingInvite, ListRun, ListRunItem, RunHistorySummary } from '../../models/list.model';
 import { HttpService } from './http.service';
 
 @Injectable({
@@ -71,6 +71,10 @@ export class ListService {
 
 	getListMembers(listId: number): Observable<ListMember[]> {
 		return this.http.get<ListMember[]>(`${this.base}/${listId}/members`);
+	}
+
+	getPendingInvitations(listId: number): Observable<ListPendingInvite[]> {
+		return this.http.get<ListPendingInvite[]>(`${this.base}/${listId}/invitations`);
 	}
 
 	inviteToList(listId: number, email: string): Observable<boolean> {
