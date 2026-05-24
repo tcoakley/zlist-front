@@ -64,6 +64,12 @@ export interface ListMember {
 	isOwner: boolean;
 }
 
+export interface AppVersion {
+	version: string;
+	releasedAt: string;
+	notes?: string;
+}
+
 export interface ListInvitationInfo {
 	listId: number;
 	listName: string;
