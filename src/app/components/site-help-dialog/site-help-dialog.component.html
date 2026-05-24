@@ -106,6 +106,51 @@
 		</div>
 	</div>
 
+
+	<div class="help-section">
+		<button class="help-header" (click)="toggle('pricing')" [attr.aria-expanded]="pricingOpen">
+			<span class="help-arrow" [class.expanded]="pricingOpen">&#9654;</span>
+			Pricing
+		</button>
+		<div class="help-body" [class.expanded]="pricingOpen">
+			<div class="pricing-tier">
+				<div class="pricing-tier-header">
+					<span class="pricing-tier-name">Free</span>
+					<span class="pricing-price">$0/month</span>
+				</div>
+				<p>Perfect for personal recurring checklists.</p>
+				<ul>
+					<li>Up to 2 checklists</li>
+					<li>Ad-supported</li>
+					<li>Personal use only</li>
+					<li>No collaboration features</li>
+				</ul>
+			</div>
+
+			<div class="pricing-tier premium">
+				<div class="pricing-tier-header">
+					<span class="pricing-tier-name">Premium</span>
+					<span class="pricing-price">$1.99/month</span>
+				</div>
+				<p>Built for households, couples, and shared workflows.</p>
+				<ul>
+					<li>Unlimited checklists</li>
+					<li>No ads</li>
+					<li>Share checklists with other users</li>
+					<li>Includes 1 collaborator</li>
+					<li>Additional collaborators can be sponsored for $1/month each</li>
+					<li>7-day grace period for billing issues</li>
+				</ul>
+				<p><strong>Examples:</strong></p>
+				<ul>
+					<li>Husband + wife: $1.99/month total</li>
+					<li>Family of 4: $3.99/month total</li>
+				</ul>
+				<p class="pricing-cancel">Cancel anytime.</p>
+			</div>
+		</div>
+	</div>
+
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">

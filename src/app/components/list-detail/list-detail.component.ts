@@ -61,6 +61,10 @@ export class ListDetailComponent implements OnInit, OnDestroy, AfterViewInit {
 	isSendingInvite = false;
 	confirmingRemoveMemberId: number | null = null;
 
+	// Sponsor confirmation prompt
+	sponsorPromptEmail: string | null = null;
+	isConfirmingSponsor = false;
+
 	protected list = computed(() => this.listStore.lists().find(l => l.id === this.listId));
 
 	get nameDirty(): boolean {
@@ -176,17 +180,56 @@ export class ListDetailComponent implements OnInit, OnDestroy, AfterViewInit {
 			return;
 		}
 		this.isSendingInvite = true;
-		const ok = await this.listStore.inviteToList(this.listId, this.inviteEmail.trim());
-		if (ok) {
-			this.snackbarService.showMessage('Invitation sent!', 'success');
+		const result = await this.listStore.inviteToList(this.listId, this.inviteEmail.trim());
+		if (result === null) {
+			this.snackbarService.showMessage(this.listStore.error(), 'error');
+		} else if (result.requiresSponsor) {
+			this.sponsorPromptEmail = this.inviteEmail.trim();
+			this.showInviteForm = false;
+			this.inviteEmail = '';
+		} else {
+			const msg = result.message ?? 'Invitation sent!';
+			this.snackbarService.showMessage(msg, result.message ? 'warning' : 'success');
 			this.showInviteForm = false;
 			this.inviteEmail = '';
 			const invites = await this.listStore.getPendingInvitations(this.listId);
 			if (invites) this.pendingInvites = invites;
-		} else {
-			this.snackbarService.showMessage(this.listStore.error(), 'error');
 		}
 		this.isSendingInvite = false;
+	}
+
+	async confirmSponsor() {
+		if (!this.sponsorPromptEmail || this.isConfirmingSponsor) return;
+		this.isConfirmingSponsor = true;
+		const result = await this.listStore.inviteToList(this.listId, this.sponsorPromptEmail, true);
+		if (result === null) {
+			this.snackbarService.showMessage(this.listStore.error(), 'error');
+		} else {
+			this.snackbarService.showMessage('Invitation sent! $1/month added to your subscription.', 'success');
+			this.sponsorPromptEmail = null;
+			const invites = await this.listStore.getPendingInvitations(this.listId);
+			if (invites) this.pendingInvites = invites;
+		}
+		this.isConfirmingSponsor = false;
+	}
+
+	async declineSponsor() {
+		if (!this.sponsorPromptEmail || this.isConfirmingSponsor) return;
+		this.isConfirmingSponsor = true;
+		const result = await this.listStore.inviteToList(this.listId, this.sponsorPromptEmail, false);
+		if (result === null) {
+			this.snackbarService.showMessage(this.listStore.error(), 'error');
+		} else {
+			this.snackbarService.showMessage('Invitation sent. Recipient will need a Premium account to accept.', 'warning');
+			this.sponsorPromptEmail = null;
+			const invites = await this.listStore.getPendingInvitations(this.listId);
+			if (invites) this.pendingInvites = invites;
+		}
+		this.isConfirmingSponsor = false;
+	}
+
+	cancelSponsorPrompt() {
+		this.sponsorPromptEmail = null;
 	}
 
 	startRemoveMember(userId: number) {

@@ -1,0 +1,41 @@
+<div class="page">
+  <div class="container">
+    <div class="header">
+      <h1 class="title">Your account has been downgraded</h1>
+      <p class="subtitle">
+        The free plan includes up to {{ allowedCount() }} lists. Please select which
+        {{ allowedCount() }} you'd like to keep active. The rest will be archived — your history
+        is preserved and you can access it again if you upgrade.
+      </p>
+    </div>
+
+    @if (loading()) {
+      <p class="loading-text">Loading your lists…</p>
+    } @else {
+      <div class="list-grid">
+        @for (list of lists(); track list.id) {
+          <button
+            class="list-card"
+            [class.selected]="isSelected(list.id)"
+            (click)="toggleList(list.id)"
+            type="button">
+            <span class="check-icon">{{ isSelected(list.id) ? '✓' : '' }}</span>
+            <span class="list-name">{{ list.listName }}</span>
+            <span class="item-count">{{ list.totalItems }} item{{ list.totalItems !== 1 ? 's' : '' }}</span>
+          </button>
+        }
+      </div>
+
+      <div class="selection-info">
+        {{ selectedIds().size }} of {{ allowedCount() }} selected
+      </div>
+
+      <button
+        class="confirm-btn"
+        [disabled]="!canConfirm || selectedIds().size === 0"
+        (click)="confirm()">
+        {{ saving() ? 'Saving…' : 'Confirm selection' }}
+      </button>
+    }
+  </div>
+</div>

@@ -70,6 +70,11 @@ export interface AppVersion {
 	notes?: string;
 }
 
+export interface InviteResult {
+	requiresSponsor: boolean;
+	message?: string;
+}
+
 export interface ListInvitationInfo {
 	listId: number;
 	listName: string;

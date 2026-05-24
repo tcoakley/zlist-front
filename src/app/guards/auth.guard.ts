@@ -13,13 +13,23 @@ export class AuthGuard implements CanActivate {
 
 	canActivate(): Observable<boolean | UrlTree> | boolean | UrlTree {
 		if (this.userStore.authInitialized()) {
-			return this.userStore.isLoggedIn() || this.router.createUrlTree(['/login'], { queryParams: { message: 'Please log in' } });
+			return this.resolveAccess();
 		}
 
 		return this.authInitialized$.pipe(
 			filter(Boolean),
 			take(1),
-			map(() => this.userStore.isLoggedIn() || this.router.createUrlTree(['/login'], { queryParams: { message: 'Please log in' } }))
+			map(() => this.resolveAccess())
 		);
+	}
+
+	private resolveAccess(): boolean | UrlTree {
+		if (!this.userStore.isLoggedIn()) {
+			return this.router.createUrlTree(['/login'], { queryParams: { message: 'Please log in' } });
+		}
+		if (this.userStore.needsDowngradeSelection()) {
+			return this.router.createUrlTree(['/select-lists']);
+		}
+		return true;
 	}
 }

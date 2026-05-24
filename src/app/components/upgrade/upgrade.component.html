@@ -1,0 +1,84 @@
+<div class="page">
+  <div class="container">
+
+    <div class="back-row">
+      <a routerLink="/lists" class="back-link">&#8592; Back to lists</a>
+    </div>
+
+    <h1 class="page-title">Plans</h1>
+
+    @if (loading()) {
+      <p class="loading-text">Loading…</p>
+    } @else {
+
+      @if (status()?.isPremium) {
+        <div class="current-plan-banner premium">
+          <span class="banner-label">You're on</span>
+          <span class="banner-plan">Premium</span>
+          @if (status()?.isSponsored) {
+            <span class="banner-note">Sponsored by another member</span>
+          }
+          @if (status()?.gracePeriodUntil) {
+            <span class="banner-note grace">
+              Grace period active — expires {{ status()?.gracePeriodUntil | date:'mediumDate' }}
+            </span>
+          }
+        </div>
+      } @else {
+        <div class="current-plan-banner free">
+          <span class="banner-label">You're on</span>
+          <span class="banner-plan">Free</span>
+          <span class="banner-usage">{{ status()?.ownedListCount }} / 2 lists used</span>
+        </div>
+      }
+
+      <div class="plans-grid">
+
+        <div class="plan-card" [class.active-plan]="!status()?.isPremium">
+          <div class="plan-header">
+            <span class="plan-name">Free</span>
+            @if (!status()?.isPremium) {
+              <span class="plan-badge current">Current plan</span>
+            }
+          </div>
+          <div class="plan-price">
+            <span class="price-amount">$0</span>
+            <span class="price-period">/month</span>
+          </div>
+          <ul class="plan-features">
+            <li>Up to 2 checklists</li>
+            <li>Full run history</li>
+            <li>Join shared lists as a collaborator</li>
+          </ul>
+        </div>
+
+        <div class="plan-card premium-card" [class.active-plan]="status()?.isPremium">
+          <div class="plan-header">
+            <span class="plan-name">Premium</span>
+            @if (status()?.isPremium) {
+              <span class="plan-badge current">Current plan</span>
+            }
+          </div>
+          <div class="plan-price">
+            <span class="price-amount">$1.99</span>
+            <span class="price-period">/month</span>
+          </div>
+          <ul class="plan-features">
+            <li>Unlimited checklists</li>
+            <li>Full run history</li>
+            <li>Create and manage shared lists</li>
+            <li>Invite 1 collaborator for free</li>
+            <li>Sponsor additional collaborators ($1/month each)</li>
+          </ul>
+          @if (!status()?.isPremium) {
+            <div class="coming-soon-box">
+              <span class="coming-soon-label">Online billing coming soon</span>
+            </div>
+          }
+        </div>
+
+      </div>
+
+    }
+  </div>
+</div>

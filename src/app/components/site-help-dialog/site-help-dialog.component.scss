@@ -191,6 +191,48 @@ mat-dialog-actions {
 	}
 }
 
+.pricing-tier {
+	margin: 10px 14px;
+	padding: 12px 14px;
+	border-radius: 6px;
+	background: $bg-surface;
+	border-left: 3px solid $border-strong;
+
+	&.premium {
+		border-left-color: $primary;
+		margin-bottom: 14px;
+	}
+}
+
+.pricing-tier-header {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	margin-bottom: 6px;
+}
+
+.pricing-tier-name {
+	font-size: 0.9rem;
+	font-weight: 700;
+	color: $text-primary;
+}
+
+.pricing-price {
+	font-size: 0.85rem;
+	font-weight: 700;
+	color: $text-muted;
+}
+
+.premium .pricing-price {
+	color: $primary;
+}
+
+.pricing-cancel {
+	font-style: italic;
+	color: $text-muted !important;
+	margin-bottom: 4px !important;
+}
+
 .close-btn {
 	background: transparent;
 	color: #228B22;

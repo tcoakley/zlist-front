@@ -6,6 +6,8 @@ export interface UserModel {
 	lastName: string;
 	subscription?: string;
 	subscriptionExpiresAt?: string;
+	subscriptionSource?: string;
+	isAdmin?: boolean;
 	isHelpEnabled?: boolean;
 	sortCompletedToBottom?: boolean;
 	captchaToken?: string;

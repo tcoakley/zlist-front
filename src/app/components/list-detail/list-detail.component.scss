@@ -618,6 +618,116 @@
 	&:disabled { opacity: 0.5; cursor: default; }
 }
 
+.sponsor-prompt {
+	margin-top: 12px;
+	padding: 14px;
+	background: $bg-surface;
+	border: 1px solid $border;
+	border-left: 3px solid $primary;
+	border-radius: 6px;
+	animation: sponsor-slide-in 0.2s ease-out both;
+}
+
+@keyframes sponsor-slide-in {
+	from { opacity: 0; transform: translateY(-8px); }
+	to   { opacity: 1; transform: translateY(0); }
+}
+
+.sponsor-prompt-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 8px;
+}
+
+.sponsor-prompt-title {
+	font-size: 0.85rem;
+	font-weight: 700;
+	color: $text-primary;
+}
+
+.sponsor-dismiss {
+	background: transparent;
+	border: none;
+	color: $text-muted;
+	font-size: 0.8rem;
+	cursor: pointer;
+	padding: 2px 4px;
+	&:hover:not(:disabled) { color: $text-primary; }
+	&:disabled { opacity: 0.4; }
+}
+
+.sponsor-prompt-body {
+	font-size: 0.83rem;
+	color: $text-secondary;
+	margin: 0 0 12px;
+	line-height: 1.5;
+}
+
+.sponsor-options {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.sponsor-option {
+	display: flex;
+	flex-direction: column;
+	gap: 3px;
+	padding: 10px 12px;
+	background: $bg-surface-dark;
+	border-radius: 5px;
+	border: 1px solid $border;
+
+	strong {
+		font-size: 0.83rem;
+		color: $text-primary;
+	}
+
+	span {
+		font-size: 0.78rem;
+		color: $text-muted;
+		margin-bottom: 6px;
+	}
+}
+
+.sponsor-option-divider {
+	text-align: center;
+	font-size: 0.75rem;
+	color: $text-muted;
+	font-style: italic;
+}
+
+.sponsor-confirm-btn {
+	background: $primary;
+	border: none;
+	color: white;
+	font-size: 0.8rem;
+	padding: 5px 14px;
+	border-radius: 4px;
+	cursor: pointer;
+	align-self: flex-start;
+	min-width: 140px;
+
+	&:hover:not(:disabled) { background: $primary-dark; opacity: 1; }
+	&:disabled { opacity: 0.5; cursor: default; }
+}
+
+.sponsor-decline-btn {
+	background: transparent;
+	border: 1px solid $border-strong;
+	color: $text-secondary;
+	font-size: 0.8rem;
+	padding: 5px 14px;
+	border-radius: 4px;
+	cursor: pointer;
+	align-self: flex-start;
+	min-width: 140px;
+
+	&:hover:not(:disabled) { color: $text-primary; opacity: 1; }
+	&:disabled { opacity: 0.4; cursor: default; }
+}
+
 .spinner {
 	display: inline-block;
 	width: 12px;

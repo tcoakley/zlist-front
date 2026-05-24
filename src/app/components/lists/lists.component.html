@@ -1,8 +1,31 @@
 <div class="list-container" style="opacity: 0">
 
 	@if(!loading) {
-		@if (!showForm) {
+		@if (!showForm && !showUpgradePrompt) {
 			<button class="create-button" (click)="openForm()">Create New List</button>
+		}
+
+		@if (showUpgradePrompt) {
+			<div class="upgrade-prompt">
+				<div class="upgrade-prompt-header">
+					<span class="upgrade-prompt-title">Upgrade to Premium</span>
+					<button class="upgrade-dismiss" (click)="dismissUpgradePrompt()">&#10005;</button>
+				</div>
+				<p class="upgrade-prompt-body">Free accounts are limited to 2 checklists. Upgrade to Premium for unlimited checklists, shared lists, and more.</p>
+				<div class="upgrade-tiers">
+					<div class="upgrade-tier">
+						<span class="upgrade-tier-name">Free</span>
+						<span class="upgrade-tier-price">$0/month</span>
+						<span class="upgrade-tier-limit">Up to 2 checklists</span>
+					</div>
+					<div class="upgrade-tier premium">
+						<span class="upgrade-tier-name">Premium</span>
+						<span class="upgrade-tier-price">$1.99/month</span>
+						<span class="upgrade-tier-limit">Unlimited checklists + sharing</span>
+					</div>
+				</div>
+				<p class="upgrade-coming-soon">Premium billing coming soon. <a routerLink="/upgrade" class="upgrade-plans-link">View plans</a></p>
+			</div>
 		}
 
 		@if (showForm) {

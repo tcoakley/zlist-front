@@ -3,17 +3,22 @@ import { firstValueFrom } from 'rxjs';
 import { UserModel } from '../../../models/user.model';
 import { AuthService } from '../../services/auth.service';
 import { UserService } from '../../services/user.service';
+import { SubscriptionService } from '../../services/subscription.service';
 
 @Injectable({ providedIn: 'root' })
 export class UserStore {
 	private authService = inject(AuthService);
 	private userService = inject(UserService);
+	private subscriptionService = inject(SubscriptionService);
 
 	readonly user = signal<UserModel | null>(null);
 	readonly loading = signal(false);
 	readonly error = signal<any>(null);
 	readonly authInitialized = signal(false);
 	readonly isLoggedIn = computed(() => !!this.user());
+	readonly isPremium = computed(() => this.user()?.subscription === 'premium');
+	readonly isAdmin = computed(() => this.user()?.isAdmin === true);
+	readonly needsDowngradeSelection = signal(false);
 
 	async login(email: string, password: string, rememberMe: boolean): Promise<void> {
 		this.loading.set(true);
@@ -26,6 +31,7 @@ export class UserStore {
 				sessionStorage.setItem('authToken', token);
 			}
 			this.user.set(user);
+			await this.checkDowngradeSelection();
 			this.authInitialized.set(true);
 		} catch (err: any) {
 			this.error.set(err?.error ?? err);
@@ -40,12 +46,22 @@ export class UserStore {
 		try {
 			const user = await firstValueFrom(this.authService.loginWithToken(token));
 			this.user.set(user);
+			await this.checkDowngradeSelection();
 		} catch {
 			localStorage.removeItem('authToken');
 			sessionStorage.removeItem('authToken');
 		} finally {
 			this.authInitialized.set(true);
 			this.loading.set(false);
+		}
+	}
+
+	private async checkDowngradeSelection(): Promise<void> {
+		try {
+			const status = await firstValueFrom(this.subscriptionService.checkNeedsSelection());
+			this.needsDowngradeSelection.set(status.needsSelection);
+		} catch {
+			// non-fatal; default stays false
 		}
 	}
 

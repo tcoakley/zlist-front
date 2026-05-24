@@ -81,14 +81,22 @@
 
 		<div class="button-group">
 			<button type="button" class="cancel" routerLink="goBack()">Cancel</button>
-			<button 
-				type="submit" 
-				class="submit" 
-				(click)="saveForm()" 
+			<button
+				type="submit"
+				class="submit"
+				(click)="saveForm()"
 				[disabled]="!isReady">
 				Save
 			</button>
 		</div>
 	</form>
+
+	<div class="plan-section">
+		<span class="plan-label">Plan</span>
+		<span class="plan-value" [class.premium]="userStore.isPremium()">
+			{{ userStore.isPremium() ? 'Premium' : 'Free' }}
+		</span>
+		<a routerLink="/upgrade" class="plan-link">View plans</a>
+	</div>
 	}
 </div>

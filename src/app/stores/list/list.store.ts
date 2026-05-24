@@ -1,6 +1,6 @@
 import { Injectable, signal, computed, inject } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
-import { List, ListItem, ListInvitationInfo, ListMember, ListPendingInvite, ListRun, ListRunItem, RunHistorySummary } from '../../../models/list.model';
+import { List, ListItem, ListInvitationInfo, ListMember, ListPendingInvite, ListRun, ListRunItem, RunHistorySummary, InviteResult } from '../../../models/list.model';
 import { ListService } from '../../services/list.service';
 
 @Injectable({ providedIn: 'root' })
@@ -247,14 +247,13 @@ export class ListStore {
 		}
 	}
 
-	async inviteToList(listId: number, email: string): Promise<boolean> {
+	async inviteToList(listId: number, email: string, sponsorConfirmed?: boolean): Promise<InviteResult | null> {
 		this.error.set(null);
 		try {
-			await firstValueFrom(this.listService.inviteToList(listId, email));
-			return true;
+			return await firstValueFrom(this.listService.inviteToList(listId, email, sponsorConfirmed));
 		} catch (err: any) {
 			this.error.set(err?.error ?? err);
-			return false;
+			return null;
 		}
 	}
 

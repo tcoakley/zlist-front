@@ -1,21 +1,23 @@
 import { Component, OnInit, OnDestroy, inject, Injector, effect, AfterViewInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AutofocusDirective } from '../../directives/autofocus.directive';
 import { SnackbarService } from '../../services/snackbar.service';
 import { TitleService } from '../../services/title.service';
 import { ListStore } from '../../stores/list/list.store';
+import { UserStore } from '../../stores/user/user.store';
 import { List } from '../../../models/list.model';
 
 @Component({
 	selector: 'app-lists',
 	standalone: true,
-	imports: [FormsModule, AutofocusDirective],
+	imports: [FormsModule, AutofocusDirective, RouterLink],
 	templateUrl: './lists.component.html',
 	styleUrls: ['./lists.component.scss'],
 })
 export class ListsComponent implements OnInit, OnDestroy, AfterViewInit  {
 	protected listStore = inject(ListStore);
+	protected userStore = inject(UserStore);
 	protected loading = true;
 	private router = inject(Router);
 	private titleService = inject(TitleService);
@@ -24,10 +26,16 @@ export class ListsComponent implements OnInit, OnDestroy, AfterViewInit  {
 
 
 	showForm = false;
+	showUpgradePrompt = false;
 	listName = '';
 	listDescription = '';
 	expandedListIds = new Set<number>();
 	confirmingDeleteId: number | null = null;
+
+	get atListLimit(): boolean {
+		return !this.userStore.isPremium() &&
+			this.listStore.lists().filter(l => l.isOwner).length >= 2;
+	}
 
 	get sortedLists(): List[] {
 		return [...this.listStore.lists()].sort((a, b) => {
@@ -79,8 +87,16 @@ export class ListsComponent implements OnInit, OnDestroy, AfterViewInit  {
 	}
 
 	openForm() {
+		if (this.atListLimit) {
+			this.showUpgradePrompt = true;
+			return;
+		}
 		this.showForm = true;
 		this.titleService.setHelpContext('create-list');
+	}
+
+	dismissUpgradePrompt() {
+		this.showUpgradePrompt = false;
 	}
 
 	cancelForm() {

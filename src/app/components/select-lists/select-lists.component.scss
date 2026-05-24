@@ -1,0 +1,137 @@
+@use 'variables' as *;
+
+:host {
+	display: block;
+	width: 100%;
+}
+
+.page {
+	min-height: 100vh;
+	display: flex;
+	align-items: flex-start;
+	justify-content: center;
+	padding: 40px 16px 60px;
+}
+
+.container {
+	width: 100%;
+	max-width: 480px;
+	animation: page-fade-in 0.25s ease-out 0.1s both;
+}
+
+.header {
+	margin-bottom: 28px;
+}
+
+.title {
+	font-size: 1.3rem;
+	font-weight: 700;
+	color: $text-primary;
+	margin: 0 0 10px;
+}
+
+.subtitle {
+	font-size: 0.9rem;
+	color: $text-secondary;
+	line-height: 1.6;
+	margin: 0;
+}
+
+.loading-text {
+	color: $text-muted;
+	font-size: 0.9rem;
+}
+
+.list-grid {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	margin-bottom: 20px;
+}
+
+.list-card {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	width: 100%;
+	background: $bg-surface;
+	border: 1px solid $border;
+	border-radius: 6px;
+	padding: 12px 14px;
+	cursor: pointer;
+	text-align: left;
+	transition: border-color 0.15s ease;
+
+	&:hover {
+		border-color: $border-strong;
+	}
+
+	&.selected {
+		border-color: $primary;
+	}
+}
+
+.check-icon {
+	flex-shrink: 0;
+	width: 20px;
+	height: 20px;
+	border: 1px solid $border-strong;
+	border-radius: 4px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 0.75rem;
+	color: $primary;
+	background: transparent;
+
+	.selected & {
+		background: $primary;
+		border-color: $primary;
+		color: white;
+	}
+}
+
+.list-name {
+	flex: 1;
+	font-size: 0.95rem;
+	font-weight: 600;
+	color: $text-primary;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.item-count {
+	font-size: 0.8rem;
+	color: $text-muted;
+	flex-shrink: 0;
+}
+
+.selection-info {
+	font-size: 0.85rem;
+	color: $text-muted;
+	margin-bottom: 20px;
+	text-align: right;
+}
+
+.confirm-btn {
+	width: 100%;
+	background: $primary;
+	color: white;
+	border: none;
+	border-radius: 8px;
+	padding: 12px;
+	font-size: 1rem;
+	font-weight: 600;
+	cursor: pointer;
+	transition: background-color 0.2s ease;
+
+	&:hover:not(:disabled) {
+		background: $primary-dark;
+	}
+
+	&:disabled {
+		background: $disabled;
+		cursor: not-allowed;
+	}
+}

@@ -27,7 +27,7 @@ export class ProfileComponent implements OnInit, AfterViewInit {
 	isHelpEnabled = true;
 	sortCompletedToBottom = true;
 
-	private userStore = inject(UserStore);
+	protected userStore = inject(UserStore);
 	private snackbarService = inject(SnackbarService);
 	private titleService = inject(TitleService);
 	protected location = inject(Location);

@@ -18,6 +18,40 @@
 	padding: 0;
 }
 
+.plan-section {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin-top: 24px;
+	padding-top: 16px;
+	border-top: 1px solid $border;
+	font-size: 0.85rem;
+}
+
+.plan-label {
+	color: $text-muted;
+}
+
+.plan-value {
+	font-weight: 600;
+	color: $text-secondary;
+
+	&.premium {
+		color: $primary;
+	}
+}
+
+.plan-link {
+	margin-left: auto;
+	color: $primary;
+	text-decoration: none;
+	font-size: 0.82rem;
+
+	&:hover {
+		text-decoration: underline;
+	}
+}
+
 .checkbox-row {
 	display: flex;
 	align-items: center;

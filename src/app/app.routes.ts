@@ -11,6 +11,8 @@ import { PrivacyComponent } from './components/privacy/privacy.component';
 import { AboutComponent } from './components/about/about.component';
 import { ListHistoryComponent } from './components/list-history/list-history.component';
 import { InviteAcceptComponent } from './components/invite-accept/invite-accept.component';
+import { SelectListsComponent } from './components/select-lists/select-lists.component';
+import { UpgradeComponent } from './components/upgrade/upgrade.component';
 import { AuthGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
@@ -18,6 +20,8 @@ export const routes: Routes = [
 	{ path: 'signup', component: SignupComponent },
 	{ path: 'forgotPassword', component: ForgotPasswordComponent },
 	{ path: 'invite/:token', component: InviteAcceptComponent },
+	{ path: 'select-lists', component: SelectListsComponent },
+	{ path: 'upgrade', component: UpgradeComponent, canActivate: [AuthGuard] },
 	{ path: 'lists', component: ListsComponent, canActivate: [AuthGuard] },
 	{ path: 'lists/:id', component: ListDetailComponent, canActivate: [AuthGuard] },
 	{ path: 'lists/:listId/run/:runId', component: ListRunComponent, canActivate: [AuthGuard] },

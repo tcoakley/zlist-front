@@ -15,16 +15,24 @@ export class SiteHelpDialogComponent {
 	createListOpen = this.data.context === 'create-list';
 	listsOpen = this.data.context === 'lists';
 	editListOpen = this.data.context === 'edit-list';
+	pricingOpen = false;
 
-	toggle(section: 'createList' | 'lists' | 'editList') {
-		const isOpen = section === 'createList' ? this.createListOpen : section === 'lists' ? this.listsOpen : this.editListOpen;
+	toggle(section: 'createList' | 'lists' | 'editList' | 'pricing') {
+		const wasOpen = (
+			section === 'createList' ? this.createListOpen :
+			section === 'lists' ? this.listsOpen :
+			section === 'editList' ? this.editListOpen :
+			this.pricingOpen
+		);
 		this.createListOpen = false;
 		this.listsOpen = false;
 		this.editListOpen = false;
-		if (!isOpen) {
+		this.pricingOpen = false;
+		if (!wasOpen) {
 			if (section === 'createList') this.createListOpen = true;
 			else if (section === 'lists') this.listsOpen = true;
-			else this.editListOpen = true;
+			else if (section === 'editList') this.editListOpen = true;
+			else this.pricingOpen = true;
 		}
 	}
 }
