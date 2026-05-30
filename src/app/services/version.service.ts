@@ -8,6 +8,6 @@ export class VersionService {
 	constructor(private http: HttpService) {}
 
 	getVersions(): Observable<AppVersion[]> {
-		return this.http.get<AppVersion[]>('/version');
+		return this.http.get<AppVersion[]>('/api/version');
 	}
 }

@@ -1,0 +1,67 @@
+<div class="form" style="opacity: 0">
+	@if (true) {
+	<form (ngSubmit)="canSend && send()">
+
+		<div class="name-row">
+			<fieldset>
+				<legend>First Name</legend>
+				<label for="firstName" class="visually-hidden">First Name</label>
+				<input
+					id="firstName"
+					type="text"
+					name="firstName"
+					[(ngModel)]="firstName"
+					required
+				/>
+			</fieldset>
+
+			<fieldset>
+				<legend>Last Name</legend>
+				<label for="lastName" class="visually-hidden">Last Name</label>
+				<input
+					id="lastName"
+					type="text"
+					name="lastName"
+					[(ngModel)]="lastName"
+					required
+				/>
+			</fieldset>
+		</div>
+
+		<fieldset>
+			<legend>Type</legend>
+			<label for="contactType" class="visually-hidden">Contact Type</label>
+			<select id="contactType" name="contactType" [(ngModel)]="contactType" required>
+				<option value="" disabled>Select a type…</option>
+				@for (type of contactTypes; track type) {
+					<option [value]="type">{{ type }}</option>
+				}
+			</select>
+		</fieldset>
+
+		<fieldset>
+			<legend>Message</legend>
+			<label for="message" class="visually-hidden">Message</label>
+			<textarea
+				id="message"
+				name="message"
+				[(ngModel)]="message"
+				rows="6"
+				placeholder="Tell us what's on your mind…"
+				required
+			></textarea>
+		</fieldset>
+
+		<div class="button-group">
+			<button type="button" class="cancel" (click)="location.back()">Cancel</button>
+			<button
+				type="submit"
+				class="submit"
+				[disabled]="!canSend">
+				{{ sending ? 'Sending…' : 'Send' }}
+			</button>
+		</div>
+
+	</form>
+	}
+</div>

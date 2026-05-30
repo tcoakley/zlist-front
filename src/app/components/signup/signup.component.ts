@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, inject, effect } from '@angular/core';
+import { Component, OnInit, AfterViewInit, inject, effect, NgZone } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AutofocusDirective } from '../../directives/autofocus.directive';
@@ -29,6 +29,7 @@ export class SignupComponent implements OnInit, AfterViewInit {
 	private snackbarService = inject(SnackbarService);
 	private router = inject(Router);
 	private route = inject(ActivatedRoute);
+	private ngZone = inject(NgZone);
 
 	constructor() {
 		effect(() => {
@@ -68,12 +69,16 @@ export class SignupComponent implements OnInit, AfterViewInit {
 		g.render('recaptcha-container', {
 			sitekey: environment.recaptchaSiteKey,
 			callback: (token: string) => {
-				this.captchaToken = token;
-				this.formReady();
+				this.ngZone.run(() => {
+					this.captchaToken = token;
+					this.formReady();
+				});
 			},
 			'expired-callback': () => {
-				this.captchaToken = '';
-				this.formReady();
+				this.ngZone.run(() => {
+					this.captchaToken = '';
+					this.formReady();
+				});
 			}
 		});
 	}

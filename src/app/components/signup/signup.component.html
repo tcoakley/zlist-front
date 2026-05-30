@@ -1,7 +1,7 @@
 <div class="form" style="opacity: 0">
 	@if (!loading) {
 	<h2>Sign Up</h2>
-	<form aria-labelledby="signup-heading">
+	<form aria-labelledby="signup-heading" autocomplete="off">
 		<fieldset>
 			<legend>Email</legend>
 			<label for="email" class="visually-hidden">Email</label>
@@ -9,7 +9,7 @@
 				id="email"
 				type="email"
 				name="email"
-				autocomplete="email"
+				autocomplete="off"
 				aria-required="true"
 				required
 				autofocus
@@ -26,7 +26,7 @@
 				id="password"
 				type="password"
 				name="password"
-				autocomplete="off"
+				autocomplete="new-password"
 				aria-required="true"
 				required
 				(input)="formReady()"
@@ -41,7 +41,7 @@
 				id="first-name"
 				type="text"
 				name="first-name"
-				autocomplete="given-name"
+				autocomplete="off"
 				required
 				(input)="formReady()"
 				[(ngModel)]="firstName"
@@ -55,7 +55,7 @@
 				id="last-name"
 				type="text"
 				name="last-name"
-				autocomplete="family-name"
+				autocomplete="off"
 				required
 				(input)="formReady()"
 				[(ngModel)]="lastName"

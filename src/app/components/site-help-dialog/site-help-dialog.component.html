@@ -23,7 +23,7 @@
 		</div>
 		<div class="legend-row">
 			<span class="legend-icon"><img src="assets/icon-edit.svg" alt="Edit" /></span>
-			<span class="legend-desc">Edit — view or edit details</span>
+			<span class="legend-desc">Edit — open list details and items</span>
 		</div>
 		<div class="legend-row">
 			<span class="legend-icon"><img src="assets/icon-trash.svg" alt="Delete" /></span>
@@ -33,79 +33,92 @@
 			<span class="legend-icon expand-icon">&#9654;</span>
 			<span class="legend-desc">Expand — show or hide details</span>
 		</div>
+		<div class="legend-row">
+			<span class="legend-icon"><img src="assets/icon-drag-handle.svg" alt="Drag" /></span>
+			<span class="legend-desc">Drag handle — reorder items</span>
+		</div>
 	</div>
 
-	<div class="help-section">
+	<div class="help-section" [class.focused]="focusedSection === 'lists'">
+		<button class="help-header" (click)="toggle('lists')" [attr.aria-expanded]="listsOpen">
+			<span class="help-arrow" [class.expanded]="listsOpen">&#9654;</span>
+			Lists Page
+		</button>
+		<div class="help-body" [class.expanded]="listsOpen">
+			<p>Your lists page is the home screen of zChecklist. Use the <strong>Create New List</strong> button to add a new checklist.</p>
+			<p>For each list you can:</p>
+			<ul>
+				<li>Click the <strong>expand arrow</strong> (&#9654;) to show run history, item count, and description</li>
+				<li>Click the <strong>edit icon</strong> to manage items, members, name, or description</li>
+				<li>Click the <strong>launch icon</strong> to start a new run</li>
+				<li>Click the <strong>continue icon</strong> to resume a run that is already in progress</li>
+				<li>Click the <strong>trash icon</strong> to permanently delete the list</li>
+			</ul>
+			<p>An <strong>In Progress</strong> badge appears on any list that has an active run. Only one run can be active at a time per list.</p>
+			<p>When expanded, a <strong>History</strong> link appears for lists that have completed runs.</p>
+			<p>If another user has shared a list with you, it will also appear here alongside your own lists.</p>
+			<p><strong>Deleting a list is permanent</strong> and will also remove all items, runs, and history. You will be asked to confirm before deletion.</p>
+		</div>
+	</div>
+
+	<div class="help-section" [class.focused]="focusedSection === 'createList'">
 		<button class="help-header" (click)="toggle('createList')" [attr.aria-expanded]="createListOpen">
 			<span class="help-arrow" [class.expanded]="createListOpen">&#9654;</span>
-			Create List Help
+			Creating a List
 		</button>
 		<div class="help-body" [class.expanded]="createListOpen">
-			<p>The <strong>List Name</strong> is required and should clearly describe the process or task you want to repeat, such as:</p>
+			<p>The <strong>List Name</strong> is required and should clearly describe the process you want to repeat, such as:</p>
 			<ul>
 				<li>RV Departure Checklist</li>
 				<li>Monthly Server Maintenance</li>
 				<li>Pre-flight Checklist</li>
 				<li>Camping Setup</li>
 			</ul>
-			<p>The <strong>Description</strong> field is optional and can be used to add additional context or notes about when the checklist should be used.</p>
-			<p>After clicking <strong>Create</strong>, you will be taken to the next page where you can begin adding checklist items to the list.</p>
+			<p>The <strong>Description</strong> is optional. Use it to add context about when or how the checklist should be used.</p>
+			<p>After clicking <strong>Create</strong>, you'll be taken to the list detail page where you can start adding items.</p>
 		</div>
 	</div>
 
-	<div class="help-section">
-		<button class="help-header" (click)="toggle('lists')" [attr.aria-expanded]="listsOpen">
-			<span class="help-arrow" [class.expanded]="listsOpen">&#9654;</span>
-			Lists Page Help
-		</button>
-		<div class="help-body" [class.expanded]="listsOpen">
-			<p>Use the <strong>Create New List</strong> button to create a new checklist.</p>
-			<p>For each existing list you may:</p>
-			<ul>
-				<li>Click the <strong>edit icon</strong> to edit the checklist items, name, or description</li>
-				<li>Click the <strong>launch icon</strong> to begin a new checklist run</li>
-				<li>Click the <strong>trash icon</strong> to permanently delete the checklist</li>
-			</ul>
-			<p>If a checklist already has a run currently in progress, the continue icon will appear instead of the launch icon.</p>
-			<p>Deleting a checklist is permanent. You will be asked to confirm deletion before it is removed. Deleting a checklist will also permanently remove:</p>
-			<ul>
-				<li>Checklist items</li>
-				<li>Current runs</li>
-				<li>Run history</li>
-				<li>Completed item history</li>
-			</ul>
-			<p><strong>Deleted checklists cannot be recovered.</strong></p>
-			<p>Repeatable checklists are designed to be reused over and over again. Launching a checklist creates a new checklist run while keeping the original checklist intact for future use.</p>
-		</div>
-	</div>
-
-	<div class="help-section">
+	<div class="help-section" [class.focused]="focusedSection === 'editList'">
 		<button class="help-header" (click)="toggle('editList')" [attr.aria-expanded]="editListOpen">
 			<span class="help-arrow" [class.expanded]="editListOpen">&#9654;</span>
-			Edit List Help
+			Editing a List
 		</button>
 		<div class="help-body" [class.expanded]="editListOpen">
-			<p>You may add as many checklist items as needed. Each item represents a task or step that should be completed when running the checklist.</p>
-			<p><strong>Examples:</strong></p>
+			<p>The edit page has two tabs: <strong>Items</strong> and <strong>Members</strong>.</p>
+			<p><strong>Items tab:</strong></p>
 			<ul>
-				<li>Disconnect power cable</li>
-				<li>Lock storage compartments</li>
-				<li>Verify backup completed</li>
-				<li>Check tire pressure</li>
+				<li>Add as many items as needed — each represents one step or task</li>
+				<li>Use the <strong>drag handle</strong> on the right of each row to reorder items</li>
+				<li>Check <strong>One-time</strong> on an item if it should only appear once and not repeat in future runs</li>
+				<li>Click the <strong>trash icon</strong> on an item to remove it</li>
 			</ul>
-			<p>Items can be reordered using the drag handles on the right side of each row.</p>
-			<p>To edit the checklist name or description, click the pencil icon next to the list title.</p>
-			<p>The checklist itself is permanent and designed to be reused as many times as needed. Unlike a one-time grocery list, completing a checklist run does not remove or delete the checklist.</p>
-			<p>When your checklist is ready, click the <strong>Launch</strong> button to begin your first checklist run.</p>
-			<p>You may also:</p>
+			<p>Click the <strong>pencil icon</strong> next to the list title to edit the name or description.</p>
+			<p><strong>Members tab</strong> (Premium):</p>
 			<ul>
-				<li>Return to the main lists page using the <strong>Back to Lists</strong> link</li>
-				<li>Edit the checklist again later at any time</li>
-				<li>Re-run the checklist as often as needed from this page or the main lists page</li>
+				<li>Invite other users to collaborate on this list by email</li>
+				<li>Pending invitations are shown until accepted or expired</li>
+				<li>Remove a member at any time</li>
+				<li>The list owner's first included collaborator is free; additional collaborators are $1/month each</li>
 			</ul>
+			<p>When your list is ready, click <strong>Launch</strong> to start your first run.</p>
 		</div>
 	</div>
 
+	<div class="help-section" [class.focused]="focusedSection === 'runList'">
+		<button class="help-header" (click)="toggle('runList')" [attr.aria-expanded]="runListOpen">
+			<span class="help-arrow" [class.expanded]="runListOpen">&#9654;</span>
+			Running a List
+		</button>
+		<div class="help-body" [class.expanded]="runListOpen">
+			<p>Tap any item to check it off. Tap it again to uncheck it.</p>
+			<p>Use <strong>Check All</strong> at the top to mark every item complete at once.</p>
+			<p>Items marked as <strong>one-time</strong> will be removed from the list after this run — they will not appear in future runs.</p>
+			<p>On shared lists, a small <strong>initials badge</strong> appears next to each completed item showing who checked it off.</p>
+			<p>When all items are done, tap <strong>Complete List</strong> to finish the run. The completion is saved to your run history and the list resets automatically for next time.</p>
+			<p>You can leave a run in progress and come back to it later — your progress is saved. Use the <strong>Continue</strong> button from the Lists page to resume.</p>
+		</div>
+	</div>
 
 	<div class="help-section">
 		<button class="help-header" (click)="toggle('pricing')" [attr.aria-expanded]="pricingOpen">
@@ -118,12 +131,10 @@
 					<span class="pricing-tier-name">Free</span>
 					<span class="pricing-price">$0/month</span>
 				</div>
-				<p>Perfect for personal recurring checklists.</p>
 				<ul>
 					<li>Up to 2 checklists</li>
-					<li>Ad-supported</li>
-					<li>Personal use only</li>
-					<li>No collaboration features</li>
+					<li>Full run history</li>
+					<li>Join shared lists as a collaborator</li>
 				</ul>
 			</div>
 
@@ -132,21 +143,20 @@
 					<span class="pricing-tier-name">Premium</span>
 					<span class="pricing-price">$1.99/month</span>
 				</div>
-				<p>Built for households, couples, and shared workflows.</p>
 				<ul>
 					<li>Unlimited checklists</li>
-					<li>No ads</li>
-					<li>Share checklists with other users</li>
-					<li>Includes 1 collaborator</li>
-					<li>Additional collaborators can be sponsored for $1/month each</li>
+					<li>Full run history</li>
+					<li>Create and manage shared lists</li>
+					<li>Invite 1 collaborator for free</li>
+					<li>Sponsor additional collaborators ($1/month each)</li>
 					<li>7-day grace period for billing issues</li>
 				</ul>
 				<p><strong>Examples:</strong></p>
 				<ul>
-					<li>Husband + wife: $1.99/month total</li>
+					<li>Husband + wife sharing lists: $1.99/month total</li>
 					<li>Family of 4: $3.99/month total</li>
 				</ul>
-				<p class="pricing-cancel">Cancel anytime.</p>
+				<p class="pricing-cancel">Cancel anytime. Online billing coming soon.</p>
 			</div>
 		</div>
 	</div>

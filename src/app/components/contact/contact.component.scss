@@ -1,0 +1,69 @@
+@use 'variables' as *;
+
+:host {
+	display: block;
+	width: 100%;
+	max-width: 400px;
+	margin: 0 auto;
+}
+
+.form {
+	animation: page-fade-in 0.25s ease-out 0.1s both;
+}
+
+.page-title {
+	font-size: 1.2rem;
+	font-weight: 700;
+	color: $text-primary;
+	margin: 0 0 20px;
+}
+
+.name-row {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 12px;
+}
+
+select {
+	width: 100%;
+	background: $bg-surface-dark;
+	color: $text-primary;
+	border: 1px solid $border;
+	border-radius: 4px;
+	padding: 8px 10px;
+	font-size: 0.95rem;
+	appearance: none;
+	cursor: pointer;
+
+	option {
+		background: $bg-surface-dark;
+	}
+
+	&:focus {
+		outline: none;
+		border-color: $primary;
+	}
+}
+
+textarea {
+	width: 100%;
+	background: $bg-surface-dark;
+	color: $text-primary;
+	border: 1px solid $border;
+	border-radius: 4px;
+	padding: 8px 10px;
+	font-size: 0.9rem;
+	font-family: inherit;
+	resize: vertical;
+	min-height: 120px;
+	box-sizing: border-box;
+
+	&::placeholder {
+		color: $text-faint;
+	}
+
+	&:focus {
+		outline: none;
+		border-color: $primary;
+	}
+}
