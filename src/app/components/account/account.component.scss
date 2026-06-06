@@ -203,6 +203,38 @@
 	}
 }
 
+// ─── Payment form ─────────────────────────────────────────────────────────────
+
+.payment-box {
+	background: $bg-surface;
+	border: 1px solid $border;
+	border-radius: 8px;
+	padding: 18px 16px;
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+}
+
+.payment-heading {
+	font-size: 0.95rem;
+	font-weight: 600;
+	color: $text-primary;
+	margin: 0;
+}
+
+.payment-error {
+	font-size: 0.83rem;
+	color: $danger;
+	margin: 0;
+}
+
+.payment-actions {
+	display: flex;
+	gap: 10px;
+	justify-content: flex-end;
+	flex-wrap: wrap;
+}
+
 // ─── Collaborator slots ───────────────────────────────────────────────────────
 
 .slot-group {

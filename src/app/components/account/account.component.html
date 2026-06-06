@@ -87,21 +87,37 @@
             </div>
           </div>
 
-          <div class="upgrade-box">
-            <div class="upgrade-pitch">
-              <p class="upgrade-heading">Upgrade to Premium — $1.99/month</p>
-              <ul class="upgrade-features">
-                <li>Unlimited checklists</li>
-                <li>Create and manage shared lists</li>
-                <li>1 free collaborator included</li>
-                <li>Add more collaborators for $1/month each</li>
-                <li>7-day grace period on billing issues</li>
-              </ul>
+          @if (!showPaymentForm()) {
+            <div class="upgrade-box">
+              <div class="upgrade-pitch">
+                <p class="upgrade-heading">Upgrade to Premium — $1.99/month</p>
+                <ul class="upgrade-features">
+                  <li>Unlimited checklists</li>
+                  <li>Create and manage shared lists</li>
+                  <li>1 free collaborator included</li>
+                  <li>Add more collaborators for $1/month each</li>
+                  <li>7-day grace period on billing issues</li>
+                </ul>
+              </div>
+              <button class="btn-primary" (click)="startUpgrade()" [disabled]="paymentLoading()">
+                {{ paymentLoading() ? 'Loading…' : 'Upgrade to Premium' }}
+              </button>
             </div>
-            <button class="btn-primary" (click)="upgrade()" [disabled]="working()">
-              {{ working() ? 'Processing…' : 'Upgrade to Premium' }}
-            </button>
-          </div>
+          } @else {
+            <div class="payment-box">
+              <p class="payment-heading">Enter your card details</p>
+              <div id="payment-element"></div>
+              @if (paymentError()) {
+                <p class="payment-error">{{ paymentError() }}</p>
+              }
+              <div class="payment-actions">
+                <button class="btn-ghost" (click)="showPaymentForm.set(false)" [disabled]="working()">Cancel</button>
+                <button class="btn-primary" (click)="confirmPayment()" [disabled]="working()">
+                  {{ working() ? 'Processing…' : 'Subscribe — $1.99/month' }}
+                </button>
+              </div>
+            </div>
+          }
         }
       </section>
 
@@ -110,7 +126,9 @@
         <section class="section">
           <h2 class="section-title">Collaborators</h2>
           <p class="section-desc">
-            Collaborators can access all of your shared lists. Your plan includes 1 free collaborator slot.
+            Your plan includes 1 free collaborator slot. Adding someone here gives them premium access —
+            you'll still need to invite them to each list you want them on via the
+            <strong>Members tab</strong> inside the list.
           </p>
 
           <!-- Free slot -->

@@ -47,8 +47,8 @@ export class SubscriptionService {
 		return this.http.get<SubscriptionStatus>(`${this.base}/status`);
 	}
 
-	upgrade(): Observable<boolean> {
-		return this.http.post<boolean>(`${this.base}/upgrade`, {});
+	upgrade(): Observable<{ clientSecret: string; subscriptionId: string }> {
+		return this.http.post<{ clientSecret: string; subscriptionId: string }>(`${this.base}/upgrade`, {});
 	}
 
 	cancelSubscription(): Observable<boolean> {
