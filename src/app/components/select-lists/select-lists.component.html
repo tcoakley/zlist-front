@@ -1,13 +1,31 @@
 <div class="page">
   <div class="container">
-    <div class="header">
-      <h1 class="title">Your account has been downgraded</h1>
-      <p class="subtitle">
-        The free plan includes up to {{ allowedCount() }} lists. Please select which
-        {{ allowedCount() }} you'd like to keep active. The rest will be archived — your history
-        is preserved and you can access it again if you upgrade.
-      </p>
+
+    <h1 class="title">Your account has been downgraded</h1>
+    <p class="subtitle">
+      Your account is now on the free plan. You have two options — upgrade to keep
+      everything, or choose which {{ allowedCount() }} lists to keep active.
+    </p>
+
+    <!-- ── Option 1: Upgrade ───────────────────────────────────────────── -->
+    <a routerLink="/account" class="upgrade-bar">
+      <div class="upgrade-bar-left">
+        <span class="upgrade-bar-title">Upgrade to Premium</span>
+        <span class="upgrade-bar-desc">Keep all your lists, unlock sharing, and more — $1.99/month</span>
+      </div>
+      <span class="upgrade-bar-arrow">&#8594;</span>
+    </a>
+
+    <!-- ── Divider ─────────────────────────────────────────────────────── -->
+    <div class="or-divider">
+      <span class="or-line"></span>
+      <span class="or-text">or</span>
+      <span class="or-line"></span>
     </div>
+
+    <!-- ── Option 2: Select lists ─────────────────────────────────────── -->
+    <p class="select-heading">Select {{ allowedCount() }} lists to keep active</p>
+    <p class="select-note">The rest will be archived — your history is preserved and accessible if you upgrade later.</p>
 
     @if (loading()) {
       <p class="loading-text">Loading your lists…</p>
@@ -37,5 +55,6 @@
         {{ saving() ? 'Saving…' : 'Confirm selection' }}
       </button>
     }
+
   </div>
 </div>

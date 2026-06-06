@@ -1,5 +1,5 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { firstValueFrom } from 'rxjs';
 import { UserStore } from '../../stores/user/user.store';
@@ -9,7 +9,7 @@ import { SnackbarService } from '../../services/snackbar.service';
 @Component({
 	selector: 'app-select-lists',
 	standalone: true,
-	imports: [CommonModule],
+	imports: [CommonModule, RouterLink],
 	templateUrl: './select-lists.component.html',
 	styleUrl: './select-lists.component.scss'
 })

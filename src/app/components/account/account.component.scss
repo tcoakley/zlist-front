@@ -1,0 +1,417 @@
+@use 'variables' as *;
+
+:host {
+	display: block;
+	width: 100%;
+}
+
+.page {
+	min-height: 100vh;
+	display: flex;
+	justify-content: center;
+	padding: 28px 16px 60px;
+}
+
+.container {
+	width: 100%;
+	max-width: 540px;
+	animation: page-fade-in 0.25s ease-out 0.1s both;
+}
+
+.back-row {
+	margin-bottom: 20px;
+}
+
+.back-link {
+	font-size: 0.85rem;
+	color: $text-muted;
+	text-decoration: none;
+	&:hover { color: $text-primary; }
+}
+
+.page-title {
+	font-size: 1.4rem;
+	font-weight: 700;
+	color: $text-primary;
+	margin: 0 0 28px;
+}
+
+.loading-text {
+	color: $text-muted;
+	font-size: 0.9rem;
+}
+
+// ─── Sections ────────────────────────────────────────────────────────────────
+
+.section {
+	margin-bottom: 36px;
+}
+
+.section-title {
+	font-size: 0.8rem;
+	font-weight: 600;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	color: $text-muted;
+	margin: 0 0 14px;
+}
+
+.section-desc {
+	font-size: 0.83rem;
+	color: $text-muted;
+	margin: -6px 0 16px;
+	line-height: 1.5;
+}
+
+// ─── Alerts ──────────────────────────────────────────────────────────────────
+
+.alert {
+	padding: 12px 14px;
+	border-radius: 8px;
+	font-size: 0.85rem;
+	line-height: 1.5;
+	margin-bottom: 16px;
+
+	&.warning {
+		background: $warning-bg;
+		border: 1px solid $warning;
+		color: $warning;
+	}
+}
+
+// ─── Status card ─────────────────────────────────────────────────────────────
+
+.status-card {
+	background: $bg-surface;
+	border: 1px solid $border;
+	border-radius: 8px;
+	padding: 14px 16px;
+	margin-bottom: 14px;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+
+	&.premium {
+		border-color: $primary;
+	}
+}
+
+.status-row {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	font-size: 0.88rem;
+}
+
+.total-row {
+	border-top: 1px solid $border-subtle;
+	padding-top: 10px;
+	margin-top: 2px;
+
+	.status-label, .status-value {
+		font-weight: 600;
+	}
+}
+
+.status-label {
+	color: $text-muted;
+}
+
+.status-value {
+	color: $text-primary;
+}
+
+.premium-text {
+	color: $primary;
+	font-weight: 600;
+}
+
+// ─── Cancel ──────────────────────────────────────────────────────────────────
+
+.btn-cancel-link {
+	background: none;
+	border: none;
+	padding: 0;
+	font-size: 0.8rem;
+	color: $text-muted;
+	cursor: pointer;
+	text-decoration: underline;
+
+	&:hover { color: $danger; }
+}
+
+.confirm-cancel {
+	background: $bg-surface;
+	border: 1px solid $danger-border;
+	border-radius: 8px;
+	padding: 14px 16px;
+
+	p {
+		font-size: 0.87rem;
+		color: $text-secondary;
+		margin: 0 0 14px;
+		line-height: 1.5;
+	}
+}
+
+.confirm-buttons {
+	display: flex;
+	gap: 10px;
+	justify-content: flex-end;
+}
+
+// ─── Upgrade box ─────────────────────────────────────────────────────────────
+
+.upgrade-box {
+	background: $bg-surface;
+	border: 1px solid $border;
+	border-radius: 8px;
+	padding: 18px 16px;
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+}
+
+.upgrade-heading {
+	font-size: 0.95rem;
+	font-weight: 600;
+	color: $text-primary;
+	margin: 0 0 10px;
+}
+
+.upgrade-features {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+
+	li {
+		font-size: 0.83rem;
+		color: $text-secondary;
+		padding-left: 14px;
+		position: relative;
+
+		&::before {
+			content: '✓';
+			position: absolute;
+			left: 0;
+			color: $primary;
+			font-size: 0.75rem;
+		}
+	}
+}
+
+// ─── Collaborator slots ───────────────────────────────────────────────────────
+
+.slot-group {
+	background: $bg-surface;
+	border: 1px solid $border;
+	border-radius: 8px;
+	padding: 14px 16px;
+	margin-bottom: 12px;
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+
+.slot-label {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.slot-tag {
+	font-size: 0.7rem;
+	font-weight: 600;
+	padding: 2px 8px;
+	border-radius: 20px;
+	white-space: nowrap;
+
+	&.free-tag {
+		background: $primary;
+		color: white;
+	}
+
+	&.paid-tag {
+		background: $bg-elevated;
+		border: 1px solid $border-strong;
+		color: $text-secondary;
+	}
+}
+
+.slot-desc {
+	font-size: 0.82rem;
+	color: $text-muted;
+}
+
+.collaborator-row {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	padding: 10px 12px;
+	background: $bg-elevated;
+	border-radius: 6px;
+}
+
+.collab-info {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	min-width: 0;
+}
+
+.collab-name {
+	font-size: 0.88rem;
+	font-weight: 600;
+	color: $text-primary;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.collab-email {
+	font-size: 0.78rem;
+	color: $text-muted;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.empty-slot {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.empty-text {
+	font-size: 0.83rem;
+	color: $text-muted;
+	margin: 0;
+}
+
+.add-row {
+	display: flex;
+	gap: 8px;
+}
+
+.add-input {
+	flex: 1;
+	background: $bg-surface-dark;
+	border: 1px solid $border;
+	border-radius: 6px;
+	padding: 8px 10px;
+	font-size: 0.85rem;
+	color: $text-primary;
+	outline: none;
+	min-width: 0;
+
+	&:focus {
+		border-color: $primary;
+	}
+
+	&::placeholder {
+		color: $text-faint;
+	}
+}
+
+// ─── Sponsored note ───────────────────────────────────────────────────────────
+
+.sponsored-note {
+	background: $bg-surface;
+	border: 1px solid $border;
+	border-radius: 8px;
+	padding: 14px 16px;
+
+	p {
+		font-size: 0.87rem;
+		color: $text-secondary;
+		margin: 0 0 8px;
+		line-height: 1.5;
+
+		&:last-child { margin-bottom: 0; }
+	}
+}
+
+.sponsored-sub {
+	color: $text-muted !important;
+	font-size: 0.8rem !important;
+}
+
+// ─── Buttons ─────────────────────────────────────────────────────────────────
+
+.btn-primary {
+	background: $primary;
+	color: white;
+	border: none;
+	border-radius: 6px;
+	padding: 10px 20px;
+	font-size: 0.9rem;
+	font-weight: 600;
+	cursor: pointer;
+	width: 100%;
+
+	&:hover:not(:disabled) { background: $primary-dark; }
+	&:disabled { opacity: 0.5; cursor: default; }
+}
+
+.btn-add {
+	background: $primary;
+	color: white;
+	border: none;
+	border-radius: 6px;
+	padding: 8px 14px;
+	font-size: 0.85rem;
+	font-weight: 600;
+	cursor: pointer;
+	white-space: nowrap;
+
+	&:hover:not(:disabled) { background: $primary-dark; }
+	&:disabled { opacity: 0.5; cursor: default; }
+}
+
+.btn-remove {
+	background: none;
+	border: 1px solid $border-strong;
+	border-radius: 6px;
+	padding: 5px 10px;
+	font-size: 0.78rem;
+	color: $text-muted;
+	cursor: pointer;
+	white-space: nowrap;
+
+	&:hover:not(:disabled) {
+		border-color: $danger-border;
+		color: $danger;
+	}
+	&:disabled { opacity: 0.4; cursor: default; }
+}
+
+.btn-ghost {
+	background: none;
+	border: 1px solid $border;
+	border-radius: 6px;
+	padding: 7px 14px;
+	font-size: 0.85rem;
+	color: $text-secondary;
+	cursor: pointer;
+
+	&:hover:not(:disabled) { border-color: $border-strong; }
+	&:disabled { opacity: 0.5; cursor: default; }
+}
+
+.btn-danger {
+	background: $danger;
+	color: white;
+	border: none;
+	border-radius: 6px;
+	padding: 7px 14px;
+	font-size: 0.85rem;
+	font-weight: 600;
+	cursor: pointer;
+
+	&:hover:not(:disabled) { opacity: 0.85; }
+	&:disabled { opacity: 0.5; cursor: default; }
+}

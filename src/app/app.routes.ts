@@ -6,6 +6,7 @@ import { ListDetailComponent } from './components/list-detail/list-detail.compon
 import { ListRunComponent } from './components/list-run/list-run.component';
 import { ForgotPasswordComponent } from './components/forgotPassword/forgotPassword.component';
 import { ProfileComponent } from './components/profile/profile.component';
+import { AccountComponent } from './components/account/account.component';
 import { TermsComponent } from './components/terms/terms.component';
 import { PrivacyComponent } from './components/privacy/privacy.component';
 import { AboutComponent } from './components/about/about.component';
@@ -28,6 +29,7 @@ export const routes: Routes = [
 	{ path: 'lists/:listId/run/:runId', component: ListRunComponent, canActivate: [AuthGuard] },
 	{ path: 'lists/:listId/history', component: ListHistoryComponent, canActivate: [AuthGuard] },
 	{ path: 'profile', component: ProfileComponent, canActivate: [AuthGuard] },
+	{ path: 'account', component: AccountComponent, canActivate: [AuthGuard] },
 	{ path: 'contact', component: ContactComponent, canActivate: [AuthGuard] },
 	{ path: 'about', component: AboutComponent },
 	{ path: 'terms', component: TermsComponent },

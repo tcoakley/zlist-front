@@ -1,0 +1,196 @@
+<div class="page">
+  <div class="container">
+
+    <div class="back-row">
+      <a routerLink="/lists" class="back-link">&#8592; Back to lists</a>
+    </div>
+
+    <h1 class="page-title">Account</h1>
+
+    @if (loading()) {
+      <p class="loading-text">Loading…</p>
+    } @else {
+
+      <!-- ── Subscription status ─────────────────────────────────────── -->
+      <section class="section">
+        <h2 class="section-title">Subscription</h2>
+
+        @if (status()?.gracePeriodUntil) {
+          <div class="alert warning">
+            Your subscription has lapsed. Access continues through the grace period ending
+            <strong>{{ status()?.gracePeriodUntil | date:'mediumDate' }}</strong>.
+            Please update your billing to avoid losing access.
+          </div>
+        }
+
+        @if (status()?.isPremium) {
+          <div class="status-card premium">
+            <div class="status-row">
+              <span class="status-label">Plan</span>
+              <span class="status-value premium-text">Premium</span>
+            </div>
+            @if (status()?.isSponsored) {
+              <div class="status-row">
+                <span class="status-label">Paid by</span>
+                <span class="status-value">{{ status()?.sponsorName || 'Another member' }}</span>
+              </div>
+            } @else {
+              <div class="status-row">
+                <span class="status-label">Base price</span>
+                <span class="status-value">$1.99 / month</span>
+              </div>
+              @if (paidCollaborators.length > 0) {
+                <div class="status-row">
+                  <span class="status-label">Collaborator seats</span>
+                  <span class="status-value">{{ paidCollaborators.length }} × $1.00 / month</span>
+                </div>
+                <div class="status-row total-row">
+                  <span class="status-label">Total</span>
+                  <span class="status-value">${{ (1.99 + paidCollaborators.length).toFixed(2) }} / month</span>
+                </div>
+              }
+              @if (status()?.expiresAt) {
+                <div class="status-row">
+                  <span class="status-label">Next billing</span>
+                  <span class="status-value">{{ status()?.expiresAt | date:'mediumDate' }}</span>
+                </div>
+              }
+            }
+          </div>
+
+          @if (!status()?.isSponsored) {
+            @if (confirmCancel()) {
+              <div class="confirm-cancel">
+                <p>Cancel your Premium subscription? Your collaborators will have a 7-day grace period before losing access.</p>
+                <div class="confirm-buttons">
+                  <button class="btn-ghost" (click)="confirmCancel.set(false)" [disabled]="working()">Keep Premium</button>
+                  <button class="btn-danger" (click)="cancel()" [disabled]="working()">
+                    {{ working() ? 'Cancelling…' : 'Yes, cancel' }}
+                  </button>
+                </div>
+              </div>
+            } @else {
+              <button class="btn-cancel-link" (click)="confirmCancel.set(true)">Cancel subscription</button>
+            }
+          }
+
+        } @else {
+          <!-- Free user -->
+          <div class="status-card">
+            <div class="status-row">
+              <span class="status-label">Plan</span>
+              <span class="status-value">Free</span>
+            </div>
+            <div class="status-row">
+              <span class="status-label">Lists used</span>
+              <span class="status-value">{{ status()?.ownedListCount }} / 2</span>
+            </div>
+          </div>
+
+          <div class="upgrade-box">
+            <div class="upgrade-pitch">
+              <p class="upgrade-heading">Upgrade to Premium — $1.99/month</p>
+              <ul class="upgrade-features">
+                <li>Unlimited checklists</li>
+                <li>Create and manage shared lists</li>
+                <li>1 free collaborator included</li>
+                <li>Add more collaborators for $1/month each</li>
+                <li>7-day grace period on billing issues</li>
+              </ul>
+            </div>
+            <button class="btn-primary" (click)="upgrade()" [disabled]="working()">
+              {{ working() ? 'Processing…' : 'Upgrade to Premium' }}
+            </button>
+          </div>
+        }
+      </section>
+
+      <!-- ── Collaborators (all premium users) ────────────────────────── -->
+      @if (status()?.isPremium) {
+        <section class="section">
+          <h2 class="section-title">Collaborators</h2>
+          <p class="section-desc">
+            Collaborators can access all of your shared lists. Your plan includes 1 free collaborator slot.
+          </p>
+
+          <!-- Free slot -->
+          <div class="slot-group">
+            <div class="slot-label">
+              <span class="slot-tag free-tag">Free</span>
+              <span class="slot-desc">1 free collaborator included with your plan</span>
+            </div>
+
+            @if (freeCollaborator) {
+              <div class="collaborator-row">
+                <div class="collab-info">
+                  <span class="collab-name">{{ displayName(freeCollaborator) }}</span>
+                  <span class="collab-email">{{ freeCollaborator.email }}</span>
+                </div>
+                <button class="btn-remove" (click)="removeCollaborator(freeCollaborator)" [disabled]="working()">
+                  Remove
+                </button>
+              </div>
+            } @else {
+              <div class="empty-slot">
+                <p class="empty-text">No free collaborator added yet.</p>
+                <div class="add-row">
+                  <input
+                    type="email"
+                    class="add-input"
+                    placeholder="Enter their email address"
+                    [(ngModel)]="addEmail"
+                    (keyup.enter)="addCollaborator()"
+                    autocomplete="off"
+                  />
+                  <button class="btn-add" (click)="addCollaborator()" [disabled]="addingCollaborator() || !addEmail.trim()">
+                    {{ addingCollaborator() ? 'Adding…' : 'Add' }}
+                  </button>
+                </div>
+              </div>
+            }
+          </div>
+
+          <!-- Paid seats — only for users with their own subscription -->
+          @if (!status()?.isSponsored) {
+            <div class="slot-group">
+              <div class="slot-label">
+                <span class="slot-tag paid-tag">$1 / month each</span>
+                <span class="slot-desc">Additional collaborators</span>
+              </div>
+
+              @for (c of paidCollaborators; track c.userId) {
+                <div class="collaborator-row">
+                  <div class="collab-info">
+                    <span class="collab-name">{{ displayName(c) }}</span>
+                    <span class="collab-email">{{ c.email }}</span>
+                  </div>
+                  <button class="btn-remove" (click)="removeCollaborator(c)" [disabled]="working()">
+                    Remove
+                  </button>
+                </div>
+              }
+
+              <!-- Add paid collaborator — only show if free slot is occupied -->
+              @if (freeCollaborator) {
+                <div class="add-row">
+                  <input
+                    type="email"
+                    class="add-input"
+                    placeholder="Enter their email address"
+                    [(ngModel)]="addEmail"
+                    (keyup.enter)="addCollaborator()"
+                    autocomplete="off"
+                  />
+                  <button class="btn-add" (click)="addCollaborator()" [disabled]="addingCollaborator() || !addEmail.trim()">
+                    {{ addingCollaborator() ? 'Adding…' : 'Add ($1/mo)' }}
+                  </button>
+                </div>
+              }
+            </div>
+          }
+        </section>
+      }
+
+    }
+  </div>
+</div>

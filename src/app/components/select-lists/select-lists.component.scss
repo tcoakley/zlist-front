@@ -19,10 +19,6 @@
 	animation: page-fade-in 0.25s ease-out 0.1s both;
 }
 
-.header {
-	margin-bottom: 28px;
-}
-
 .title {
 	font-size: 1.3rem;
 	font-weight: 700;
@@ -34,7 +30,87 @@
 	font-size: 0.9rem;
 	color: $text-secondary;
 	line-height: 1.6;
-	margin: 0;
+	margin: 0 0 24px;
+}
+
+// ─── Upgrade bar ──────────────────────────────────────────────────────────────
+
+.upgrade-bar {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	width: 100%;
+	background: $primary;
+	border-radius: 8px;
+	padding: 16px 18px;
+	text-decoration: none;
+	transition: background-color 0.15s ease;
+
+	&:hover {
+		background: $primary-dark;
+	}
+}
+
+.upgrade-bar-left {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.upgrade-bar-title {
+	font-size: 1rem;
+	font-weight: 700;
+	color: white;
+}
+
+.upgrade-bar-desc {
+	font-size: 0.82rem;
+	color: rgba(255, 255, 255, 0.8);
+}
+
+.upgrade-bar-arrow {
+	font-size: 1.2rem;
+	color: white;
+	flex-shrink: 0;
+}
+
+// ─── Or divider ───────────────────────────────────────────────────────────────
+
+.or-divider {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	margin: 24px 0;
+}
+
+.or-line {
+	flex: 1;
+	height: 1px;
+	background: $border;
+}
+
+.or-text {
+	font-size: 0.8rem;
+	color: $text-muted;
+	text-transform: uppercase;
+	letter-spacing: 0.06em;
+}
+
+// ─── List selection ───────────────────────────────────────────────────────────
+
+.select-heading {
+	font-size: 1rem;
+	font-weight: 600;
+	color: $text-primary;
+	margin: 0 0 6px;
+}
+
+.select-note {
+	font-size: 0.83rem;
+	color: $text-muted;
+	line-height: 1.5;
+	margin: 0 0 16px;
 }
 
 .loading-text {
@@ -116,22 +192,23 @@
 
 .confirm-btn {
 	width: 100%;
-	background: $primary;
-	color: white;
-	border: none;
+	background: $bg-surface;
+	color: $text-primary;
+	border: 1px solid $border;
 	border-radius: 8px;
 	padding: 12px;
 	font-size: 1rem;
 	font-weight: 600;
 	cursor: pointer;
-	transition: background-color 0.2s ease;
+	transition: border-color 0.15s ease, background-color 0.15s ease;
 
 	&:hover:not(:disabled) {
-		background: $primary-dark;
+		border-color: $border-strong;
+		background: $bg-elevated;
 	}
 
 	&:disabled {
-		background: $disabled;
+		opacity: 0.4;
 		cursor: not-allowed;
 	}
 }

@@ -22,8 +22,19 @@ export interface SubscriptionStatus {
 	gracePeriodUntil?: string;
 	isPremium: boolean;
 	isSponsored: boolean;
+	sponsorName?: string;
 	ownedListCount: number;
 	ownedListLimit: number;
+}
+
+export interface SponsoredCollaborator {
+	userId: number;
+	email: string;
+	firstName?: string;
+	lastName?: string;
+	createdAt: string;
+	isActive: boolean;
+	graceUntil?: string;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -34,6 +45,26 @@ export class SubscriptionService {
 
 	getStatus(): Observable<SubscriptionStatus> {
 		return this.http.get<SubscriptionStatus>(`${this.base}/status`);
+	}
+
+	upgrade(): Observable<boolean> {
+		return this.http.post<boolean>(`${this.base}/upgrade`, {});
+	}
+
+	cancelSubscription(): Observable<boolean> {
+		return this.http.post<boolean>(`${this.base}/cancel`, {});
+	}
+
+	getCollaborators(): Observable<SponsoredCollaborator[]> {
+		return this.http.get<SponsoredCollaborator[]>(`${this.base}/collaborators`);
+	}
+
+	addCollaborator(email: string): Observable<boolean> {
+		return this.http.post<boolean>(`${this.base}/collaborators`, { email });
+	}
+
+	removeCollaborator(userId: number): Observable<boolean> {
+		return this.http.delete<boolean>(`${this.base}/collaborators/${userId}`);
 	}
 
 	checkNeedsSelection(): Observable<SelectionStatus> {
