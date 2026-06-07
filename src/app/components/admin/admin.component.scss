@@ -1,0 +1,192 @@
+@use 'variables' as *;
+
+:host {
+	display: block;
+	width: 100%;
+}
+
+.page {
+	min-height: 100vh;
+	display: flex;
+	justify-content: center;
+	padding: 28px 16px 60px;
+}
+
+.container {
+	width: 100%;
+	max-width: 540px;
+	animation: page-fade-in 0.25s ease-out 0.1s both;
+}
+
+// ─── Sections ────────────────────────────────────────────────────────────────
+
+.section {
+	margin-bottom: 36px;
+}
+
+.section-title {
+	font-size: 0.8rem;
+	font-weight: 600;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	color: $text-muted;
+	margin: 0 0 14px;
+}
+
+// ─── Form card ───────────────────────────────────────────────────────────────
+
+.form-card {
+	background: $bg-surface;
+	border: 1px solid $border;
+	border-radius: 8px;
+	padding: 16px;
+	display: flex;
+	flex-direction: column;
+	gap: 14px;
+}
+
+.field-row {
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+}
+
+.field-label {
+	font-size: 0.78rem;
+	font-weight: 600;
+	color: $text-muted;
+}
+
+.optional {
+	font-weight: 400;
+	font-style: italic;
+}
+
+.field-input,
+.field-select {
+	background: $bg-surface-dark;
+	border: 1px solid $border;
+	border-radius: 6px;
+	padding: 8px 10px;
+	font-size: 0.88rem;
+	color: $text-primary;
+	outline: none;
+	width: 100%;
+	box-sizing: border-box;
+
+	&:focus {
+		border-color: $primary;
+	}
+
+	&::placeholder {
+		color: $text-faint;
+	}
+}
+
+.field-select {
+	cursor: pointer;
+}
+
+// ─── Form messages ────────────────────────────────────────────────────────────
+
+.form-message {
+	font-size: 0.83rem;
+	margin: 0;
+
+	&.success { color: $primary; }
+	&.error   { color: $danger; }
+}
+
+// ─── Status card ─────────────────────────────────────────────────────────────
+
+.status-card {
+	background: $bg-surface;
+	border: 1px solid $border;
+	border-radius: 8px;
+	padding: 14px 16px;
+	margin-top: 12px;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+
+	&.premium {
+		border-color: $primary;
+	}
+}
+
+.status-searched-email {
+	font-size: 0.78rem;
+	color: $text-muted;
+	font-style: italic;
+	margin-bottom: 2px;
+}
+
+.status-row {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	font-size: 0.88rem;
+}
+
+.status-label {
+	color: $text-muted;
+}
+
+.status-value {
+	color: $text-primary;
+}
+
+.premium-text {
+	color: $primary;
+	font-weight: 600;
+}
+
+.warning-text {
+	color: $warning;
+}
+
+// ─── Buttons ─────────────────────────────────────────────────────────────────
+
+.btn-primary {
+	background: $primary;
+	color: white;
+	border: none;
+	border-radius: 6px;
+	padding: 10px 20px;
+	font-size: 0.9rem;
+	font-weight: 600;
+	cursor: pointer;
+	align-self: flex-start;
+
+	&:hover:not(:disabled) { background: $primary-dark; }
+	&:disabled { opacity: 0.5; cursor: default; }
+}
+
+.btn-danger {
+	background: $danger;
+	color: white;
+	border: none;
+	border-radius: 6px;
+	padding: 10px 20px;
+	font-size: 0.9rem;
+	font-weight: 600;
+	cursor: pointer;
+	align-self: flex-start;
+
+	&:hover:not(:disabled) { opacity: 0.85; }
+	&:disabled { opacity: 0.5; cursor: default; }
+}
+
+.btn-ghost {
+	background: none;
+	border: 1px solid $border;
+	border-radius: 6px;
+	padding: 9px 20px;
+	font-size: 0.9rem;
+	color: $text-secondary;
+	cursor: pointer;
+	align-self: flex-start;
+
+	&:hover:not(:disabled) { border-color: $border-strong; }
+	&:disabled { opacity: 0.5; cursor: default; }
+}

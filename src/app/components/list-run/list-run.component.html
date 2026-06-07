@@ -27,6 +27,9 @@
 	@if (listDescription) {
 		<p class="run-description">{{ listDescription }}</p>
 	}
+	@if (memberCount > 1 && ownerName) {
+		<p class="run-owner">Owner: {{ ownerName }}</p>
+	}
 
 	<div class="check-all-row" (click)="checkAll()" [class.all-done]="allComplete">
 		<span class="check-all-label">Check All</span>

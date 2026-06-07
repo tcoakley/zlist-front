@@ -15,6 +15,7 @@ import { InviteAcceptComponent } from './components/invite-accept/invite-accept.
 import { SelectListsComponent } from './components/select-lists/select-lists.component';
 import { UpgradeComponent } from './components/upgrade/upgrade.component';
 import { ContactComponent } from './components/contact/contact.component';
+import { AdminComponent } from './components/admin/admin.component';
 import { AuthGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
@@ -31,6 +32,7 @@ export const routes: Routes = [
 	{ path: 'profile', component: ProfileComponent, canActivate: [AuthGuard] },
 	{ path: 'account', component: AccountComponent, canActivate: [AuthGuard] },
 	{ path: 'contact', component: ContactComponent, canActivate: [AuthGuard] },
+	{ path: 'admin', component: AdminComponent, canActivate: [AuthGuard] },
 	{ path: 'about', component: AboutComponent },
 	{ path: 'terms', component: TermsComponent },
 	{ path: 'privacy', component: PrivacyComponent },

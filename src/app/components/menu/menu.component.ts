@@ -27,7 +27,7 @@ export class MenuComponent {
 	@Input() isOpen = false;
 	@Output() menuClosed = new EventEmitter<void>();
 
-	private userStore = inject(UserStore);
+	protected userStore = inject(UserStore);
 	private router = inject(Router);
 	protected installService = inject(InstallService);
 

@@ -74,4 +74,16 @@ export class SubscriptionService {
 	selectLists(keepListIds: number[]): Observable<boolean> {
 		return this.http.post<boolean>(`${this.base}/select-lists`, { keepListIds });
 	}
+
+	adminGetStatus(email: string): Observable<SubscriptionStatus> {
+		return this.http.get<SubscriptionStatus>(`${this.base}/admin/status?email=${encodeURIComponent(email)}`);
+	}
+
+	adminGrant(email: string, source: string, expiresAt?: string): Observable<boolean> {
+		return this.http.post<boolean>(`${this.base}/admin/grant`, { email, source, expiresAt: expiresAt || null });
+	}
+
+	adminRevoke(email: string): Observable<boolean> {
+		return this.http.post<boolean>(`${this.base}/admin/revoke`, { email });
+	}
 }

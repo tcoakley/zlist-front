@@ -47,6 +47,8 @@ export interface List {
 	lastRun?: string;
 	totalItems: number;
 	isOwner: boolean;
+	memberCount?: number;
+	ownerName?: string;
 	items: ListItem[];
 	listRuns: ListRun[];
 }

@@ -9,6 +9,9 @@
 		@if (installService.isIos && !installService.isStandalone) {
 			<li><a (click)="showIosInstall()">Install as App</a></li>
 		}
+		@if (userStore.isAdmin()) {
+			<li><a (click)="navigateTo('/admin')">Admin</a></li>
+		}
 		<li><a (click)="navigateTo('/contact')">Contact</a></li>
 		<li><a (click)="navigateTo('/about')">About</a></li>
 		<li><a (click)="navigateTo('/terms')">Terms of Service</a></li>

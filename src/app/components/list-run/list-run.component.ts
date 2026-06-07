@@ -44,6 +44,8 @@ export class ListRunComponent implements OnInit, OnDestroy, AfterViewInit {
 	runId = 0;
 	listName = '';
 	listDescription = '';
+	ownerName = '';
+	memberCount = 0;
 	loading = true;
 	viewReady = false;
 	runItems: RunItem[] = [];
@@ -104,6 +106,8 @@ export class ListRunComponent implements OnInit, OnDestroy, AfterViewInit {
 
 		this.listName = list.listName;
 		this.listDescription = list.listDescription ?? '';
+		this.ownerName = list.ownerName ?? '';
+		this.memberCount = list.memberCount ?? 1;
 		this.titleService.setTitle(list.listName);
 
 		let run = list.listRuns?.find(r => r.id === this.runId);

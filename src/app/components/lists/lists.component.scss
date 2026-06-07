@@ -391,6 +391,12 @@
 	}
 }
 
+.owner-chip {
+	font-size: 0.75rem;
+	color: $text-faint;
+	white-space: nowrap;
+}
+
 .run-divider {
 	color: $border-strong;
 }

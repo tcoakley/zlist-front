@@ -91,8 +91,8 @@ export class HttpService {
 						// Token refreshed! Retry the original request
 						return retryFn();
 					} else {
-						// Refresh failed, redirect to login
-						this.router.navigate(['/login']);
+						// Refresh failed, redirect to login preserving the current URL
+						this.router.navigate(['/login'], { queryParams: { returnUrl: this.router.url } });
 						return throwError(() => error);
 					}
 				})

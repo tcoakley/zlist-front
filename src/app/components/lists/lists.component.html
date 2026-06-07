@@ -128,6 +128,10 @@
 									@if (list.totalRuns > 0) {
 										<button class="history-link" (click)="navigateToHistory(list.id)">History</button>
 									}
+									@if ((list.memberCount ?? 0) > 1 && list.ownerName) {
+										<span class="run-divider">·</span>
+										<span class="owner-chip">Owner: {{ list.ownerName }}</span>
+									}
 								</div>
 								<span class="run-date" [class.never-run]="!getLastRunDate(list)">
 									{{ getLastRunDate(list) ? 'Last run: ' + getLastRunDate(list) : 'Never run' }}

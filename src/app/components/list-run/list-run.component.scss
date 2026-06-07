@@ -142,9 +142,16 @@
 // --- Description ---
 
 .run-description {
-	margin: 0 0 16px;
+	margin: 0 0 8px;
 	font-size: 0.9rem;
 	color: $text-muted;
+	padding-left: 2px;
+}
+
+.run-owner {
+	margin: 0 0 16px;
+	font-size: 0.78rem;
+	color: $text-faint;
 	padding-left: 2px;
 }
 
