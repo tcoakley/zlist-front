@@ -151,3 +151,32 @@ form {
 	margin-top: 24px;
 	padding-bottom: 8px;
 }
+
+.password-wrapper {
+	position: relative;
+
+	input {
+		padding-right: 4.5rem;
+	}
+}
+
+.show-password-btn {
+	position: absolute;
+	right: 0;
+	top: 50%;
+	transform: translateY(-50%);
+	height: 100%;
+	padding: 0 0.75rem;
+	margin: 0;
+	background: transparent;
+	border: none;
+	color: $text-muted;
+	font-size: 0.78rem;
+	font-weight: 600;
+	cursor: pointer;
+
+	&:hover {
+		color: $text-secondary;
+		opacity: 1;
+	}
+}

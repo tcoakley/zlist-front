@@ -27,14 +27,14 @@
           <div class="status-card premium">
             <div class="status-row">
               <span class="status-label">Plan</span>
-              <span class="status-value premium-text">Premium</span>
+              <span class="status-value premium-text">{{ status()?.cancellationScheduledAt ? 'Premium - Cancelled' : 'Premium' }}</span>
             </div>
             @if (status()?.isSponsored) {
               <div class="status-row">
                 <span class="status-label">Paid by</span>
                 <span class="status-value">{{ status()?.sponsorName || 'Another member' }}</span>
               </div>
-            } @else {
+            } @else if (isStripePremium) {
               <div class="status-row">
                 <span class="status-label">Base price</span>
                 <span class="status-value">$1.99 / month</span>
@@ -49,17 +49,39 @@
                   <span class="status-value">${{ (1.99 + paidCollaborators.length).toFixed(2) }} / month</span>
                 </div>
               }
-              @if (status()?.expiresAt) {
+              @if (status()?.expiresAt && !status()?.cancellationScheduledAt) {
                 <div class="status-row">
                   <span class="status-label">Next billing</span>
+                  <span class="status-value">{{ status()?.expiresAt | date:'mediumDate' }}</span>
+                </div>
+              }
+              @if (status()?.cancellationScheduledAt) {
+                <div class="status-row">
+                  <span class="status-label">Premium access expires</span>
+                  <span class="status-value">{{ status()?.cancellationScheduledAt | date:'mediumDate' }}</span>
+                </div>
+              }
+            } @else {
+              <div class="status-row">
+                <span class="status-label">Type</span>
+                <span class="status-value">Courtesy Premium</span>
+              </div>
+              @if (status()?.expiresAt) {
+                <div class="status-row">
+                  <span class="status-label">Access until</span>
                   <span class="status-value">{{ status()?.expiresAt | date:'mediumDate' }}</span>
                 </div>
               }
             }
           </div>
 
-          @if (!status()?.isSponsored) {
-            @if (confirmCancel()) {
+          @if (!status()?.isSponsored && isStripePremium) {
+            @if (status()?.cancellationScheduledAt) {
+              <p class="cancel-scheduled-notice">
+                Your subscription cancels on <strong>{{ status()?.cancellationScheduledAt | date:'mediumDate' }}</strong>.
+                You keep full access until then.
+              </p>
+            } @else if (confirmCancel()) {
               <div class="confirm-cancel">
                 <p>Cancel your Premium subscription? Your collaborators will have a 7-day grace period before losing access.</p>
                 <div class="confirm-buttons">
@@ -107,9 +129,6 @@
             <div class="payment-box">
               <p class="payment-heading">Enter your card details</p>
               <div id="payment-element"></div>
-              @if (paymentError()) {
-                <p class="payment-error">{{ paymentError() }}</p>
-              }
               <div class="payment-actions">
                 <button class="btn-ghost" (click)="showPaymentForm.set(false)" [disabled]="working()">Cancel</button>
                 <button class="btn-primary" (click)="confirmPayment()" [disabled]="working()">

@@ -56,7 +56,7 @@ export class UserStore {
 		}
 	}
 
-	private async checkDowngradeSelection(): Promise<void> {
+	async checkDowngradeSelection(): Promise<void> {
 		try {
 			const status = await firstValueFrom(this.subscriptionService.checkNeedsSelection());
 			this.needsDowngradeSelection.set(status.needsSelection);
@@ -86,6 +86,15 @@ export class UserStore {
 			this.error.set(err?.error ?? err);
 		} finally {
 			this.loading.set(false);
+		}
+	}
+
+	async refreshUser(): Promise<void> {
+		try {
+			const user = await firstValueFrom(this.userService.getUserProfile());
+			this.user.set(user);
+		} catch {
+			// non-fatal
 		}
 	}
 

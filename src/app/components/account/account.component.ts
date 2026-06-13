@@ -32,7 +32,6 @@ export class AccountComponent implements OnInit {
 
 	showPaymentForm = signal(false);
 	paymentLoading = signal(false);
-	paymentError = signal<string | null>(null);
 
 	addEmail = '';
 	addingCollaborator = signal(false);
@@ -59,11 +58,16 @@ export class AccountComponent implements OnInit {
 
 	private async loadAll(): Promise<void> {
 		try {
-			const s = await firstValueFrom(this.subscriptionService.getStatus());
+			const [s] = await Promise.all([
+				firstValueFrom(this.subscriptionService.getStatus()),
+				this.userStore.refreshUser()
+			]);
 			this.status.set(s);
 			if (s.isPremium) {
 				const c = await firstValueFrom(this.subscriptionService.getCollaborators());
 				this.collaborators.set(c.filter(x => x.isActive));
+			} else {
+				await this.userStore.checkDowngradeSelection();
 			}
 		} catch {
 			this.snackbar.showMessage('Failed to load account information.', 'error');
@@ -76,7 +80,6 @@ export class AccountComponent implements OnInit {
 
 	async startUpgrade(): Promise<void> {
 		this.paymentLoading.set(true);
-		this.paymentError.set(null);
 		try {
 			const { clientSecret } = await firstValueFrom(this.subscriptionService.upgrade());
 
@@ -105,7 +108,6 @@ export class AccountComponent implements OnInit {
 	async confirmPayment(): Promise<void> {
 		if (!this.stripe || !this.elements) return;
 		this.working.set(true);
-		this.paymentError.set(null);
 
 		const { error } = await this.stripe.confirmPayment({
 			elements: this.elements,
@@ -114,7 +116,7 @@ export class AccountComponent implements OnInit {
 		});
 
 		if (error) {
-			this.paymentError.set(error.message ?? 'Payment failed.');
+			this.snackbar.showMessage(error.message ?? 'Payment failed.', 'error');
 			this.working.set(false);
 		} else {
 			// No redirect required — payment confirmed inline
@@ -134,6 +136,7 @@ export class AccountComponent implements OnInit {
 			const s = await firstValueFrom(this.subscriptionService.getStatus());
 			if (s.isPremium) {
 				this.status.set(s);
+				await this.userStore.refreshUser();
 				const c = await firstValueFrom(this.subscriptionService.getCollaborators());
 				this.collaborators.set(c.filter(x => x.isActive));
 				this.snackbar.showMessage("You're on Premium!", 'success');
@@ -162,7 +165,11 @@ export class AccountComponent implements OnInit {
 		}
 	}
 
-	// ─── Collaborators ────────────────────────────────────────────────────────
+	get isStripePremium(): boolean {
+		return this.status()?.subscriptionSource === 'stripe';
+	}
+
+	// === Collaborators ========================================================
 
 	get freeCollaborator(): SponsoredCollaborator | null {
 		const active = this.collaborators();

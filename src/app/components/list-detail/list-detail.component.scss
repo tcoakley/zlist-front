@@ -393,6 +393,42 @@
 	padding-top: 16px;
 }
 
+.premium-gate {
+	padding: 24px 0 8px;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.premium-gate-heading {
+	font-size: 0.95rem;
+	font-weight: 600;
+	color: $text-primary;
+	margin: 0;
+}
+
+.premium-gate-body {
+	font-size: 0.85rem;
+	color: $text-secondary;
+	margin: 0;
+}
+
+.premium-gate-links {
+	display: flex;
+	gap: 16px;
+	margin-top: 4px;
+}
+
+.premium-gate-upgrade {
+	font-size: 0.85rem;
+	font-weight: 600;
+	color: $primary;
+	text-decoration: none;
+
+	&:hover { text-decoration: underline; }
+}
+
+
 .members-header {
 	display: flex;
 	align-items: center;

@@ -20,6 +20,7 @@ export class SignupComponent implements OnInit, AfterViewInit {
 
 	email = '';
 	password = '';
+	showPassword = false;
 	firstName = '';
 	lastName = '';
 	captchaToken = '';

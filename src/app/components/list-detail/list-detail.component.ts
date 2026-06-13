@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, AfterViewInit, inject, computed, ViewChildren, QueryList, ElementRef } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CdkDragDrop, CdkDrag, CdkDropList, CdkDragHandle, moveItemInArray } from '@angular/cdk/drag-drop';
 import { AutofocusDirective } from '../../directives/autofocus.directive';
@@ -23,7 +23,7 @@ interface EditableItem {
 @Component({
 	selector: 'app-list-detail',
 	standalone: true,
-	imports: [FormsModule, AutofocusDirective, CdkDropList, CdkDrag, CdkDragHandle],
+	imports: [FormsModule, AutofocusDirective, CdkDropList, CdkDrag, CdkDragHandle, RouterLink],
 	templateUrl: './list-detail.component.html',
 	styleUrls: ['./list-detail.component.scss'],
 })

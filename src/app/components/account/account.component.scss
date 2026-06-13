@@ -126,7 +126,13 @@
 	font-weight: 600;
 }
 
-// ─── Cancel ──────────────────────────────────────────────────────────────────
+// === Cancel ==================================================================
+
+.cancel-scheduled-notice {
+	margin: 12px 0 0;
+	font-size: 0.85rem;
+	color: $text-muted;
+}
 
 .btn-cancel-link {
 	background: none;

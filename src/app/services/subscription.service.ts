@@ -20,6 +20,7 @@ export interface SubscriptionStatus {
 	subscriptionSource: string;
 	expiresAt?: string;
 	gracePeriodUntil?: string;
+	cancellationScheduledAt?: string;
 	isPremium: boolean;
 	isSponsored: boolean;
 	sponsorName?: string;

@@ -29,15 +29,20 @@
 		<fieldset>
 			<legend>Password</legend>
 			<label for="password" class="visually-hidden">Password</label>
-			<input
-				id="password"
-				type="password"
-				name="password"
-				[(ngModel)]="password"
-				autocomplete="current-password"
-				aria-required="true"
-				required
-			/>
+			<div class="password-wrapper">
+				<input
+					id="password"
+					[type]="showPassword ? 'text' : 'password'"
+					name="password"
+					[(ngModel)]="password"
+					autocomplete="current-password"
+					aria-required="true"
+					required
+				/>
+				<button type="button" class="show-password-btn" (click)="showPassword = !showPassword">
+					{{ showPassword ? 'Hide' : 'Show' }}
+				</button>
+			</div>
 		</fieldset>
 
 		<div class="remember-forgot">

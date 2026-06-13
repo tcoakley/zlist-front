@@ -110,6 +110,15 @@
 		</div>
 		} @else {
 		<div class="members-section">
+			@if (!userStore.isPremium()) {
+				<div class="premium-gate">
+					<p class="premium-gate-heading">Members is a Premium feature</p>
+					<p class="premium-gate-body">Share lists and collaborate with others for just $1.99/month.</p>
+					<div class="premium-gate-links">
+						<a routerLink="/account" class="premium-gate-upgrade">Upgrade to Premium</a>
+					</div>
+				</div>
+			} @else {
 			<div class="members-header">
 				<span class="members-title">Members</span>
 				@if (isOwner) {
@@ -202,6 +211,7 @@
 						</div>
 					</div>
 				</div>
+			}
 			}
 		</div>
 		}

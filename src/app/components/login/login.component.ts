@@ -16,6 +16,7 @@ export class LoginComponent implements AfterViewInit {
 	protected loading = true;
 	email = '';
 	password = '';
+	showPassword = false;
 	rememberMe = false;
 	readonly isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 	readonly currentYear = new Date().getFullYear();

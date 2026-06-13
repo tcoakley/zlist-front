@@ -22,6 +22,7 @@ export class ProfileComponent implements OnInit, AfterViewInit {
 
 	email = '';
 	password = '';
+	showPassword = false;
 	firstName = '';
 	lastName = '';
 	isHelpEnabled = true;
