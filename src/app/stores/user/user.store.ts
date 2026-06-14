@@ -16,7 +16,7 @@ export class UserStore {
 	readonly error = signal<any>(null);
 	readonly authInitialized = signal(false);
 	readonly isLoggedIn = computed(() => !!this.user());
-	readonly isPremium = computed(() => this.user()?.subscription === 'premium');
+	readonly isPremium = computed(() => this.user()?.isPremium === true);
 	readonly isAdmin = computed(() => this.user()?.isAdmin === true);
 	readonly needsDowngradeSelection = signal(false);
 

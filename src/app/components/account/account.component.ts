@@ -121,6 +121,7 @@ export class AccountComponent implements OnInit {
 	async confirmPayment(): Promise<void> {
 		if (!this.stripe || !this.elements) return;
 		this.working.set(true);
+		const wasSponsored = this.status()?.isSponsored ?? false;
 
 		const { error } = await this.stripe.confirmPayment({
 			elements: this.elements,
@@ -134,7 +135,33 @@ export class AccountComponent implements OnInit {
 		} else {
 			this.showPaymentForm.set(false);
 			this.snackbar.showMessage('Payment confirmed — activating your account…', 'success');
-			await this.pollForPremium();
+			if (wasSponsored) {
+				await this.pollForStripeActivation();
+			} else {
+				await this.pollForPremium();
+			}
+		}
+	}
+
+	private async pollForStripeActivation(attempts = 0): Promise<void> {
+		if (attempts > 10) {
+			this.snackbar.showMessage('Activation is taking longer than expected. Please refresh.', 'error');
+			return;
+		}
+		await new Promise(r => setTimeout(r, 1500));
+		try {
+			const s = await firstValueFrom(this.subscriptionService.getStatus());
+			if (s.subscriptionSource === 'stripe') {
+				this.status.set(s);
+				await this.userStore.refreshUser();
+				await this.reloadCollaborators();
+				this.snackbar.showMessage("You're now on your own Premium plan!", 'success');
+				this.working.set(false);
+			} else {
+				await this.pollForStripeActivation(attempts + 1);
+			}
+		} catch {
+			await this.pollForStripeActivation(attempts + 1);
 		}
 	}
 
@@ -207,7 +234,9 @@ export class AccountComponent implements OnInit {
 		this.addingFreeCollaborator.set(true);
 		try {
 			await firstValueFrom(this.subscriptionService.addCollaborator(email));
-			const msg = `Invitation sent to ${email}. Once they sign up or log in, they'll get premium access.`;
+			const msg = this.status()?.isSponsored
+				? `Invitation sent to ${email}. Once they sign up, don't forget to add them to your lists from the Members tab.`
+				: `Invitation sent to ${email}. Once they sign up or log in, they'll get premium access.`;
 			this.snackbar.showMessage(msg, 'success');
 			this.addFreeEmail = '';
 			await this.reloadCollaborators();

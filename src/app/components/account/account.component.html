@@ -96,6 +96,31 @@
             }
           }
 
+          @if (status()?.isSponsored) {
+            @if (!showPaymentForm()) {
+              <div class="upgrade-box">
+                <div class="upgrade-pitch">
+                  <p class="upgrade-heading">Upgrade to your own Premium — $1.99/month</p>
+                  <p class="upgrade-note">Get your own subscription and your sponsor will no longer be charged for your seat. You'll also be able to sponsor collaborators of your own.</p>
+                </div>
+                <button class="btn-primary" (click)="startUpgrade()" [disabled]="paymentLoading()">
+                  {{ paymentLoading() ? 'Loading…' : 'Upgrade to Premium' }}
+                </button>
+              </div>
+            } @else {
+              <div class="payment-box">
+                <p class="payment-heading">Enter your card details</p>
+                <div id="payment-element"></div>
+                <div class="payment-actions">
+                  <button class="btn-ghost" (click)="showPaymentForm.set(false)" [disabled]="working()">Cancel</button>
+                  <button class="btn-primary" (click)="confirmPayment()" [disabled]="working()">
+                    {{ working() ? 'Processing…' : 'Subscribe — $1.99/month' }}
+                  </button>
+                </div>
+              </div>
+            }
+          }
+
         } @else {
           <!-- Free user -->
           <div class="status-card">

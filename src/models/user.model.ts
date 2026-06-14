@@ -7,6 +7,7 @@ export interface UserModel {
 	subscription?: string;
 	subscriptionExpiresAt?: string;
 	subscriptionSource?: string;
+	isPremium?: boolean;
 	isAdmin?: boolean;
 	isHelpEnabled?: boolean;
 	sortCompletedToBottom?: boolean;
