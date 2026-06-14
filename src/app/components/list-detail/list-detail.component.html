@@ -167,14 +167,25 @@
 
 			@if (showInviteForm) {
 				<div class="invite-form">
-					<input
-						class="invite-input"
-						type="email"
-						placeholder="Email address"
-						[(ngModel)]="inviteEmail"
-						(keydown.enter)="sendInvite()"
-						appAutofocus
-					/>
+					<div class="invite-input-wrap">
+						<input
+							class="invite-input"
+							type="email"
+							placeholder="Email address"
+							[(ngModel)]="inviteEmail"
+							(input)="onInviteInput()"
+							(keydown.enter)="sendInvite()"
+							(blur)="showSuggestions = false"
+							appAutofocus
+						/>
+						@if (showSuggestions) {
+							<ul class="invite-suggestions">
+								@for (s of filteredSuggestions; track s) {
+									<li (mousedown)="selectSuggestion(s)">{{ s }}</li>
+								}
+							</ul>
+						}
+					</div>
 					<div class="invite-actions">
 						<button class="invite-cancel-btn" (click)="cancelInvite()" [disabled]="isSendingInvite">Cancel</button>
 						<button class="invite-send-btn" (click)="sendInvite()" [disabled]="!inviteEmail.trim() || isSendingInvite">

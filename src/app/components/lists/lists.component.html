@@ -6,10 +6,10 @@
 		}
 
 		@if (showUpgradePrompt) {
-			<div class="upgrade-prompt">
+			<div class="upgrade-prompt" (click)="goToAccount()">
 				<div class="upgrade-prompt-header">
 					<span class="upgrade-prompt-title">Upgrade to Premium</span>
-					<button class="upgrade-dismiss" (click)="dismissUpgradePrompt()">&#10005;</button>
+					<button class="upgrade-dismiss" (click)="$event.stopPropagation(); dismissUpgradePrompt()">&#10005;</button>
 				</div>
 				<p class="upgrade-prompt-body">Free accounts are limited to 2 checklists. Upgrade to Premium for unlimited checklists, shared lists, and more.</p>
 				<div class="upgrade-tiers">

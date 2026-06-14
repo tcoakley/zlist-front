@@ -8,6 +8,8 @@ import { TitleService } from '../../services/title.service';
 import { ListStore } from '../../stores/list/list.store';
 import { ListItem, ListMember, ListPendingInvite } from '../../../models/list.model';
 import { UserStore } from '../../stores/user/user.store';
+import { ListService } from '../../services/list.service';
+import { SubscriptionService } from '../../services/subscription.service';
 
 interface EditableItem {
 	id: number;
@@ -35,10 +37,16 @@ export class ListDetailComponent implements OnInit, OnDestroy, AfterViewInit {
 	private router = inject(Router);
 	private titleService = inject(TitleService);
 	private snackbarService = inject(SnackbarService);
+	private listService = inject(ListService);
+	private subscriptionService = inject(SubscriptionService);
 
 	@ViewChildren('itemNameInput') itemNameInputs!: QueryList<ElementRef<HTMLInputElement>>;
 
 	readonly isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+	private beforeUnloadHandler = (e: BeforeUnloadEvent) => {
+		if (this.hasDirty) e.preventDefault();
+	};
 
 	listId = 0;
 
@@ -64,6 +72,11 @@ export class ListDetailComponent implements OnInit, OnDestroy, AfterViewInit {
 	// Sponsor confirmation prompt
 	sponsorPromptEmail: string | null = null;
 	isConfirmingSponsor = false;
+
+	// Invite autocomplete
+	inviteSuggestions: string[] = [];
+	filteredSuggestions: string[] = [];
+	showSuggestions = false;
 
 	protected list = computed(() => this.listStore.lists().find(l => l.id === this.listId));
 
@@ -92,6 +105,7 @@ export class ListDetailComponent implements OnInit, OnDestroy, AfterViewInit {
 	}
 
 	ngOnInit() {
+		window.addEventListener('beforeunload', this.beforeUnloadHandler);
 		this.listId = Number(this.route.snapshot.paramMap.get('id'));
 		this.titleService.setHelpContext('edit-list');
 
@@ -122,6 +136,7 @@ export class ListDetailComponent implements OnInit, OnDestroy, AfterViewInit {
 	}
 
 	ngOnDestroy() {
+		window.removeEventListener('beforeunload', this.beforeUnloadHandler);
 		this.titleService.setActionButton(null);
 		this.titleService.setHelpContext(null);
 	}
@@ -165,11 +180,52 @@ export class ListDetailComponent implements OnInit, OnDestroy, AfterViewInit {
 	openInviteForm() {
 		this.showInviteForm = true;
 		this.inviteEmail = '';
+		this.inviteSuggestions = [];
+		this.filteredSuggestions = [];
+		this.showSuggestions = false;
+		this.loadInviteSuggestions();
+	}
+
+	private loadInviteSuggestions() {
+		const emails = new Set<string>();
+		let pending = 2;
+		const done = () => {
+			if (--pending === 0) this.inviteSuggestions = [...emails].sort();
+		};
+		this.listService.getKnownCollaborators().subscribe({
+			next: members => members.forEach(m => emails.add(m.email.toLowerCase())),
+			error: () => {},
+			complete: done,
+		});
+		this.subscriptionService.getCollaborators().subscribe({
+			next: collaborators => collaborators.forEach(c => emails.add(c.email.toLowerCase())),
+			error: () => done(),
+			complete: done,
+		});
+	}
+
+	onInviteInput() {
+		const val = this.inviteEmail.trim().toLowerCase();
+		if (!val) {
+			this.filteredSuggestions = [];
+			this.showSuggestions = false;
+			return;
+		}
+		this.filteredSuggestions = this.inviteSuggestions.filter(e => e.includes(val));
+		this.showSuggestions = this.filteredSuggestions.length > 0;
+	}
+
+	selectSuggestion(email: string) {
+		this.inviteEmail = email;
+		this.showSuggestions = false;
+		this.filteredSuggestions = [];
 	}
 
 	cancelInvite() {
 		this.showInviteForm = false;
 		this.inviteEmail = '';
+		this.showSuggestions = false;
+		this.filteredSuggestions = [];
 	}
 
 	async sendInvite() {

@@ -36,6 +36,22 @@ export interface SponsoredCollaborator {
 	createdAt: string;
 	isActive: boolean;
 	graceUntil?: string;
+	isFreeSeat: boolean;
+}
+
+export interface PendingSponsorInvitation {
+	id: number;
+	invitedEmail: string;
+	createdAt: string;
+	expiresAt: string;
+}
+
+export interface CollaboratorCheck {
+	exists: boolean;
+	isPremium: boolean;
+	premiumSource?: string;
+	isAlreadyYourCollaborator: boolean;
+	isAlreadySponsoredByOther: boolean;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -66,6 +82,22 @@ export class SubscriptionService {
 
 	removeCollaborator(userId: number): Observable<boolean> {
 		return this.http.delete<boolean>(`${this.base}/collaborators/${userId}`);
+	}
+
+	getPendingInvitations(): Observable<PendingSponsorInvitation[]> {
+		return this.http.get<PendingSponsorInvitation[]>(`${this.base}/collaborators/pending`);
+	}
+
+	cancelPendingInvitation(email: string): Observable<boolean> {
+		return this.http.delete<boolean>(`${this.base}/collaborators/pending/${encodeURIComponent(email)}`);
+	}
+
+	checkCollaborator(email: string): Observable<CollaboratorCheck> {
+		return this.http.get<CollaboratorCheck>(`${this.base}/collaborators/check?email=${encodeURIComponent(email)}`);
+	}
+
+	addPaidCollaborator(email: string): Observable<boolean> {
+		return this.http.post<boolean>(`${this.base}/collaborators/paid`, { email });
 	}
 
 	checkNeedsSelection(): Observable<SelectionStatus> {

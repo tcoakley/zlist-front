@@ -606,6 +606,10 @@
 	gap: 8px;
 }
 
+.invite-input-wrap {
+	position: relative;
+}
+
 .invite-input {
 	width: 100%;
 	background: $bg-surface;
@@ -618,6 +622,32 @@
 	box-sizing: border-box;
 
 	&:focus { border-color: $primary; }
+}
+
+.invite-suggestions {
+	position: absolute;
+	top: 100%;
+	left: 0;
+	right: 0;
+	background: $bg-surface;
+	border: 1px solid $primary;
+	border-top: none;
+	border-radius: 0 0 4px 4px;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	z-index: 10;
+	max-height: 160px;
+	overflow-y: auto;
+
+	li {
+		padding: 6px 10px;
+		font-size: 0.85rem;
+		color: $text-secondary;
+		cursor: pointer;
+
+		&:hover { background: $bg-elevated; color: $text-primary; }
+	}
 }
 
 .invite-actions {

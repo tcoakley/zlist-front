@@ -69,6 +69,10 @@ export class ListService {
 
 	// ─── Shared list methods ────────────────────────────────────────────────────
 
+	getKnownCollaborators(): Observable<ListMember[]> {
+		return this.http.get<ListMember[]>(`${this.base}/collaborators`);
+	}
+
 	getListMembers(listId: number): Observable<ListMember[]> {
 		return this.http.get<ListMember[]>(`${this.base}/${listId}/members`);
 	}

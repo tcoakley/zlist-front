@@ -28,6 +28,15 @@ export class InviteAcceptComponent implements OnInit {
 	loading = true;
 	accepting = false;
 	error = '';
+	wrongUser = false;
+
+	get currentUserEmail(): string {
+		return this.userStore.user()?.email ?? '';
+	}
+
+	get switchAccountLink(): string {
+		return `/login?returnUrl=/invite/${this.token}`;
+	}
 
 	get isLoggedIn(): boolean {
 		return this.userStore.isLoggedIn();
@@ -62,6 +71,11 @@ export class InviteAcceptComponent implements OnInit {
 			} else if (info.isExpired) {
 				this.error = 'This invitation has expired.';
 			} else if (this.isLoggedIn) {
+				if (this.currentUserEmail.toLowerCase() !== info.invitedEmail.toLowerCase()) {
+					this.wrongUser = true;
+					this.loading = false;
+					return;
+				}
 				await this.acceptInvite();
 				return;
 			}

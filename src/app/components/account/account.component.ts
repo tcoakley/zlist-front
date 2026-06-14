@@ -4,7 +4,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { firstValueFrom } from 'rxjs';
 import { loadStripe, Stripe, StripeElements } from '@stripe/stripe-js';
-import { SubscriptionService, SubscriptionStatus, SponsoredCollaborator } from '../../services/subscription.service';
+import { SubscriptionService, SubscriptionStatus, SponsoredCollaborator, PendingSponsorInvitation, CollaboratorCheck } from '../../services/subscription.service';
 import { SnackbarService } from '../../services/snackbar.service';
 import { TitleService } from '../../services/title.service';
 import { UserStore } from '../../stores/user/user.store';
@@ -26,6 +26,7 @@ export class AccountComponent implements OnInit {
 
 	status = signal<SubscriptionStatus | null>(null);
 	collaborators = signal<SponsoredCollaborator[]>([]);
+	pendingInvitations = signal<PendingSponsorInvitation[]>([]);
 	loading = signal(true);
 	working = signal(false);
 	confirmCancel = signal(false);
@@ -33,8 +34,12 @@ export class AccountComponent implements OnInit {
 	showPaymentForm = signal(false);
 	paymentLoading = signal(false);
 
-	addEmail = '';
-	addingCollaborator = signal(false);
+	addFreeEmail = '';
+	addingFreeCollaborator = signal(false);
+
+	addPaidEmail = '';
+	addingPaidCollaborator = signal(false);
+	paidWarning: { email: string; check: CollaboratorCheck } | null = null;
 
 	private stripe: Stripe | null = null;
 	private elements: StripeElements | null = null;
@@ -64,8 +69,7 @@ export class AccountComponent implements OnInit {
 			]);
 			this.status.set(s);
 			if (s.isPremium) {
-				const c = await firstValueFrom(this.subscriptionService.getCollaborators());
-				this.collaborators.set(c.filter(x => x.isActive));
+				await this.reloadCollaborators();
 			} else {
 				await this.userStore.checkDowngradeSelection();
 			}
@@ -74,6 +78,15 @@ export class AccountComponent implements OnInit {
 		} finally {
 			this.loading.set(false);
 		}
+	}
+
+	private async reloadCollaborators(): Promise<void> {
+		const [c, pending] = await Promise.all([
+			firstValueFrom(this.subscriptionService.getCollaborators()),
+			firstValueFrom(this.subscriptionService.getPendingInvitations()),
+		]);
+		this.collaborators.set(c.filter(x => x.isActive));
+		this.pendingInvitations.set(pending);
 	}
 
 	// ─── Upgrade / Payment Element ────────────────────────────────────────────
@@ -119,7 +132,6 @@ export class AccountComponent implements OnInit {
 			this.snackbar.showMessage(error.message ?? 'Payment failed.', 'error');
 			this.working.set(false);
 		} else {
-			// No redirect required — payment confirmed inline
 			this.showPaymentForm.set(false);
 			this.snackbar.showMessage('Payment confirmed — activating your account…', 'success');
 			await this.pollForPremium();
@@ -137,8 +149,7 @@ export class AccountComponent implements OnInit {
 			if (s.isPremium) {
 				this.status.set(s);
 				await this.userStore.refreshUser();
-				const c = await firstValueFrom(this.subscriptionService.getCollaborators());
-				this.collaborators.set(c.filter(x => x.isActive));
+				await this.reloadCollaborators();
 				this.snackbar.showMessage("You're on Premium!", 'success');
 				this.working.set(false);
 			} else {
@@ -172,12 +183,15 @@ export class AccountComponent implements OnInit {
 	// === Collaborators ========================================================
 
 	get freeCollaborator(): SponsoredCollaborator | null {
-		const active = this.collaborators();
-		return active.length > 0 ? active[0] : null;
+		return this.collaborators().find(c => c.isFreeSeat) ?? null;
 	}
 
 	get paidCollaborators(): SponsoredCollaborator[] {
-		return this.collaborators().slice(1);
+		return this.collaborators().filter(c => !c.isFreeSeat);
+	}
+
+	get pendingFreeInvite(): PendingSponsorInvitation | null {
+		return this.pendingInvitations()[0] ?? null;
 	}
 
 	displayName(c: SponsoredCollaborator): string {
@@ -185,20 +199,35 @@ export class AccountComponent implements OnInit {
 		return name || c.email;
 	}
 
-	async addCollaborator(): Promise<void> {
-		const email = this.addEmail.trim();
+	// ─── Free slot ───────────────────────────────────────────────────────────
+
+	async addFreeCollaborator(): Promise<void> {
+		const email = this.addFreeEmail.trim();
 		if (!email) return;
-		this.addingCollaborator.set(true);
+		this.addingFreeCollaborator.set(true);
 		try {
 			await firstValueFrom(this.subscriptionService.addCollaborator(email));
-			this.snackbar.showMessage(`${email} added. Remember to invite them to your lists via the Members tab.`, 'success');
-			this.addEmail = '';
-			const c = await firstValueFrom(this.subscriptionService.getCollaborators());
-			this.collaborators.set(c.filter(x => x.isActive));
+			const msg = `Invitation sent to ${email}. Once they sign up or log in, they'll get premium access.`;
+			this.snackbar.showMessage(msg, 'success');
+			this.addFreeEmail = '';
+			await this.reloadCollaborators();
 		} catch (err: any) {
-			this.snackbar.showMessage(err?.message || 'Could not add collaborator.', 'error');
+			this.snackbar.showMessage(err?.error?.message || err?.message || 'Could not add collaborator.', 'error');
 		} finally {
-			this.addingCollaborator.set(false);
+			this.addingFreeCollaborator.set(false);
+		}
+	}
+
+	async cancelPendingInvitation(email: string): Promise<void> {
+		this.working.set(true);
+		try {
+			await firstValueFrom(this.subscriptionService.cancelPendingInvitation(email));
+			this.snackbar.showMessage('Invitation cancelled.', 'success');
+			await this.reloadCollaborators();
+		} catch {
+			this.snackbar.showMessage('Could not cancel invitation.', 'error');
+		} finally {
+			this.working.set(false);
 		}
 	}
 
@@ -207,12 +236,65 @@ export class AccountComponent implements OnInit {
 		try {
 			await firstValueFrom(this.subscriptionService.removeCollaborator(c.userId));
 			this.snackbar.showMessage(`${this.displayName(c)} removed. They retain access for 7 days.`, 'success');
-			const updated = await firstValueFrom(this.subscriptionService.getCollaborators());
-			this.collaborators.set(updated.filter(x => x.isActive));
+			await this.reloadCollaborators();
 		} catch (err: any) {
 			this.snackbar.showMessage(err?.message || 'Could not remove collaborator.', 'error');
 		} finally {
 			this.working.set(false);
 		}
+	}
+
+	// ─── Paid seats ──────────────────────────────────────────────────────────
+
+	async startAddPaidCollaborator(): Promise<void> {
+		const email = this.addPaidEmail.trim();
+		if (!email) return;
+		this.addingPaidCollaborator.set(true);
+		this.paidWarning = null;
+		try {
+			const check = await firstValueFrom(this.subscriptionService.checkCollaborator(email));
+
+			if (check.isAlreadyYourCollaborator) {
+				this.snackbar.showMessage('That person is already one of your collaborators.', 'error');
+				return;
+			}
+			if (check.exists && check.isPremium && !check.isAlreadySponsoredByOther) {
+				this.snackbar.showMessage(
+					'This user already has Premium. They can be added to your lists directly from the Members tab — no seat charge needed.',
+					'warning'
+				);
+				return;
+			}
+			if (check.isAlreadySponsoredByOther) {
+				// Show inline warning — user must confirm before proceeding
+				this.paidWarning = { email, check };
+				return;
+			}
+
+			await this.confirmAddPaidCollaborator(email);
+		} catch (err: any) {
+			this.snackbar.showMessage(err?.error?.message || err?.message || 'Could not check user.', 'error');
+		} finally {
+			this.addingPaidCollaborator.set(false);
+		}
+	}
+
+	async confirmAddPaidCollaborator(email: string): Promise<void> {
+		this.paidWarning = null;
+		this.addingPaidCollaborator.set(true);
+		try {
+			await firstValueFrom(this.subscriptionService.addPaidCollaborator(email));
+			this.snackbar.showMessage(`${email} added as a paid collaborator (+$1/mo). Remember to invite them to your lists via the Members tab.`, 'success');
+			this.addPaidEmail = '';
+			await this.reloadCollaborators();
+		} catch (err: any) {
+			this.snackbar.showMessage(err?.error?.message || err?.message || 'Could not add collaborator.', 'error');
+		} finally {
+			this.addingPaidCollaborator.set(false);
+		}
+	}
+
+	dismissPaidWarning(): void {
+		this.paidWarning = null;
 	}
 }

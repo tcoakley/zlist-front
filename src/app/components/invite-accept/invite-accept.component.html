@@ -13,6 +13,19 @@
 				<a class="invite-link" routerLink="/login">Log In</a>
 			}
 		</div>
+	} @else if (wrongUser && invitation) {
+		<div class="invite-card">
+			<h1 class="invite-heading">Wrong account</h1>
+			<p class="invite-desc">
+				This invitation was sent to <strong>{{ invitation.invitedEmail }}</strong>,
+				but you're logged in as <strong>{{ currentUserEmail }}</strong>.
+			</p>
+			<p class="invite-action-text">Switch to the correct account to accept this invite.</p>
+			<div class="invite-buttons">
+				<a class="btn-login" [routerLink]="['/login']" [queryParams]="{ returnUrl: '/invite/' + token }">Switch Account</a>
+				<a class="invite-link" routerLink="/lists">Go to My Lists</a>
+			</div>
+		</div>
 	} @else if (invitation && !isLoggedIn) {
 		<div class="invite-card">
 			<h1 class="invite-heading">You've been invited!</h1>

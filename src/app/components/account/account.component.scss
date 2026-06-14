@@ -355,6 +355,45 @@
 	}
 }
 
+.pending-invite-row {
+	border: 1px dashed $border-strong;
+	background: transparent;
+}
+
+.pending-label {
+	color: $warning !important;
+}
+
+.paid-warning-card {
+	background: rgba(245, 177, 66, 0.06);
+	border: 1px solid $warning;
+	border-radius: 6px;
+	padding: 12px 14px;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.paid-warning-heading {
+	font-size: 0.85rem;
+	font-weight: 700;
+	color: $warning;
+	margin: 0;
+}
+
+.paid-warning-body {
+	font-size: 0.82rem;
+	color: $text-secondary;
+	margin: 0;
+	line-height: 1.5;
+}
+
+.paid-warning-actions {
+	display: flex;
+	gap: 8px;
+	justify-content: flex-end;
+}
+
 // ─── Sponsored note ───────────────────────────────────────────────────────────
 
 .sponsored-note {

@@ -39,6 +39,8 @@
 	border-radius: 8px;
 	padding: 16px;
 	animation: form-slide-down 0.2s ease-in both;
+	cursor: pointer;
+	&:hover { border-color: $primary; }
 }
 
 .upgrade-prompt-header {

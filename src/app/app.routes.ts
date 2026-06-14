@@ -17,6 +17,7 @@ import { UpgradeComponent } from './components/upgrade/upgrade.component';
 import { ContactComponent } from './components/contact/contact.component';
 import { AdminComponent } from './components/admin/admin.component';
 import { AuthGuard } from './guards/auth.guard';
+import { unsavedChangesGuard } from './guards/unsaved-changes.guard';
 
 export const routes: Routes = [
 	{ path: 'login', component: LoginComponent },
@@ -26,7 +27,7 @@ export const routes: Routes = [
 	{ path: 'select-lists', component: SelectListsComponent },
 	{ path: 'upgrade', component: UpgradeComponent, canActivate: [AuthGuard] },
 	{ path: 'lists', component: ListsComponent, canActivate: [AuthGuard] },
-	{ path: 'lists/:id', component: ListDetailComponent, canActivate: [AuthGuard] },
+	{ path: 'lists/:id', component: ListDetailComponent, canActivate: [AuthGuard], canDeactivate: [unsavedChangesGuard] },
 	{ path: 'lists/:listId/run/:runId', component: ListRunComponent, canActivate: [AuthGuard] },
 	{ path: 'lists/:listId/history', component: ListHistoryComponent, canActivate: [AuthGuard] },
 	{ path: 'profile', component: ProfileComponent, canActivate: [AuthGuard] },

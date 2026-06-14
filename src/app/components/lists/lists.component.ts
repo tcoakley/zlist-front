@@ -99,6 +99,10 @@ export class ListsComponent implements OnInit, OnDestroy, AfterViewInit  {
 		this.showUpgradePrompt = false;
 	}
 
+	goToAccount() {
+		this.router.navigate(['/account']);
+	}
+
 	cancelForm() {
 		this.showForm = false;
 		this.listName = '';
