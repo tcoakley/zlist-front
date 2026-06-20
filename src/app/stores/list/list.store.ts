@@ -1,6 +1,6 @@
 import { Injectable, signal, computed, inject } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
-import { List, ListItem, ListInvitationInfo, ListMember, ListPendingInvite, ListRun, ListRunItem, RunHistorySummary, InviteResult } from '../../../models/list.model';
+import { List, ListItem, ListInvitationInfo, ListMember, ListPendingInvite, ListRun, ListRunItem, RunHistorySummary, InviteResult, UserPendingInvitation } from '../../../models/list.model';
 import { ListService } from '../../services/list.service';
 
 @Injectable({ providedIn: 'root' })
@@ -8,6 +8,7 @@ export class ListStore {
 	private listService = inject(ListService);
 
 	readonly lists = signal<List[]>([]);
+	readonly pendingInvitations = signal<UserPendingInvitation[]>([]);
 	readonly loading = signal(false);
 	readonly error = signal<any>(null);
 
@@ -286,6 +287,36 @@ export class ListStore {
 		} catch (err: any) {
 			this.error.set(err?.error ?? err);
 			return null;
+		}
+	}
+
+	async loadPendingInvitations(): Promise<void> {
+		try {
+			const invites = await firstValueFrom(this.listService.getMyPendingInvitations());
+			this.pendingInvitations.set(invites);
+		} catch {
+			this.pendingInvitations.set([]);
+		}
+	}
+
+	async acceptPendingInvitation(token: string): Promise<boolean> {
+		this.error.set(null);
+		try {
+			await firstValueFrom(this.listService.acceptInvitation(token));
+			this.pendingInvitations.update(inv => inv.filter(i => i.token !== token));
+			return true;
+		} catch (err: any) {
+			this.error.set(err?.error ?? err);
+			return false;
+		}
+	}
+
+	async declinePendingInvitation(token: string): Promise<void> {
+		try {
+			await firstValueFrom(this.listService.declineInvitation(token));
+			this.pendingInvitations.update(inv => inv.filter(i => i.token !== token));
+		} catch {
+			// silently ignore — card disappears optimistically on click
 		}
 	}
 }

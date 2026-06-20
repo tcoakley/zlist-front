@@ -27,6 +27,8 @@ export class LoginComponent implements AfterViewInit {
 	private snackbarService = inject(SnackbarService);
 
 	constructor() {
+		this.userStore.clearError();
+
 		effect(() => {
 			if (this.userStore.user()) {
 				const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');

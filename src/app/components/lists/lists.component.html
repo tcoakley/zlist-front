@@ -1,6 +1,29 @@
 <div class="list-container" style="opacity: 0">
 
 	@if(!loading) {
+		@if (listStore.pendingInvitations().length > 0) {
+			<div class="pending-invitations">
+				<h3 class="pending-invitations-title">Pending Invitations</h3>
+				@for (invite of listStore.pendingInvitations(); track invite.token) {
+					<div class="invite-card" [class.invite-card-premium]="invite.requiresPremium">
+						<div class="invite-info">
+							<span class="invite-list-name">{{ invite.listName }}</span>
+							<span class="invite-from">Invited by {{ invite.invitedByName }}</span>
+							@if (invite.requiresPremium) {
+								<span class="invite-premium-note">Premium required to accept</span>
+							}
+						</div>
+						<div class="invite-actions">
+							<button class="invite-accept-btn" (click)="acceptPendingInvitation(invite.token, invite.requiresPremium)">
+								{{ invite.requiresPremium ? 'Upgrade' : 'Accept' }}
+							</button>
+							<button class="invite-decline-btn" (click)="declinePendingInvitation(invite.token)">Decline</button>
+						</div>
+					</div>
+				}
+			</div>
+		}
+
 		@if (!showForm && !showUpgradePrompt) {
 			<button class="create-button" (click)="openForm()">Create New List</button>
 		}

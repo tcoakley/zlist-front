@@ -86,3 +86,12 @@ export interface ListInvitationInfo {
 	isExpired: boolean;
 	hasAccount: boolean;
 }
+
+export interface UserPendingInvitation {
+	token: string;
+	listId: number;
+	listName: string;
+	invitedByName: string;
+	requiresPremium: boolean;
+	expiresAt: string;
+}

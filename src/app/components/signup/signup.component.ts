@@ -33,6 +33,8 @@ export class SignupComponent implements OnInit, AfterViewInit {
 	private ngZone = inject(NgZone);
 
 	constructor() {
+		this.userStore.clearError();
+
 		effect(() => {
 			const error = this.userStore.error();
 			if (error) {

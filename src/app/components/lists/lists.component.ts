@@ -50,6 +50,7 @@ export class ListsComponent implements OnInit, OnDestroy, AfterViewInit  {
 		this.titleService.setTitle('Lists');
 		this.titleService.setHelpContext('lists');
 		this.listStore.loadLists();
+		this.listStore.loadPendingInvitations();
 
 		let triggered = false;
 		let defaultExpanded = false;
@@ -184,6 +185,23 @@ export class ListsComponent implements OnInit, OnDestroy, AfterViewInit  {
 			this.snackbarService.showMessage(this.listStore.error(), 'error');
 		}
 		this.confirmingDeleteId = null;
+	}
+
+	async acceptPendingInvitation(token: string, requiresPremium: boolean) {
+		if (requiresPremium) {
+			this.router.navigate(['/account']);
+			return;
+		}
+		const ok = await this.listStore.acceptPendingInvitation(token);
+		if (ok) {
+			await this.listStore.loadLists();
+		} else {
+			this.snackbarService.showMessage(this.listStore.error(), 'error');
+		}
+	}
+
+	async declinePendingInvitation(token: string) {
+		await this.listStore.declinePendingInvitation(token);
 	}
 
 	navigateToHistory(id: number) {

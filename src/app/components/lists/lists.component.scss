@@ -14,6 +14,99 @@
 	animation: page-fade-in 0.25s ease-out 0.1s both;
 }
 
+.pending-invitations {
+	margin-bottom: 16px;
+}
+
+.pending-invitations-title {
+	font-size: 0.85rem;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+	color: $text-muted;
+	margin: 0 0 8px 0;
+}
+
+.invite-card {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	background: $bg-surface;
+	border: 1px solid $border;
+	border-left: 3px solid $primary;
+	border-radius: 8px;
+	padding: 12px 14px;
+	margin-bottom: 8px;
+
+	&.invite-card-premium {
+		border-left-color: $warning;
+	}
+}
+
+.invite-info {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	min-width: 0;
+}
+
+.invite-list-name {
+	font-weight: 600;
+	font-size: 0.95rem;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.invite-from {
+	font-size: 0.8rem;
+	color: $text-muted;
+}
+
+.invite-premium-note {
+	font-size: 0.75rem;
+	color: $warning;
+	font-weight: 500;
+}
+
+.invite-actions {
+	display: flex;
+	gap: 8px;
+	flex-shrink: 0;
+}
+
+.invite-accept-btn {
+	background: $primary;
+	color: white;
+	border: none;
+	border-radius: 6px;
+	padding: 6px 14px;
+	font-size: 0.85rem;
+	cursor: pointer;
+	transition: background-color 0.2s ease;
+
+	&:hover {
+		background: $primary-dark;
+	}
+}
+
+.invite-decline-btn {
+	background: transparent;
+	color: $text-muted;
+	border: 1px solid $border;
+	border-radius: 6px;
+	padding: 6px 14px;
+	font-size: 0.85rem;
+	cursor: pointer;
+	transition: color 0.2s ease, border-color 0.2s ease;
+
+	&:hover {
+		color: $danger;
+		border-color: $danger;
+	}
+}
+
 .create-button {
 	width: 100%;
 	height: auto;

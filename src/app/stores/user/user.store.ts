@@ -76,6 +76,10 @@ export class UserStore {
 		this.authInitialized.set(true);
 	}
 
+	clearError(): void {
+		this.error.set(null);
+	}
+
 	async updateUser(user: UserModel): Promise<void> {
 		this.loading.set(true);
 		this.error.set(null);

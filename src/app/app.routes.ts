@@ -16,10 +16,15 @@ import { SelectListsComponent } from './components/select-lists/select-lists.com
 import { UpgradeComponent } from './components/upgrade/upgrade.component';
 import { ContactComponent } from './components/contact/contact.component';
 import { AdminComponent } from './components/admin/admin.component';
+import { ComingSoonComponent } from './components/coming-soon/coming-soon.component';
 import { AuthGuard } from './guards/auth.guard';
 import { unsavedChangesGuard } from './guards/unsaved-changes.guard';
+import { environment } from '../environments/environment';
+
+const defaultRedirect = environment.maintenanceMode ? '/coming-soon' : '/login';
 
 export const routes: Routes = [
+	{ path: 'coming-soon', component: ComingSoonComponent },
 	{ path: 'login', component: LoginComponent },
 	{ path: 'signup', component: SignupComponent },
 	{ path: 'forgotPassword', component: ForgotPasswordComponent },
@@ -37,6 +42,6 @@ export const routes: Routes = [
 	{ path: 'about', component: AboutComponent },
 	{ path: 'terms', component: TermsComponent },
 	{ path: 'privacy', component: PrivacyComponent },
-	{ path: '', redirectTo: '/login', pathMatch: 'full' },
-	{ path: '**', redirectTo: '/login' },
+	{ path: '', redirectTo: defaultRedirect, pathMatch: 'full' },
+	{ path: '**', redirectTo: defaultRedirect },
 ];
