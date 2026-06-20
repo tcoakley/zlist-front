@@ -58,6 +58,7 @@
 						[class.has-content]="item.itemDescription?.trim()"
 						(click)="toggleExpand(item)"
 						title="Toggle description"
+						tabindex="-1"
 					>&#9654;</button>
 
 					<div class="item-content">
@@ -72,6 +73,7 @@
 							(blur)="onItemBlur(item)"
 							[name]="'item_' + idx"
 							placeholder="New item..."
+							enterkeyhint="next"
 						/>
 						<div class="desc-wrapper" [class.expanded]="item.isExpanded">
 							<textarea
@@ -82,6 +84,7 @@
 								[name]="'desc_' + idx"
 								placeholder="Description..."
 								rows="3"
+								tabindex="-1"
 							></textarea>
 						</div>
 					</div>

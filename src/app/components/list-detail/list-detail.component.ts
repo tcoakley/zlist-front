@@ -400,11 +400,13 @@ export class ListDetailComponent implements OnInit, OnDestroy, AfterViewInit {
 
 	onItemNameTab(event: Event, index: number) {
 		event.preventDefault();
-		const inputs = this.itemNameInputs.toArray();
-		const next = inputs[index + 1];
-		if (next) {
-			next.nativeElement.focus();
-		}
+		setTimeout(() => {
+			const inputs = this.itemNameInputs.toArray();
+			const next = inputs[index + 1];
+			if (next) {
+				next.nativeElement.focus();
+			}
+		});
 	}
 
 	onItemNameChange(item: EditableItem, index: number) {
