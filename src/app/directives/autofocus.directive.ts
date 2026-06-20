@@ -11,6 +11,7 @@ export class AutofocusDirective implements AfterViewInit {
 
 	ngAfterViewInit() {
 		if (this.enabled === false) return;
+		if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) return;
 		setTimeout(() => {
 			this.renderer.selectRootElement(this.el.nativeElement).focus();
 		});
