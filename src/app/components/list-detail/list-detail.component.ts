@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, AfterViewInit, inject, computed, ViewChildren, QueryList, ElementRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, computed, ViewChildren, QueryList, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CdkDragDrop, CdkDrag, CdkDropList, CdkDragHandle, moveItemInArray } from '@angular/cdk/drag-drop';
@@ -29,7 +29,7 @@ interface EditableItem {
 	templateUrl: './list-detail.component.html',
 	styleUrls: ['./list-detail.component.scss'],
 })
-export class ListDetailComponent implements OnInit, OnDestroy, AfterViewInit {
+export class ListDetailComponent implements OnInit, OnDestroy {
 	protected listStore = inject(ListStore);
 	protected userStore = inject(UserStore);
 	protected loading = true;
@@ -117,9 +117,10 @@ export class ListDetailComponent implements OnInit, OnDestroy, AfterViewInit {
 			action: () => this.saveAll(),
 		});
 
-		// Pre-populate from cache so first render isn't empty
+		// If cached items exist show them immediately — no loading spinner needed
 		const cached = this.list();
-		if (cached) {
+		if (cached?.items?.length) {
+			this.loading = false;
 			this.titleService.setTitle(cached.listName);
 			this.editableItems = cached.items.map(i => this.toEditable(i)).concat([this.createDraft()]);
 		}
@@ -129,10 +130,6 @@ export class ListDetailComponent implements OnInit, OnDestroy, AfterViewInit {
 		} else {
 			this.initItems();
 		}
-	}
-
-	ngAfterViewInit(): void {
-		setTimeout(() => this.loading = false, 100);
 	}
 
 	ngOnDestroy() {
@@ -150,6 +147,7 @@ export class ListDetailComponent implements OnInit, OnDestroy, AfterViewInit {
 		}
 		this.titleService.setTitle(list.listName);
 		this.editableItems = list.items.map(i => this.toEditable(i)).concat([this.createDraft()]);
+		this.loading = false;
 		this.focusDraftItem();
 		this.loadMembers();
 	}
@@ -331,10 +329,6 @@ export class ListDetailComponent implements OnInit, OnDestroy, AfterViewInit {
 
 	private createDraft(): EditableItem {
 		return { id: 0, listId: this.listId, itemName: '', itemDescription: undefined, sortOrder: 0, isDirty: false, isExpanded: false, isSaving: false };
-	}
-
-	goBack() {
-		this.router.navigate(['/lists']);
 	}
 
 	async launchList() {

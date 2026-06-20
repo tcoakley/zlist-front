@@ -219,6 +219,12 @@ button.cancel {
 	border: 1px solid #555 !important;
 }
 
+/* Back-to-lists link — shared across all pages */
+.back-btn {
+	font-size: 0.85rem;
+	padding: 0;
+}
+
 /* Page-entry fade — applied via :host in each routed component's SCSS */
 @keyframes page-fade-in {
 	from { opacity: 0; }

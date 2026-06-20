@@ -1,5 +1,8 @@
 <div class="form" style="opacity: 0">
 	@if (!loading) {
+	<div class="top-bar">
+		<a routerLink="/lists" class="back-btn">&#8592; Lists</a>
+	</div>
 	<form aria-labelledby="signup-heading">
 		<fieldset>
 			<legend>Email</legend>
@@ -11,7 +14,6 @@
 				autocomplete="email"
 				aria-required="true"
 				required
-				autofocus
 				(input)="formReady()"
 				[(ngModel)]="email"
 				appAutofocus
@@ -85,7 +87,7 @@
 		</div>
 
 		<div class="button-group">
-			<button type="button" class="cancel" routerLink="goBack()">Cancel</button>
+			<button type="button" class="cancel" routerLink="/lists">Cancel</button>
 			<button
 				type="submit"
 				class="submit"

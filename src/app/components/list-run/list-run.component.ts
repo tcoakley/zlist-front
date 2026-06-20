@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, AfterViewInit, ViewChild, ElementRef, inject } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AutofocusDirective } from '../../directives/autofocus.directive';
 import { ListStore } from '../../stores/list/list.store';
@@ -25,7 +25,7 @@ interface RunItem {
 @Component({
 	selector: 'app-list-run',
 	standalone: true,
-	imports: [FormsModule, AutofocusDirective],
+	imports: [FormsModule, AutofocusDirective, RouterLink],
 	templateUrl: './list-run.component.html',
 	styleUrls: ['./list-run.component.scss'],
 })
@@ -192,10 +192,6 @@ export class ListRunComponent implements OnInit, OnDestroy, AfterViewInit {
 			completedByName: item.completedByName,
 		});
 		this.refreshDisplay();
-	}
-
-	goBack() {
-		this.router.navigate(['/lists']);
 	}
 
 	toggleExpand(item: RunItem, event: Event) {

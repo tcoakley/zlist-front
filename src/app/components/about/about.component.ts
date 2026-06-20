@@ -1,5 +1,5 @@
 import { Component, inject, OnInit, AfterViewInit } from '@angular/core';
-import { Location } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { TitleService } from '../../services/title.service';
 import { VersionService } from '../../services/version.service';
@@ -8,13 +8,13 @@ import { AppVersion } from '../../../models/list.model';
 @Component({
 	selector: 'app-about',
 	standalone: true,
+	imports: [RouterLink],
 	templateUrl: './about.component.html',
 	styleUrls: ['./about.component.scss'],
 })
 export class AboutComponent implements OnInit, AfterViewInit {
 	protected loading = true;
 	protected versions: AppVersion[] = [];
-	private location = inject(Location);
 	private titleService = inject(TitleService);
 	private versionService = inject(VersionService);
 
@@ -49,7 +49,4 @@ export class AboutComponent implements OnInit, AfterViewInit {
 		});
 	}
 
-	goBack() {
-		this.location.back();
-	}
 }

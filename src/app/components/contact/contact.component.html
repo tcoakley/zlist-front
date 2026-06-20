@@ -1,5 +1,8 @@
 <div class="form" style="opacity: 0">
 	@if (true) {
+	<div class="top-bar">
+		<a routerLink="/lists" class="back-btn">&#8592; Lists</a>
+	</div>
 	<form (ngSubmit)="canSend && send()">
 
 		<div class="name-row">
@@ -53,7 +56,7 @@
 		</fieldset>
 
 		<div class="button-group">
-			<button type="button" class="cancel" (click)="location.back()">Cancel</button>
+			<button type="button" class="cancel" routerLink="/lists">Cancel</button>
 			<button
 				type="submit"
 				class="submit"

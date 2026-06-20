@@ -1,5 +1,5 @@
 import { Component, OnInit, AfterViewInit, HostListener, inject } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ListStore } from '../../stores/list/list.store';
 import { UserStore } from '../../stores/user/user.store';
 import { TitleService } from '../../services/title.service';
@@ -19,7 +19,7 @@ interface ModalItem {
 @Component({
 	selector: 'app-list-history',
 	standalone: true,
-	imports: [],
+	imports: [RouterLink],
 	templateUrl: './list-history.component.html',
 	styleUrls: ['./list-history.component.scss'],
 })
@@ -73,10 +73,6 @@ export class ListHistoryComponent implements OnInit, AfterViewInit {
 			this.snackbarService.showMessage(this.listStore.error(), 'error');
 		}
 		this.loading = false;
-	}
-
-	goBack() {
-		this.router.navigate(['/lists']);
 	}
 
 	formatDateTime(dateStr: string): string {

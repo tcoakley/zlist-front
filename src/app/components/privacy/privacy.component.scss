@@ -17,20 +17,6 @@
 	margin-bottom: 12px;
 }
 
-.back-btn {
-	background: transparent;
-	border: none;
-	color: $text-muted;
-	font-size: 0.85rem;
-	padding: 0;
-	cursor: pointer;
-
-	&:hover {
-		color: $text-primary;
-		opacity: 1;
-	}
-}
-
 .privacy-content {
 	padding: 0 4px 40px;
 

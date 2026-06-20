@@ -1,8 +1,14 @@
-<div class="detail-container" style="opacity: 0">
+<div class="detail-container" [class.content-ready]="!loading">
+
+	@if (loading) {
+		<div class="list-loading">
+			<div class="list-loading-ring"></div>
+		</div>
+	}
 
 	@if (!loading) {
 	<div class="top-bar">
-		<button class="back-btn" (click)="goBack()">&#8592; Lists</button>
+		<a routerLink="/lists" class="back-btn">&#8592; Lists</a>
 		<button class="tab-btn" [class.active]="activeTab === 'items'" (click)="activeTab = 'items'">Items</button>
 		<button class="tab-btn" [class.active]="activeTab === 'members'" (click)="activeTab = 'members'">Members</button>
 		<button class="launch-btn" (click)="launchList()" [disabled]="hasDirty || !list()?.items?.length || !!list()?.activeRunId" [title]="!!list()?.activeRunId ? 'List in progress, complete to create new.' : !list()?.items?.length ? 'Add items before launching' : ''">&#9654; Launch</button>

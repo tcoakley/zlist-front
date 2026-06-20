@@ -31,20 +31,6 @@
 	margin-bottom: 12px;
 }
 
-.back-btn {
-	background: transparent;
-	border: none;
-	color: $text-muted;
-	font-size: 0.85rem;
-	padding: 0;
-	cursor: pointer;
-
-	&:hover {
-		color: $text-primary;
-		opacity: 1;
-	}
-}
-
 .complete-all-btn {
 	height: 30px;
 	min-width: 64px;
@@ -207,6 +193,7 @@
 	flex-shrink: 0;
 	align-self: flex-start;
 	margin-top: -2px;
+	margin-left: 0;
 	background: transparent;
 	border: none;
 	color: $icon-color;

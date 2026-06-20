@@ -1,7 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Location } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { TitleService } from '../../services/title.service';
 import { SnackbarService } from '../../services/snackbar.service';
@@ -11,7 +10,7 @@ import { UserStore } from '../../stores/user/user.store';
 @Component({
 	selector: 'app-contact',
 	standalone: true,
-	imports: [FormsModule],
+	imports: [FormsModule, RouterLink],
 	templateUrl: './contact.component.html',
 	styleUrl: './contact.component.scss'
 })
@@ -20,7 +19,6 @@ export class ContactComponent implements OnInit {
 	private snackbar = inject(SnackbarService);
 	private contactService = inject(ContactService);
 	protected userStore = inject(UserStore);
-	protected location = inject(Location);
 	private router = inject(Router);
 
 	firstName = '';
