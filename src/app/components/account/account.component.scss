@@ -492,3 +492,97 @@
 	&:hover:not(:disabled) { opacity: 0.85; }
 	&:disabled { opacity: 0.5; cursor: default; }
 }
+
+// ── Danger zone ───────────────────────────────────────────────────────────────
+
+.danger-section { margin-top: 24px; }
+
+.danger-title { color: $danger; }
+
+.btn-delete-account {
+	background: transparent;
+	border: 1px solid $danger-border;
+	color: $danger;
+	border-radius: 6px;
+	padding: 7px 16px;
+	font-size: 0.85rem;
+	font-weight: 600;
+	cursor: pointer;
+
+	&:hover { background: rgba(192, 57, 43, 0.08); }
+}
+
+.delete-zone {
+	background: $bg-surface;
+	border: 1px solid $danger-border;
+	border-radius: 8px;
+	padding: 16px 18px;
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+
+.delete-warning {
+	font-size: 0.85rem;
+	color: $text-secondary;
+	line-height: 1.6;
+	margin: 0;
+}
+
+.delete-prompt {
+	font-size: 0.85rem;
+	color: $text-secondary;
+	margin: 0;
+}
+
+.delete-row {
+	display: flex;
+	gap: 10px;
+	align-items: center;
+
+	@media (max-width: 420px) {
+		flex-direction: column;
+		align-items: stretch;
+	}
+}
+
+.delete-input {
+	flex: 1;
+	background: $bg-surface-dark;
+	border: 1px solid $danger-border;
+	border-radius: 6px;
+	padding: 8px 10px;
+	font-size: 0.88rem;
+	color: $text-primary;
+	outline: none;
+	letter-spacing: 0.05em;
+
+	&:focus { border-color: $danger; }
+}
+
+.btn-danger-confirm {
+	background: $danger;
+	color: white;
+	border: none;
+	border-radius: 6px;
+	padding: 8px 16px;
+	font-size: 0.85rem;
+	font-weight: 600;
+	cursor: pointer;
+	white-space: nowrap;
+
+	&:hover:not(:disabled) { opacity: 0.85; }
+	&:disabled { opacity: 0.4; cursor: default; }
+}
+
+.btn-cancel-delete {
+	background: transparent;
+	border: none;
+	color: $text-muted;
+	font-size: 0.8rem;
+	cursor: pointer;
+	padding: 0;
+	text-align: left;
+
+	&:hover { color: $text-secondary; }
+}

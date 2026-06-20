@@ -1,10 +1,11 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { firstValueFrom } from 'rxjs';
 import { loadStripe, Stripe, StripeElements } from '@stripe/stripe-js';
 import { SubscriptionService, SubscriptionStatus, SponsoredCollaborator, PendingSponsorInvitation, CollaboratorCheck } from '../../services/subscription.service';
+import { UserService } from '../../services/user.service';
 import { SnackbarService } from '../../services/snackbar.service';
 import { TitleService } from '../../services/title.service';
 import { UserStore } from '../../stores/user/user.store';
@@ -19,9 +20,11 @@ import { environment } from '../../../environments/environment';
 })
 export class AccountComponent implements OnInit {
 	private subscriptionService = inject(SubscriptionService);
+	private userService = inject(UserService);
 	private snackbar = inject(SnackbarService);
 	private titleService = inject(TitleService);
 	private route = inject(ActivatedRoute);
+	private router = inject(Router);
 	private userStore = inject(UserStore);
 
 	status = signal<SubscriptionStatus | null>(null);
@@ -40,6 +43,10 @@ export class AccountComponent implements OnInit {
 	addPaidEmail = '';
 	addingPaidCollaborator = signal(false);
 	paidWarning: { email: string; check: CollaboratorCheck } | null = null;
+
+	showDeleteZone = signal(false);
+	deleteConfirmText = '';
+	deleting = signal(false);
 
 	private stripe: Stripe | null = null;
 	private elements: StripeElements | null = null;
@@ -325,5 +332,18 @@ export class AccountComponent implements OnInit {
 
 	dismissPaidWarning(): void {
 		this.paidWarning = null;
+	}
+
+	async deleteAccount(): Promise<void> {
+		if (this.deleteConfirmText !== 'DELETE') return;
+		this.deleting.set(true);
+		try {
+			await firstValueFrom(this.userService.deleteAccount());
+			this.userStore.logout();
+			this.router.navigate(['/login']);
+		} catch {
+			this.snackbar.showMessage('Failed to delete account. Please try again.', 'error');
+			this.deleting.set(false);
+		}
 	}
 }

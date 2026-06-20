@@ -289,6 +289,42 @@
         </section>
       }
 
+
+      <!-- ── Danger zone ──────────────────────────────────────────────── -->
+      <section class="section danger-section">
+        <h2 class="section-title danger-title">Danger Zone</h2>
+
+        @if (!showDeleteZone()) {
+          <button class="btn-delete-account" (click)="showDeleteZone.set(true)">Delete Account</button>
+        } @else {
+          <div class="delete-zone">
+            <p class="delete-warning">
+              This will permanently delete your account and all of your lists, runs, and history.
+              Any active subscription will be cancelled immediately. <strong>This cannot be undone.</strong>
+            </p>
+            <p class="delete-prompt">Type <strong>DELETE</strong> to confirm:</p>
+            <div class="delete-row">
+              <input
+                class="delete-input"
+                type="text"
+                [(ngModel)]="deleteConfirmText"
+                placeholder="DELETE"
+                autocomplete="off"
+                (keydown.enter)="deleteAccount()"
+              />
+              <button
+                class="btn-danger-confirm"
+                [disabled]="deleteConfirmText !== 'DELETE' || deleting()"
+                (click)="deleteAccount()"
+              >
+                {{ deleting() ? 'Deleting…' : 'Delete My Account' }}
+              </button>
+            </div>
+            <button class="btn-cancel-delete" (click)="showDeleteZone.set(false); deleteConfirmText = ''">Cancel</button>
+          </div>
+        }
+      </section>
+
     }
   </div>
 </div>
