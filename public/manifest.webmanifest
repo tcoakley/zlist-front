@@ -1,7 +1,7 @@
 {
   "name": "zChecklist",
   "short_name": "zChecklist",
-  "description": "Repeatable checklists",
+  "description": "Repeatable checklists for repeated tasks — with real-time collaboration built in.",
   "start_url": "/",
   "display": "standalone",
   "theme_color": "#121212",
