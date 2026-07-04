@@ -1,6 +1,7 @@
 import { Injectable, NgZone, inject } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
 import { ListRunItem } from '../../models/list.model';
+import { environment } from '../../environments/environment';
 
 export interface RunHubCallbacks {
 	onItemToggled: (runItemId: number, isComplete: boolean, completedByInitials: string, completedByName: string) => void;
@@ -24,7 +25,7 @@ export class RunHubService {
 		const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken') || '';
 
 		this.connection = new signalR.HubConnectionBuilder()
-			.withUrl('/hubs/run', { accessTokenFactory: () => token })
+			.withUrl(`${environment.apiUrl}/hubs/run`, { accessTokenFactory: () => token })
 			.withAutomaticReconnect()
 			.configureLogging(signalR.LogLevel.Information)
 			.build();

@@ -5,12 +5,13 @@ import { Observable, throwError, of } from 'rxjs';
 import { catchError, switchMap, map } from 'rxjs/operators';
 import { UserModel } from "../../models/user.model";
 import { Result } from "../../models/result.model";
+import { environment } from '../../environments/environment';
 
 @Injectable({
 	providedIn: 'root'
 })
 export class HttpService {
-	private baseUrl: string = "";
+	private baseUrl: string = environment.apiUrl;
 
 	constructor(
 		private http: HttpClient,
