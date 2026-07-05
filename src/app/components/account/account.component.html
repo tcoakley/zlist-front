@@ -219,12 +219,11 @@
             }
           </div>
 
-          @if (!status()?.isSponsored) {
-            <p class="section-desc">
-              Adding someone here gives them premium access. You'll still need to invite them to
-              each list via the <strong>Members tab</strong> inside the list.
-            </p>
-          }
+          <p class="section-desc">
+            Your free collaborator does not get their own Premium account — they keep whatever plan
+            they're on. You'll still need to invite them to each list via the <strong>Members tab</strong>
+            inside the list.
+          </p>
 
           <!-- ── Paid seats (Stripe subscribers only) ──────────────────── -->
           @if (status()?.isSponsored) {
@@ -233,7 +232,7 @@
             <div class="slot-group">
               <div class="slot-label">
                 <span class="slot-tag paid-tag">$1 / month each</span>
-                <span class="slot-desc">Additional collaborators — we'll create an account if they don't have one yet</span>
+                <span class="slot-desc">Gives them full Premium access — we'll create an account if they don't have one yet</span>
               </div>
 
               @for (c of paidCollaborators; track c.userId) {
