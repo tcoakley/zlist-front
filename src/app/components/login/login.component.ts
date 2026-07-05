@@ -21,7 +21,7 @@ export class LoginComponent implements AfterViewInit {
 	readonly isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 	readonly currentYear = new Date().getFullYear();
 
-	private userStore = inject(UserStore);
+	protected userStore = inject(UserStore);
 	private router = inject(Router);
 	private route = inject(ActivatedRoute);
 	private snackbarService = inject(SnackbarService);

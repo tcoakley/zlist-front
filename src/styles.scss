@@ -99,14 +99,19 @@ button {
 		color: $disabled-text;
 		cursor: not-allowed;
 		opacity: 0.6;
+
+		&:has(.spinner) {
+			background-color: $bg-surface-dark;
+			opacity: 1;
+		}
 	}
 
 	.spinner {
 		display: inline-block;
 		width: 16px;
 		height: 16px;
-		border: 2px solid #fff;
-		border-top: 2px solid transparent;
+		border: 2px solid $border;
+		border-top-color: $primary;
 		border-radius: 50%;
 		animation: spin 0.8s linear infinite;
 		margin-left: 8px;

@@ -807,8 +807,8 @@
 	display: inline-block;
 	width: 12px;
 	height: 12px;
-	border: 2px solid rgba(255, 255, 255, 0.4);
-	border-top-color: white;
+	border: 2px solid $border;
+	border-top-color: $primary;
 	border-radius: 50%;
 	animation: spin 0.6s linear infinite;
 }

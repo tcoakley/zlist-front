@@ -85,7 +85,7 @@
                 <div class="confirm-buttons">
                   <button class="btn-ghost" (click)="confirmCancel.set(false)" [disabled]="working()">Keep Premium</button>
                   <button class="btn-danger" (click)="cancel()" [disabled]="working()">
-                    {{ working() ? 'Cancelling…' : 'Yes, cancel' }}
+                    @if (working()) { <span class="spinner"></span> } @else { Yes, cancel }
                   </button>
                 </div>
               </div>
@@ -102,7 +102,7 @@
                   <p class="upgrade-note">Get your own subscription and your sponsor will no longer be charged for your seat. You'll also be able to sponsor collaborators of your own.</p>
                 </div>
                 <button class="btn-primary" (click)="startUpgrade()" [disabled]="paymentLoading()">
-                  {{ paymentLoading() ? 'Loading…' : 'Upgrade to Premium' }}
+                  @if (paymentLoading()) { <span class="spinner"></span> } @else { Upgrade to Premium }
                 </button>
               </div>
             } @else {
@@ -112,7 +112,7 @@
                 <div class="payment-actions">
                   <button class="btn-ghost" (click)="showPaymentForm.set(false)" [disabled]="working()">Cancel</button>
                   <button class="btn-primary" (click)="confirmPayment()" [disabled]="working()">
-                    {{ working() ? 'Processing…' : 'Subscribe — $1.99/month' }}
+                    @if (working()) { <span class="spinner"></span> } @else { Subscribe — $1.99/month }
                   </button>
                 </div>
               </div>
@@ -145,7 +145,7 @@
                 </ul>
               </div>
               <button class="btn-primary" (click)="startUpgrade()" [disabled]="paymentLoading()">
-                {{ paymentLoading() ? 'Loading…' : 'Upgrade to Premium' }}
+                @if (paymentLoading()) { <span class="spinner"></span> } @else { Upgrade to Premium }
               </button>
             </div>
           } @else {
@@ -155,7 +155,7 @@
               <div class="payment-actions">
                 <button class="btn-ghost" (click)="showPaymentForm.set(false)" [disabled]="working()">Cancel</button>
                 <button class="btn-primary" (click)="confirmPayment()" [disabled]="working()">
-                  {{ working() ? 'Processing…' : 'Subscribe — $1.99/month' }}
+                  @if (working()) { <span class="spinner"></span> } @else { Subscribe — $1.99/month }
                 </button>
               </div>
             </div>
@@ -212,7 +212,7 @@
                     autocomplete="off"
                   />
                   <button class="btn-add" (click)="addFreeCollaborator()" [disabled]="addingFreeCollaborator() || !addFreeEmail.trim()">
-                    {{ addingFreeCollaborator() ? 'Adding…' : 'Add' }}
+                    @if (addingFreeCollaborator()) { <span class="spinner"></span> } @else { Add }
                   </button>
                 </div>
               </div>
@@ -260,7 +260,7 @@
                   <div class="paid-warning-actions">
                     <button class="btn-ghost" (click)="dismissPaidWarning()" [disabled]="addingPaidCollaborator()">Cancel</button>
                     <button class="btn-primary" (click)="confirmAddPaidCollaborator(paidWarning.email)" [disabled]="addingPaidCollaborator()">
-                      {{ addingPaidCollaborator() ? 'Adding…' : 'Add Anyway ($1/mo)' }}
+                      @if (addingPaidCollaborator()) { <span class="spinner"></span> } @else { Add Anyway ($1/mo) }
                     </button>
                   </div>
                 </div>
@@ -278,7 +278,7 @@
                     autocomplete="off"
                   />
                   <button class="btn-add" (click)="startAddPaidCollaborator()" [disabled]="addingPaidCollaborator() || !addPaidEmail.trim()">
-                    {{ addingPaidCollaborator() ? 'Checking…' : 'Add ($1/mo)' }}
+                    @if (addingPaidCollaborator()) { <span class="spinner"></span> } @else { Add ($1/mo) }
                   </button>
                 </div>
               }
@@ -315,7 +315,7 @@
                 [disabled]="deleteConfirmText !== 'DELETE' || deleting()"
                 (click)="deleteAccount()"
               >
-                {{ deleting() ? 'Deleting…' : 'Delete My Account' }}
+                @if (deleting()) { <span class="spinner"></span> } @else { Delete My Account }
               </button>
             </div>
             <button class="btn-cancel-delete" (click)="showDeleteZone.set(false); deleteConfirmText = ''">Cancel</button>

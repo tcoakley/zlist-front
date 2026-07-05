@@ -92,8 +92,8 @@
 				type="submit"
 				class="submit"
 				(click)="saveForm()"
-				[disabled]="!isReady">
-				Save
+				[disabled]="!isReady || userStore.loading()">
+				@if (userStore.loading()) { <span class="spinner"></span> } @else { Save }
 			</button>
 		</div>
 	</form>

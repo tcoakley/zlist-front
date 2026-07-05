@@ -57,7 +57,9 @@
 			<a routerLink="/forgotPassword" tabindex="-1">Forgot password?</a>
 		</div>
 
-		<button type="submit" class="submit login-btn">Login</button>
+		<button type="submit" class="submit login-btn" [disabled]="userStore.loading()">
+			@if (userStore.loading()) { <span class="spinner"></span> } @else { Login }
+		</button>
 	</form>
 
 	<div class="or-divider"><span>or</span></div>

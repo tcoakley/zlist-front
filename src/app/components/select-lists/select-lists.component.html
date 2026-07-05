@@ -52,7 +52,7 @@
         class="confirm-btn"
         [disabled]="!canConfirm || selectedIds().size === 0"
         (click)="confirm()">
-        {{ saving() ? 'Saving…' : 'Confirm selection' }}
+        @if (saving()) { <span class="spinner"></span> } @else { Confirm selection }
       </button>
     }
 

@@ -71,12 +71,12 @@
 
 		<div class="button-group">
 			<button type="button" class="cancel" routerLink="/login">Cancel</button>
-			<button 
-				type="submit" 
-				class="submit" 
-				(click)="saveForm()" 
-				[disabled]="!isReady">
-				Sign Up
+			<button
+				type="submit"
+				class="submit"
+				(click)="saveForm()"
+				[disabled]="!isReady || userStore.loading()">
+				@if (userStore.loading()) { <span class="spinner"></span> } @else { Sign Up }
 			</button>
 		</div>
 	</form>

@@ -80,14 +80,16 @@ export class UserStore {
 		this.error.set(null);
 	}
 
-	async updateUser(user: UserModel): Promise<void> {
+	async updateUser(user: UserModel): Promise<boolean> {
 		this.loading.set(true);
 		this.error.set(null);
 		try {
 			const updated = await firstValueFrom(this.userService.updateUserProfile(user));
 			this.user.set(updated);
+			return true;
 		} catch (err: any) {
 			this.error.set(err?.error ?? err);
+			return false;
 		} finally {
 			this.loading.set(false);
 		}

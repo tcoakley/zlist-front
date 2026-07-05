@@ -61,7 +61,7 @@
 				type="submit"
 				class="submit"
 				[disabled]="!canSend">
-				{{ sending ? 'Sending…' : 'Send' }}
+				@if (sending) { <span class="spinner"></span> } @else { Send }
 			</button>
 		</div>
 

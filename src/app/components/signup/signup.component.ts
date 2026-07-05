@@ -26,7 +26,7 @@ export class SignupComponent implements OnInit, AfterViewInit {
 	captchaToken = '';
 	inviteToken = '';
 
-	private userStore = inject(UserStore);
+	protected userStore = inject(UserStore);
 	private snackbarService = inject(SnackbarService);
 	private router = inject(Router);
 	private route = inject(ActivatedRoute);

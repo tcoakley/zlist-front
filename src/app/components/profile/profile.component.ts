@@ -79,7 +79,7 @@ export class ProfileComponent implements OnInit, AfterViewInit {
 		);
 	}
 
-	saveForm() {
+	async saveForm() {
 		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 		if (!emailRegex.test(this.email)) {
 			this.snackbarService.showMessage('Please enter a valid email address.', 'error');
@@ -96,7 +96,9 @@ export class ProfileComponent implements OnInit, AfterViewInit {
 			sortCompletedToBottom: this.sortCompletedToBottom
 		};
 
-		this.userStore.updateUser(user);
+		const success = await this.userStore.updateUser(user);
+		if (!success) return;
+
 		this.snackbarService.showMessage('Profile updated successfully', 'success');
 		this.originalUser = { ...user, password: '' };
 		this.password = '';

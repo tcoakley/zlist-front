@@ -46,7 +46,7 @@
         }
 
         <button class="btn-primary" (click)="grant()" [disabled]="grantWorking() || !grantEmail.trim()">
-          {{ grantWorking() ? 'Granting…' : 'Grant Premium' }}
+          @if (grantWorking()) { <span class="spinner"></span> } @else { Grant Premium }
         </button>
       </div>
     </section>
@@ -75,7 +75,7 @@
         }
 
         <button class="btn-danger" (click)="revoke()" [disabled]="revokeWorking() || !revokeEmail.trim()">
-          {{ revokeWorking() ? 'Revoking…' : 'Revoke Premium' }}
+          @if (revokeWorking()) { <span class="spinner"></span> } @else { Revoke Premium }
         </button>
       </div>
     </section>
@@ -104,7 +104,7 @@
         }
 
         <button class="btn-ghost" (click)="checkStatus()" [disabled]="statusWorking() || !statusEmail.trim()">
-          {{ statusWorking() ? 'Looking up…' : 'Check Status' }}
+          @if (statusWorking()) { <span class="spinner"></span> } @else { Check Status }
         </button>
       </div>
 
