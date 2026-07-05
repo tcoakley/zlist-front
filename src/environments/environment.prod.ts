@@ -3,5 +3,5 @@ export const environment = {
 	maintenanceMode: true,
 	apiUrl: 'https://api.zchecklist.com',
 	recaptchaSiteKey: '6Lf2ouMsAAAAACZ6IX2lDqbyxYQ83reVBJNRnxqC',
-	stripePublishableKey: 'pk_test_51TVrVH4bHREt7uegOUEcA4oQG1P369NZ8CKbkLyiQ1uFxpZxkh7FKHaSI4wRRrCUxMdFD8f4ophDXsUloBbF0ZA500ESZakXBY',
+	stripePublishableKey: 'pk_live_51TVtkH2OiajZiGUjWGG8Zawf9gKPhhTmgcMAeUMRd3v5539QMylsR4bWwkcQhRIgPMW8sdMCstcCDQi9AeGItbR200cxr8TaBl',
 };
