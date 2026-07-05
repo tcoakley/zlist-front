@@ -153,6 +153,7 @@ export class AccountComponent implements OnInit {
 	private async pollForStripeActivation(attempts = 0): Promise<void> {
 		if (attempts > 10) {
 			this.snackbar.showMessage('Activation is taking longer than expected. Please refresh.', 'error');
+			this.working.set(false);
 			return;
 		}
 		await new Promise(r => setTimeout(r, 1500));
@@ -175,6 +176,7 @@ export class AccountComponent implements OnInit {
 	private async pollForPremium(attempts = 0): Promise<void> {
 		if (attempts > 10) {
 			this.snackbar.showMessage('Activation is taking longer than expected. Please refresh.', 'error');
+			this.working.set(false);
 			return;
 		}
 		await new Promise(r => setTimeout(r, 1500));
