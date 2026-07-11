@@ -31,6 +31,7 @@ export class ListsComponent implements OnInit, OnDestroy, AfterViewInit  {
 	listDescription = '';
 	expandedListIds = new Set<number>();
 	confirmingDeleteId: number | null = null;
+	launchingListId: number | null = null;
 
 	get atListLimit(): boolean {
 		return !this.userStore.isPremium() &&
@@ -155,11 +156,16 @@ export class ListsComponent implements OnInit, OnDestroy, AfterViewInit  {
 	}
 
 	async launchList(id: number) {
-		const run = await this.listStore.createListRun(id);
-		if (run) {
-			this.router.navigate(['/lists', id, 'run', run.id]);
-		} else {
-			this.snackbarService.showMessage(this.listStore.error(), 'error');
+		this.launchingListId = id;
+		try {
+			const run = await this.listStore.createListRun(id);
+			if (run) {
+				this.router.navigate(['/lists', id, 'run', run.id]);
+			} else {
+				this.snackbarService.showMessage(this.listStore.error(), 'error');
+			}
+		} finally {
+			this.launchingListId = null;
 		}
 	}
 

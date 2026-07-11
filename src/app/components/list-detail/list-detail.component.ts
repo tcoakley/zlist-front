@@ -49,6 +49,7 @@ export class ListDetailComponent implements OnInit, OnDestroy {
 	};
 
 	listId = 0;
+	isLaunching = false;
 
 	editingHeader = false;
 	editedName = '';
@@ -332,11 +333,16 @@ export class ListDetailComponent implements OnInit, OnDestroy {
 	}
 
 	async launchList() {
-		const run = await this.listStore.createListRun(this.listId);
-		if (run) {
-			this.router.navigate(['/lists', this.listId, 'run', run.id]);
-		} else {
-			this.snackbarService.showMessage(this.listStore.error(), 'error');
+		this.isLaunching = true;
+		try {
+			const run = await this.listStore.createListRun(this.listId);
+			if (run) {
+				this.router.navigate(['/lists', this.listId, 'run', run.id]);
+			} else {
+				this.snackbarService.showMessage(this.listStore.error(), 'error');
+			}
+		} finally {
+			this.isLaunching = false;
 		}
 	}
 

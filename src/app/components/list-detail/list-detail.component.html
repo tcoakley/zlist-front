@@ -11,7 +11,9 @@
 		<a routerLink="/lists" class="back-btn">&#8592; Lists</a>
 		<button class="tab-btn" [class.active]="activeTab === 'items'" (click)="activeTab = 'items'">Items</button>
 		<button class="tab-btn" [class.active]="activeTab === 'members'" (click)="activeTab = 'members'">Members</button>
-		<button class="launch-btn" (click)="launchList()" [disabled]="hasDirty || !list()?.items?.length || !!list()?.activeRunId" [title]="!!list()?.activeRunId ? 'List in progress, complete to create new.' : !list()?.items?.length ? 'Add items before launching' : ''">&#9654; Launch</button>
+		<button class="launch-btn" (click)="launchList()" [disabled]="isLaunching || hasDirty || !list()?.items?.length || !!list()?.activeRunId" [title]="!!list()?.activeRunId ? 'List in progress, complete to create new.' : !list()?.items?.length ? 'Add items before launching' : ''">
+			@if (isLaunching) { <span class="spinner"></span> } @else { &#9654; Launch }
+		</button>
 	</div>
 
 	@if (list(); as l) {

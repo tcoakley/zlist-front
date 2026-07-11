@@ -31,10 +31,18 @@
 		<p class="run-owner">Owner: {{ ownerName }}</p>
 	}
 
-	<div class="check-all-row" (click)="checkAll()" [class.all-done]="allComplete">
-		<span class="check-all-label">Check All</span>
-		<img class="check-img" [src]="allComplete ? 'assets/checked.svg' : 'assets/unchecked.svg'" width="22" height="22" alt="" />
-	</div>
+	@if (!confirmingCheckAll) {
+		<div class="check-all-row" (click)="startCheckAll()" [class.all-done]="allComplete">
+			<span class="check-all-label">Check All</span>
+			<img class="check-img" [src]="allComplete ? 'assets/checked.svg' : 'assets/unchecked.svg'" width="22" height="22" alt="" />
+		</div>
+	} @else {
+		<div class="check-all-row confirm-bar">
+			<span class="confirm-label">Check all items and complete the list?</span>
+			<button class="confirm-yes-btn" (click)="checkAll()">Yes</button>
+			<button class="confirm-no-btn" (click)="cancelCheckAll()">No</button>
+		</div>
+	}
 
 	<div class="items-section">
 		@for (item of displayItems; track item.id) {

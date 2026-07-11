@@ -130,8 +130,12 @@
 											<img src="assets/icon-continue.svg" alt="" /><span class="btn-label">&#9654;&#9654; Continue</span>
 										</button>
 									} @else {
-										<button class="launch-btn" (click)="launchList(list.id)" title="Launch list" aria-label="Launch list">
-											<img src="assets/icon-play.svg" alt="" /><span class="btn-label">&#9654; Launch</span>
+										<button class="launch-btn" (click)="launchList(list.id)" [disabled]="launchingListId === list.id" title="Launch list" aria-label="Launch list">
+											@if (launchingListId === list.id) {
+												<span class="spinner"></span>
+											} @else {
+												<img src="assets/icon-play.svg" alt="" /><span class="btn-label">&#9654; Launch</span>
+											}
 										</button>
 									}
 									<button class="delete-btn" (click)="startDelete(list.id)" title="Delete list" aria-label="Delete list">

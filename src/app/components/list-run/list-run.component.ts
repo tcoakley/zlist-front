@@ -51,6 +51,7 @@ export class ListRunComponent implements OnInit, OnDestroy, AfterViewInit {
 	runItems: RunItem[] = [];
 	displayItems: RunItem[] = [];
 	confirmingComplete = false;
+	confirmingCheckAll = false;
 	showAddItem = false;
 	newItemName = '';
 	isSavingItem = false;
@@ -220,7 +221,17 @@ export class ListRunComponent implements OnInit, OnDestroy, AfterViewInit {
 		}
 	}
 
+	startCheckAll() {
+		if (this.allComplete) return;
+		this.confirmingCheckAll = true;
+	}
+
+	cancelCheckAll() {
+		this.confirmingCheckAll = false;
+	}
+
 	async checkAll() {
+		this.confirmingCheckAll = false;
 		if (this.allComplete) return;
 		const unchecked = this.runItems.filter(i => !i.isComplete);
 		unchecked.forEach(i => i.isComplete = true);

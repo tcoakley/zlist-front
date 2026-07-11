@@ -25,12 +25,7 @@ export class AppComponent implements OnInit {
 	}
 
 	constructor() {
-		const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
-		if (token) {
-			this.userStore.loginWithToken(token);
-		} else {
-			this.userStore.markAuthInitialized();
-		}
+		this.userStore.tryRestoreSession();
 	}
 
 	ngOnInit() {
