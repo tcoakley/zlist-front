@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, TimeoutError } from 'rxjs';
+import { catchError, timeout } from 'rxjs/operators';
 import { List, ListItem, ListInvitationInfo, ListMember, ListPendingInvite, ListRun, ListRunItem, RunHistorySummary, InviteResult, UserPendingInvitation } from '../../models/list.model';
 import { HttpService } from './http.service';
 
@@ -48,7 +49,15 @@ export class ListService {
 	}
 
 	createListRun(listId: number): Observable<ListRun> {
-		return this.http.post<ListRun>(`${this.base}/CreateListRun/${listId}`, {});
+		return this.http.post<ListRun>(`${this.base}/CreateListRun/${listId}`, {}).pipe(
+			timeout(12000),
+			catchError(err => {
+				if (err instanceof TimeoutError) {
+					throw new Error('Check your connection and try again.');
+				}
+				throw err;
+			})
+		);
 	}
 
 	setListRunItemCompletion(runItemId: number, runId: number, isComplete: boolean): Observable<boolean> {
