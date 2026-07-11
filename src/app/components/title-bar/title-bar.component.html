@@ -2,7 +2,7 @@
 	<div class="menu-icon" (click)="toggleMenu()">&#9776;</div>
 	<span class="title-text">{{ title }}</span>
 	<div class="right-actions">
-		@if (userStore.user()?.isHelpEnabled) {
+		@if (userStore.user()?.isHelpEnabled && !titleService.actionButton()?.show()) {
 			<button
 				class="help-btn"
 				[class.help-pulse]="titleService.animateHelp()"

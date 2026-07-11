@@ -68,23 +68,37 @@
 			/>
 		</fieldset>
 
-		<div class="checkbox-row" (click)="isHelpEnabled = !isHelpEnabled; formReady()">
+		<label class="checkbox-row">
+			<input
+				type="checkbox"
+				class="visually-hidden"
+				name="isHelpEnabled"
+				[(ngModel)]="isHelpEnabled"
+				(change)="formReady()"
+			/>
 			<img class="check-img"
 				[src]="isHelpEnabled ? 'assets/checked.svg' : 'assets/unchecked.svg'"
 				width="22" height="22"
 				alt=""
 			/>
 			<span>Show Help Text</span>
-		</div>
+		</label>
 
-		<div class="checkbox-row" (click)="sortCompletedToBottom = !sortCompletedToBottom; formReady()">
+		<label class="checkbox-row">
+			<input
+				type="checkbox"
+				class="visually-hidden"
+				name="sortCompletedToBottom"
+				[(ngModel)]="sortCompletedToBottom"
+				(change)="formReady()"
+			/>
 			<img class="check-img"
 				[src]="sortCompletedToBottom ? 'assets/checked.svg' : 'assets/unchecked.svg'"
 				width="22" height="22"
 				alt=""
 			/>
 			<span>Move checked items to the bottom</span>
-		</div>
+		</label>
 
 		<div class="button-group">
 			<button type="button" class="cancel" routerLink="/lists">Cancel</button>
