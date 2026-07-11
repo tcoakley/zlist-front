@@ -2,12 +2,14 @@ import { Injectable, signal, computed, inject } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { UserModel } from '../../../models/user.model';
 import { AuthService } from '../../services/auth.service';
+import { HttpService } from '../../services/http.service';
 import { UserService } from '../../services/user.service';
 import { SubscriptionService } from '../../services/subscription.service';
 
 @Injectable({ providedIn: 'root' })
 export class UserStore {
 	private authService = inject(AuthService);
+	private httpService = inject(HttpService);
 	private userService = inject(UserService);
 	private subscriptionService = inject(SubscriptionService);
 
@@ -38,6 +40,25 @@ export class UserStore {
 			this.authInitialized.set(true);
 		} finally {
 			this.loading.set(false);
+		}
+	}
+
+	// Called once on app startup. If no access token is cached locally (e.g. "remember me" was off
+	// and the browser was closed), the refresh cookie is still valid for up to 5 years regardless —
+	// try it before giving up, so a device only ever has to log in once.
+	async tryRestoreSession(): Promise<void> {
+		const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
+		if (token) {
+			await this.loginWithToken(token);
+			return;
+		}
+
+		const refreshedToken = await firstValueFrom(this.httpService.refreshAccessToken());
+		if (refreshedToken) {
+			localStorage.setItem('authToken', refreshedToken);
+			await this.loginWithToken(refreshedToken);
+		} else {
+			this.markAuthInitialized();
 		}
 	}
 

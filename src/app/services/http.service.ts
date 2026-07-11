@@ -104,7 +104,7 @@ export class HttpService {
 
 	private isRefreshing = false;
 
-	private refreshAccessToken(): Observable<string | null> {
+	refreshAccessToken(): Observable<string | null> {
 		if (this.isRefreshing) return of(null);
 		this.isRefreshing = true;
 
