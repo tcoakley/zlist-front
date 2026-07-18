@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable, throwError, of } from 'rxjs';
-import { catchError, switchMap, map, finalize, shareReplay } from 'rxjs/operators';
+import { Observable, throwError, of, TimeoutError } from 'rxjs';
+import { catchError, switchMap, map, finalize, shareReplay, timeout } from 'rxjs/operators';
 import { UserModel } from "../../models/user.model";
 import { Result } from "../../models/result.model";
 import { environment } from '../../environments/environment';
@@ -29,12 +29,15 @@ export class HttpService {
 		return this.getAuthHeaders().set('Content-Type', 'application/json');
 	}
 
+	private static readonly REQUEST_TIMEOUT_MS = 15000;
+
 	get<T>(url: string): Observable<T> {
 		return this.http.get<Result<T>>(`${this.baseUrl}${url}`, {
 			headers: this.getAuthHeaders()
 		}).pipe(
+			timeout(HttpService.REQUEST_TIMEOUT_MS),
 			map(response => this.unwrapResult<T>(response)),
-			catchError(error => this.handleAuthError(() => this.get<T>(url), error))
+			catchError(error => this.handleTimeoutOrAuthError(() => this.get<T>(url), error))
 		);
 	}
 
@@ -42,8 +45,9 @@ export class HttpService {
 		return this.http.post<Result<T>>(`${this.baseUrl}${url}`, body, {
 			headers: this.getJsonHeaders()
 		}).pipe(
+			timeout(HttpService.REQUEST_TIMEOUT_MS),
 			map(response => this.unwrapResult<T>(response)),
-			catchError(error => this.handleAuthError(() => this.post<T>(url, body), error))
+			catchError(error => this.handleTimeoutOrAuthError(() => this.post<T>(url, body), error))
 		);
 	}
 
@@ -51,8 +55,9 @@ export class HttpService {
 		return this.http.put<Result<T>>(`${this.baseUrl}${url}`, body, {
 			headers: this.getJsonHeaders()
 		}).pipe(
+			timeout(HttpService.REQUEST_TIMEOUT_MS),
 			map(response => this.unwrapResult<T>(response)),
-			catchError(error => this.handleAuthError(() => this.put<T>(url, body), error))
+			catchError(error => this.handleTimeoutOrAuthError(() => this.put<T>(url, body), error))
 		);
 	}
 
@@ -60,8 +65,9 @@ export class HttpService {
 		return this.http.delete<Result<T>>(`${this.baseUrl}${url}`, {
 			headers: this.getAuthHeaders()
 		}).pipe(
+			timeout(HttpService.REQUEST_TIMEOUT_MS),
 			map(response => this.unwrapResult<T>(response)),
-			catchError(error => this.handleAuthError(() => this.delete<T>(url), error))
+			catchError(error => this.handleTimeoutOrAuthError(() => this.delete<T>(url), error))
 		);
 	}
 
@@ -70,6 +76,13 @@ export class HttpService {
 			throw new Error(response.message || 'An unknown error occurred.');
 		}
 		return response.model;
+	}
+
+	private handleTimeoutOrAuthError<T>(retryFn: () => Observable<T>, error: any): Observable<T> {
+		if (error instanceof TimeoutError) {
+			return throwError(() => new Error('Check your connection and try again.'));
+		}
+		return this.handleAuthError(retryFn, error);
 	}
 
 	// private tryAutoLogin(): Observable<boolean> {
@@ -116,6 +129,7 @@ export class HttpService {
 			{},
 			{ withCredentials: true }
 		).pipe(
+			timeout(HttpService.REQUEST_TIMEOUT_MS),
 			map(response => {
 				const newToken = response.model.token;
 				if (localStorage.getItem('authToken')) {

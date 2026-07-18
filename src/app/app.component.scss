@@ -4,6 +4,7 @@
 	max-width: 600px;
 	margin: 0 auto;
 	padding: 0;
+	padding-top: var(--offline-banner-height, 0px);
 	background-color: $bg-page;
 	border-left: 2px solid $border;
 	border-right: 2px solid $border;
@@ -14,6 +15,22 @@
 		border-left: 2px solid $border;
 		border-right: 2px solid $border;
 	}
+}
+
+.offline-banner {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 32px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: $danger;
+	color: white;
+	font-size: 0.85rem;
+	font-weight: 600;
+	z-index: 1100;
 }
 
 .ios-install-backdrop {

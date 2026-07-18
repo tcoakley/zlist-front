@@ -5,6 +5,7 @@ import { TitleBarComponent } from './components/title-bar/title-bar.component';
 import { filter } from 'rxjs/operators';
 import { UserStore } from './stores/user/user.store';
 import { InstallService } from './services/install.service';
+import { ConnectivityService } from './services/connectivity.service';
 
 @Component({
 	selector: 'app-root',
@@ -17,6 +18,7 @@ export class AppComponent implements OnInit {
 	protected userStore = inject(UserStore);
 	private router = inject(Router);
 	protected installService = inject(InstallService);
+	protected connectivityService = inject(ConnectivityService);
 
 	layoutTop = false;
 
