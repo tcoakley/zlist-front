@@ -52,6 +52,7 @@ export class ListRunComponent implements OnInit, OnDestroy, AfterViewInit {
 	displayItems: RunItem[] = [];
 	confirmingComplete = false;
 	confirmingCheckAll = false;
+	confirmingAutoComplete = false;
 	showAddItem = false;
 	newItemName = '';
 	isSavingItem = false;
@@ -217,8 +218,21 @@ export class ListRunComponent implements OnInit, OnDestroy, AfterViewInit {
 		item.isToggling = false;
 
 		if (ok && this.allComplete) {
-			await this.finishRun();
+			this.confirmingAutoComplete = true;
+		} else if (!this.allComplete) {
+			// Unchecking an item (or a failed toggle reverting one) means the list is no longer
+			// fully checked — treat that as an implicit "No" and drop any pending confirmation.
+			this.confirmingAutoComplete = false;
 		}
+	}
+
+	async confirmAutoComplete() {
+		this.confirmingAutoComplete = false;
+		await this.finishRun();
+	}
+
+	cancelAutoComplete() {
+		this.confirmingAutoComplete = false;
 	}
 
 	startCheckAll() {

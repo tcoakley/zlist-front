@@ -8,7 +8,7 @@
 			@if (!confirmingComplete) {
 				<div class="top-bar-right">
 					<button class="add-item-btn" (click)="openAddItem()" [disabled]="showAddItem">&#43; Add Item</button>
-					<button class="complete-all-btn" (click)="startCompleteAll()" [disabled]="allComplete">Complete List</button>
+					<button class="complete-all-btn" (click)="startCompleteAll()">Complete List</button>
 				</div>
 			} @else {
 				<div class="confirm-bar">
@@ -31,16 +31,22 @@
 		<p class="run-owner">Owner: {{ ownerName }}</p>
 	}
 
-	@if (!confirmingCheckAll) {
-		<div class="check-all-row" (click)="startCheckAll()" [class.all-done]="allComplete">
-			<span class="check-all-label">Check All</span>
-			<img class="check-img" [src]="allComplete ? 'assets/checked.svg' : 'assets/unchecked.svg'" width="22" height="22" alt="" />
-		</div>
-	} @else {
+	@if (confirmingCheckAll) {
 		<div class="check-all-row confirm-bar">
 			<span class="confirm-label">Check all items and complete the list?</span>
 			<button class="confirm-yes-btn" (click)="checkAll()">Yes</button>
 			<button class="confirm-no-btn" (click)="cancelCheckAll()">No</button>
+		</div>
+	} @else if (confirmingAutoComplete) {
+		<div class="check-all-row confirm-bar">
+			<span class="confirm-label">All items checked — complete the list?</span>
+			<button class="confirm-yes-btn" (click)="confirmAutoComplete()">Yes</button>
+			<button class="confirm-no-btn" (click)="cancelAutoComplete()">No</button>
+		</div>
+	} @else {
+		<div class="check-all-row" (click)="startCheckAll()" [class.all-done]="allComplete">
+			<span class="check-all-label">Check All</span>
+			<img class="check-img" [src]="allComplete ? 'assets/checked.svg' : 'assets/unchecked.svg'" width="22" height="22" alt="" />
 		</div>
 	}
 
