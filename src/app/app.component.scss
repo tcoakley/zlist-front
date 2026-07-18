@@ -4,7 +4,7 @@
 	max-width: 600px;
 	margin: 0 auto;
 	padding: 0;
-	padding-top: var(--offline-banner-height, 0px);
+	padding-top: calc(var(--offline-banner-height, 0px) + var(--update-banner-height, 0px));
 	background-color: $bg-page;
 	border-left: 2px solid $border;
 	border-right: 2px solid $border;
@@ -31,6 +31,38 @@
 	font-size: 0.85rem;
 	font-weight: 600;
 	z-index: 1100;
+}
+
+.update-banner {
+	position: fixed;
+	top: var(--offline-banner-height, 0px);
+	left: 0;
+	right: 0;
+	height: 32px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 12px;
+	background: $primary;
+	color: white;
+	font-size: 0.85rem;
+	font-weight: 600;
+	z-index: 1100;
+}
+
+.update-banner-refresh {
+	background: transparent;
+	border: 1px solid white;
+	border-radius: 4px;
+	color: white;
+	font-size: 0.8rem;
+	font-weight: 600;
+	padding: 2px 10px;
+	cursor: pointer;
+
+	&:hover {
+		background: rgba(255, 255, 255, 0.15);
+	}
 }
 
 .ios-install-backdrop {
