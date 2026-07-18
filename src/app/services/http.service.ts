@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, throwError, of } from 'rxjs';
-import { catchError, switchMap, map } from 'rxjs/operators';
+import { catchError, switchMap, map, finalize, shareReplay } from 'rxjs/operators';
 import { UserModel } from "../../models/user.model";
 import { Result } from "../../models/result.model";
 import { environment } from '../../environments/environment';
@@ -102,13 +102,16 @@ export class HttpService {
 		return throwError(() => error);
 	}
 
-	private isRefreshing = false;
+	private refreshInProgress$: Observable<string | null> | null = null;
 
 	refreshAccessToken(): Observable<string | null> {
-		if (this.isRefreshing) return of(null);
-		this.isRefreshing = true;
+		// If a refresh is already in flight, share its real result instead of assuming
+		// this concurrent caller's refresh "failed" — multiple 401s often arrive at once
+		// (e.g. parallel page-load requests after a stale JWT), and only one should
+		// actually hit the network; the rest should wait for and reuse its outcome.
+		if (this.refreshInProgress$) return this.refreshInProgress$;
 
-		return this.http.post<Result<{ token: string }>>(
+		this.refreshInProgress$ = this.http.post<Result<{ token: string }>>(
 			`${this.baseUrl}/api/login/refresh`,
 			{},
 			{ withCredentials: true }
@@ -123,8 +126,11 @@ export class HttpService {
 				return newToken;
 			}),
 			catchError(() => of(null)),
-			map(token => { this.isRefreshing = false; return token; })
+			finalize(() => { this.refreshInProgress$ = null; }),
+			shareReplay(1)
 		);
+
+		return this.refreshInProgress$;
 	}
 
 }
