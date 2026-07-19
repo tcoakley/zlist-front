@@ -5,16 +5,25 @@
 		<a routerLink="/lists" class="back-btn">&#8592; Lists</a>
 
 		@if (!loading) {
-			@if (!confirmingComplete) {
+			@if (!confirmingComplete && !confirmingDeleteRun) {
 				<div class="top-bar-right">
 					<button class="add-item-btn" (click)="openAddItem()" [disabled]="showAddItem">&#43; Add Item</button>
+					@if (isOwner) {
+						<button class="delete-run-btn" (click)="startDeleteRun()" title="Delete this run">Delete Run</button>
+					}
 					<button class="complete-all-btn" (click)="startCompleteAll()">Complete List</button>
 				</div>
-			} @else {
+			} @else if (confirmingComplete) {
 				<div class="confirm-bar">
 					<span class="confirm-label">Complete list?</span>
 					<button class="confirm-yes-btn" (click)="confirmCompleteList()">Yes</button>
 					<button class="confirm-no-btn" (click)="cancelCompleteAll()">No</button>
+				</div>
+			} @else if (confirmingDeleteRun) {
+				<div class="confirm-bar">
+					<span class="confirm-label">Delete this run?</span>
+					<button class="confirm-yes-btn" (click)="confirmDeleteRun()">Yes</button>
+					<button class="confirm-no-btn" (click)="cancelDeleteRun()">No</button>
 				</div>
 			}
 		}

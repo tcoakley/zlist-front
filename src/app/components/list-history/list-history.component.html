@@ -20,7 +20,19 @@
 					</div>
 					<div class="run-summary">
 						<span class="run-count">{{ run.completedItems }} of {{ run.totalItems }} completed</span>
-						<button class="view-btn" (click)="openView(run)">View</button>
+						<div class="run-actions">
+							@if (isOwner) {
+								@if (confirmingDeleteRunId === run.id) {
+									<button class="confirm-yes-btn" (click)="deleteRun(run, $event)">Yes</button>
+									<button class="confirm-no-btn" (click)="cancelDeleteRun($event)">No</button>
+								} @else {
+									<button class="delete-run-btn" (click)="startDeleteRun(run, $event)" title="Delete run">
+										<img src="assets/icon-trash.svg" alt="" />
+									</button>
+								}
+							}
+							<button class="view-btn" (click)="openView(run)">View</button>
+						</div>
 					</div>
 				</div>
 			}
