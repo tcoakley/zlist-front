@@ -33,7 +33,8 @@ export class HttpService {
 
 	get<T>(url: string): Observable<T> {
 		return this.http.get<Result<T>>(`${this.baseUrl}${url}`, {
-			headers: this.getAuthHeaders()
+			headers: this.getAuthHeaders(),
+			withCredentials: true
 		}).pipe(
 			timeout(HttpService.REQUEST_TIMEOUT_MS),
 			map(response => this.unwrapResult<T>(response)),
@@ -43,7 +44,8 @@ export class HttpService {
 
 	post<T>(url: string, body: any): Observable<T> {
 		return this.http.post<Result<T>>(`${this.baseUrl}${url}`, body, {
-			headers: this.getJsonHeaders()
+			headers: this.getJsonHeaders(),
+			withCredentials: true
 		}).pipe(
 			timeout(HttpService.REQUEST_TIMEOUT_MS),
 			map(response => this.unwrapResult<T>(response)),
@@ -53,7 +55,8 @@ export class HttpService {
 
 	put<T>(url: string, body: any): Observable<T> {
 		return this.http.put<Result<T>>(`${this.baseUrl}${url}`, body, {
-			headers: this.getJsonHeaders()
+			headers: this.getJsonHeaders(),
+			withCredentials: true
 		}).pipe(
 			timeout(HttpService.REQUEST_TIMEOUT_MS),
 			map(response => this.unwrapResult<T>(response)),
@@ -63,7 +66,8 @@ export class HttpService {
 
 	delete<T>(url: string): Observable<T> {
 		return this.http.delete<Result<T>>(`${this.baseUrl}${url}`, {
-			headers: this.getAuthHeaders()
+			headers: this.getAuthHeaders(),
+			withCredentials: true
 		}).pipe(
 			timeout(HttpService.REQUEST_TIMEOUT_MS),
 			map(response => this.unwrapResult<T>(response)),
