@@ -1,3 +1,14 @@
+@if (!connectivityService.isOnline()) {
+	<div class="offline-banner">No internet connection</div>
+}
+
+@if (versionCheckService.updateAvailable()) {
+	<div class="update-banner">
+		<span>{{ versionCheckService.latestVersion() ? 'Version ' + versionCheckService.latestVersion() + ' is available.' : 'A new version is available.' }}</span>
+		<button class="update-banner-refresh" (click)="reloadApp()">Refresh</button>
+	</div>
+}
+
 <div class="main-container">
 	<app-title-bar *ngIf="isLoggedIn"></app-title-bar>
 	<div class="subcontent-container" [ngClass]="{ 'layout-top': layoutTop, 'has-header': isLoggedIn }">

@@ -7,6 +7,7 @@ export interface RunHubCallbacks {
 	onItemToggled: (runItemId: number, isComplete: boolean, completedByInitials: string, completedByName: string) => void;
 	onRunCompleted: () => void;
 	onItemAdded: (item: ListRunItem) => void;
+	onRunDeleted: () => void;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -40,6 +41,10 @@ export class RunHubService {
 
 		this.connection.on('ItemAdded', (item: ListRunItem) => {
 			this.ngZone.run(() => callbacks.onItemAdded(item));
+		});
+
+		this.connection.on('RunDeleted', () => {
+			this.ngZone.run(() => callbacks.onRunDeleted());
 		});
 
 		this.connection.onreconnected(async () => {

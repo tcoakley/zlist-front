@@ -33,9 +33,11 @@ export class ListHistoryComponent implements OnInit, AfterViewInit {
 
 	listId = 0;
 	listName = '';
+	isOwner = false;
 	history: RunHistorySummary[] = [];
 	loading = true;
 	viewReady = false;
+	confirmingDeleteRunId: number | null = null;
 
 	modalRun: RunHistorySummary | null = null;
 	modalItems: ModalItem[] = [];
@@ -59,6 +61,7 @@ export class ListHistoryComponent implements OnInit, AfterViewInit {
 		}
 
 		this.listName = list.listName;
+		this.isOwner = list.isOwner ?? false;
 		this.titleService.setTitle(`${list.listName} History`);
 
 		this.loading = true;
@@ -117,5 +120,26 @@ export class ListHistoryComponent implements OnInit, AfterViewInit {
 	closeModal() {
 		this.modalRun = null;
 		this.modalItems = [];
+	}
+
+	startDeleteRun(run: RunHistorySummary, event: Event) {
+		event.stopPropagation();
+		this.confirmingDeleteRunId = run.id;
+	}
+
+	cancelDeleteRun(event: Event) {
+		event.stopPropagation();
+		this.confirmingDeleteRunId = null;
+	}
+
+	async deleteRun(run: RunHistorySummary, event: Event) {
+		event.stopPropagation();
+		this.confirmingDeleteRunId = null;
+		const ok = await this.listStore.deleteListRun(run.id);
+		if (ok) {
+			this.history = this.history.filter(h => h.id !== run.id);
+		} else {
+			this.snackbarService.showMessage(this.listStore.error(), 'error');
+		}
 	}
 }

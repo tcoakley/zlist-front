@@ -226,6 +226,16 @@ export class ListStore {
 		}
 	}
 
+	async deleteListRun(runId: number): Promise<boolean> {
+		this.error.set(null);
+		try {
+			return await firstValueFrom(this.listService.deleteListRun(runId));
+		} catch (err: any) {
+			this.error.set(err?.error ?? err);
+			return false;
+		}
+	}
+
 	// ─── Shared list methods ────────────────────────────────────────────────────
 
 	async getListMembers(listId: number): Promise<ListMember[] | null> {

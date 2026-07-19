@@ -46,12 +46,15 @@ export class ListRunComponent implements OnInit, OnDestroy, AfterViewInit {
 	listDescription = '';
 	ownerName = '';
 	memberCount = 0;
+	isOwner = false;
 	loading = true;
 	viewReady = false;
 	runItems: RunItem[] = [];
 	displayItems: RunItem[] = [];
 	confirmingComplete = false;
 	confirmingCheckAll = false;
+	confirmingAutoComplete = false;
+	confirmingDeleteRun = false;
 	showAddItem = false;
 	newItemName = '';
 	isSavingItem = false;
@@ -109,6 +112,7 @@ export class ListRunComponent implements OnInit, OnDestroy, AfterViewInit {
 		this.listDescription = list.listDescription ?? '';
 		this.ownerName = list.ownerName ?? '';
 		this.memberCount = list.memberCount ?? 1;
+		this.isOwner = list.isOwner ?? false;
 		this.titleService.setTitle(list.listName);
 
 		let run = list.listRuns?.find(r => r.id === this.runId);
@@ -153,6 +157,7 @@ export class ListRunComponent implements OnInit, OnDestroy, AfterViewInit {
 					this.onHubItemToggled(runItemId, isComplete, completedByInitials, completedByName),
 				onRunCompleted: () => this.onHubRunCompleted(),
 				onItemAdded: (item) => this.onHubItemAdded(item),
+				onRunDeleted: () => this.onHubRunDeleted(),
 			});
 		} catch (err) {
 			console.error('[SignalR] Failed to connect:', err);
@@ -172,6 +177,11 @@ export class ListRunComponent implements OnInit, OnDestroy, AfterViewInit {
 
 	private onHubRunCompleted() {
 		this.snackbarService.showMessage('Run completed.', 'success');
+		this.router.navigate(['/lists']);
+	}
+
+	private onHubRunDeleted() {
+		this.snackbarService.showMessage('This run was deleted.', 'warning');
 		this.router.navigate(['/lists']);
 	}
 
@@ -217,7 +227,39 @@ export class ListRunComponent implements OnInit, OnDestroy, AfterViewInit {
 		item.isToggling = false;
 
 		if (ok && this.allComplete) {
-			await this.finishRun();
+			this.confirmingAutoComplete = true;
+		} else if (!this.allComplete) {
+			// Unchecking an item (or a failed toggle reverting one) means the list is no longer
+			// fully checked — treat that as an implicit "No" and drop any pending confirmation.
+			this.confirmingAutoComplete = false;
+		}
+	}
+
+	async confirmAutoComplete() {
+		this.confirmingAutoComplete = false;
+		await this.finishRun();
+	}
+
+	cancelAutoComplete() {
+		this.confirmingAutoComplete = false;
+	}
+
+	startDeleteRun() {
+		this.confirmingDeleteRun = true;
+	}
+
+	cancelDeleteRun() {
+		this.confirmingDeleteRun = false;
+	}
+
+	async confirmDeleteRun() {
+		this.confirmingDeleteRun = false;
+		const ok = await this.listStore.deleteListRun(this.runId);
+		if (ok) {
+			this.snackbarService.showMessage('Run deleted.', 'success');
+			this.router.navigate(['/lists']);
+		} else {
+			this.snackbarService.showMessage(this.listStore.error(), 'error');
 		}
 	}
 

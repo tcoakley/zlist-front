@@ -76,6 +76,10 @@ export class ListService {
 		return this.http.get<RunHistorySummary[]>(`${this.base}/GetListRunHistory/${listId}`);
 	}
 
+	deleteListRun(runId: number): Observable<boolean> {
+		return this.http.delete<boolean>(`${this.base}/DeleteListRun/${runId}`);
+	}
+
 	// ─── Shared list methods ────────────────────────────────────────────────────
 
 	getKnownCollaborators(): Observable<ListMember[]> {
